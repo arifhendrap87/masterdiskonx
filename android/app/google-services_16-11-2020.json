@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "280725445152",
+    "firebase_url": "https://masterdiskonapp-b45f1.firebaseio.com",
+    "project_id": "masterdiskonapp-b45f1",
+    "storage_bucket": "masterdiskonapp-b45f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280725445152:android:2976119d7ccaf66205ba45",
+        "android_client_info": {
+          "package_name": "com.masterdiskon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "280725445152-n5afubb58hobpeo89hb6irh8g1nbrrc8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.masterdiskon",
+            "certificate_hash": "bee23ec6e85b9bc6a1b2acd0f325176b14817721"
+          }
+        },
+        {
+          "client_id": "280725445152-fe46m6498q889e3erqhhthhcutb9iivv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.masterdiskon",
+            "certificate_hash": "f6571934260035d63eaf963b03800bcbeef0dea1"
+          }
+        },
+        {
+          "client_id": "280725445152-2hksl1s6a570erqhbe6kkefteekfj6jj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.masterdiskon",
+            "certificate_hash": "cea55faf9218df054827d55bfa27db546c9b2837"
+          }
+        },
+        {
+          "client_id": "280725445152-ulhq6j2enufgiedabbph68i2tg6clilm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUQOM8x2q6SQpkLDA4Ku6r3dgwUyz8NjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280725445152-ulhq6j2enufgiedabbph68i2tg6clilm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "280725445152-1bo1v29cr9o88mn3calcaavpg43n14fe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.masterdiskon"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
