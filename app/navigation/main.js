@@ -11,7 +11,6 @@ import Booking from "./../screens/Booking";
 import BookingDetail from "./../screens/BookingDetail";
 import Notification from "./../screens/Notification";
 import Profile1 from "./../screens/Profile1";
-import Other from "./../screens/Other";
 
 
 import SelectFlight from "./../screens/SelectFlight";
@@ -20,6 +19,8 @@ import SelectCoupon from "./../screens/SelectCoupon";
 import FlightSearch from "./../screens/FlightSearch";
 import Tour from "./../screens/Tour";
 import FlightResult from "./../screens/FlightResult";
+import FlightResultVia from "./../screens/FlightResultVia";
+
 import FlightFilter from "./../screens/FlightFilter";
 import ProductFilter from "./../screens/ProductFilter";
 import Eticket from "./../screens/Eticket";
@@ -28,8 +29,11 @@ import EvoucherPdf from "./../screens/EvoucherPdf";
 // import PdfView from "./../screens/PdfView";
 
 import FlightResultArrival from "./../screens/FlightResultArrival";
+import FlightResultArrivalVia from "./../screens/FlightResultArrivalVia";
 import Summary from "./../screens/Summary";
 import Hotel from "./../screens/Hotel";
+import Flight from "./../screens/Flight";
+
 import HotelSearchAgain from "./../screens/HotelSearchAgain";
 import FlightSearchAgain from "./../screens/FlightSearchAgain";
 
@@ -42,6 +46,7 @@ import HotelCity from "./../screens/HotelCity";
 import SelectHotel from "./../screens/SelectHotel";
 import SelectHotelLinx from "./../screens/SelectHotelLinx";
 import ProductDetail from "./../screens/ProductDetail";
+import PromoDetail from "./../screens/PromoDetail";
 import VendorDetail from "./../screens/VendorDetail";
 
 import ProductList from "./../screens/ProductList";
@@ -49,6 +54,8 @@ import ProductList from "./../screens/ProductList";
 import ProductDetailNew from "./../screens/ProductDetailNew";
 
 import TourDetailCustom from "./../screens/TourDetailCustom";
+import Explore from "./../screens/Explore";
+
 import Activities from "./../screens/Activities";
 import FlightTicket from "./../screens/FlightTicket";
 import Pembayaran from "./../screens/Pembayaran";
@@ -70,6 +77,8 @@ import SelectCountry from "./../screens/SelectCountry";
 // import Filter from "./../screens/Filter";
 // import FlightFilter from "./../screens/FlightFilter";
 import FlightDetail from "./../screens/FlightDetail";
+import FlightDetailVia from "./../screens/FlightDetailVia";
+
 // import BusFilter from "./../screens/BusFilter";
 // import Search from "./../screens/Search";
 // import SearchHistory from "./../screens/SearchHistory";
@@ -147,10 +156,18 @@ import PreviewBooking from "./../screens/PreviewBooking";
 // import PreviewBusBooking from "./../screens/PreviewBusBooking";
 // import BusTicket from "./../screens/BusTicket";
 // import Event from "./../screens/Event";
-// import EventDetail from "./../screens/EventDetail";
+import EventDetail from "./../screens/EventDetail";
 // import EventPreviewBooking from "./../screens/EventPreviewBooking";
 // import DashboardEvent from "./../screens/DashboardEvent";
 // import EventTicket from "./../screens/EventTicket";
+
+
+
+//----------------------new version----------------//
+import Other from "./../screens/Other";
+import HomeNew from "./../screens/_newversion/HomeNew";
+
+
 
 // Transition for navigation by screen name
 const handleCustomTransition = ({ scenes }) => {
@@ -172,7 +189,14 @@ const bottomTabNavigatorConfig = {
         showLabel: true,
         activeTintColor: BaseColor.primaryColor,
         inactiveTintColor: BaseColor.grayColor,
-        style: BaseStyle.tabBar,
+        //style: BaseStyle.tabBar,
+        style:{
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            marginTop: -40,
+            paddintTop:60
+
+        },
         labelStyle: {
             fontSize: 12
         }
@@ -186,7 +210,7 @@ const routeConfigs = {
         navigationOptions: ({ navigation }) => ({
             title: "Home",
             tabBarIcon: ({ focused, tintColor }) => {
-                return <Icon color={tintColor} name="home" size={20} solid />;
+                return <Icon color={tintColor} name="home-outline" size={20} solid />;
             }
         })
     },
@@ -196,7 +220,7 @@ const routeConfigs = {
             title: "Order",
             tabBarIcon: ({ focused, tintColor }) => {
                 return (
-                    <Icon color={tintColor} name="suitcase" size={20} solid />
+                    <Icon color={tintColor} name="briefcase-outline" size={20} solid />
                 );
             }
         })
@@ -221,7 +245,7 @@ const routeConfigs = {
                     <Icon
                         solid
                         color={tintColor}
-                        name="envelope"
+                        name="notifications-outline"
                         size={25}
                         solid
                     />
@@ -239,7 +263,7 @@ const routeConfigs = {
                     <Icon
                         solid
                         color={tintColor}
-                        name="user-circle"
+                        name="person-outline"
                         size={20}
                     />
                 );
@@ -275,20 +299,32 @@ const StackNavigator = createStackNavigator(
         Other: {
             screen: Other
         },
+        HomeNew: {
+            screen: HomeNew
+        },
         Tour: {
             screen: Tour
         },
         FlightResult: {
             screen: FlightResult
         },
+        FlightResultVia: {
+            screen: FlightResultVia
+        },
         FlightResultArrival: {
             screen: FlightResultArrival
+        },
+        FlightResultArrivalVia: {
+            screen: FlightResultArrivalVia
         },
         Summary: {
             screen: Summary
         },
         Hotel: {
             screen: Hotel
+        },
+        Flight: {
+            screen: Flight
         },
         HotelSearchAgain: {
             screen: HotelSearchAgain
@@ -339,6 +375,9 @@ const StackNavigator = createStackNavigator(
             //     gesturesEnabled: false,
             // },
         },
+        PromoDetail: {
+            screen: PromoDetail
+        },
         VendorDetail: {
             screen: VendorDetail
         },
@@ -350,6 +389,9 @@ const StackNavigator = createStackNavigator(
         },
         TourDetailCustom: {
             screen: TourDetailCustom
+        },
+        Explore: {
+            screen: Explore
         },
         Activities: {
             screen: Activities
@@ -588,9 +630,9 @@ const StackNavigator = createStackNavigator(
         // Event: {
         //     screen: Event
         // },
-        // EventDetail: {
-        //     screen: EventDetail
-        // },
+        EventDetail: {
+            screen: EventDetail
+        },
         // EventPreviewBooking: {
         //     screen: EventPreviewBooking
         // },
@@ -652,6 +694,9 @@ const RootStack = createStackNavigator(
         },
         FlightDetail: {
             screen: FlightDetail
+        },
+        FlightDetailVia: {
+            screen: FlightDetailVia
         },
         // BusFilter: {
         //     screen: BusFilter

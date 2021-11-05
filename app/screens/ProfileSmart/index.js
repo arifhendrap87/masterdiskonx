@@ -90,9 +90,21 @@ class ProfileSmart extends Component {
         };
         this._deltaY = new Animated.Value(0);
         this.updateParticipant = this.updateParticipant.bind(this);
+
+        this.getConfigApi();
         this.getConfig();
         this.getSession();
     }
+
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
+    }
+
 
     getConfig(){    
         AsyncStorage.getItem('config', (error, result) => {
@@ -114,7 +126,7 @@ class ProfileSmart extends Component {
             }
         });
     }
-    
+
     redirect(redirect='') {
                 this.props.actions.authentication(true, response => {
                     if (response.success) {
@@ -184,9 +196,24 @@ class ProfileSmart extends Component {
         nationality_id,
         nationality_phone_code,
         passport_country_id){
-        const {config,login,id_user,idParam} =this.state;
-                var url=config.baseUrl;
-                var path=config.user_participant_save.dir;
+        const {login,id_user,idParam} =this.state;
+
+                
+                let config=this.state.configApi;
+                let baseUrl=config.baseUrl;
+                let url=baseUrl+"front/api/user/participant_update";
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+
+                // let config=this.state.configApi;
+                // let baseUrl=config.baseUrl;
+                // let url=baseUrl+"front/api/user/participant_update";
+                // console.log('configApi',JSON.stringify(config));
+                // console.log('urlss',url);
+
+                // var url=config.baseUrl;
+                // var path=config.user_participant_save.dir;
 
                 const data={  
                     "id": key,
@@ -223,7 +250,7 @@ class ProfileSmart extends Component {
                 };
               
 
-                fetch(url+path,requestOptions)
+                fetch(url,requestOptions)
                 .then(response => response.json())
                 .then(result => {
 
@@ -231,15 +258,23 @@ class ProfileSmart extends Component {
                 })
                 .catch(error => {
 
-                    alert('Kegagalan Respon Server')
+                    alert('Kegagalan Respon Server saveParticipant')
                 });
     }
 
 
     deleteParticipant(id){
-                const {config,login,id_user,idParam} =this.state;
-                var url=config.baseUrl;
-                var path=config.user_participant_delete.dir;
+                const {login,id_user,idParam} =this.state;
+
+                let config=this.state.configApi;
+                let baseUrl=config.baseUrl;
+                let url=baseUrl+"front/api/user/participant_delete";
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+
+                // var url=config.baseUrl;
+                // var path=config.user_participant_delete.dir;
 
                 const data={  
                     "id": id,
@@ -256,7 +291,7 @@ class ProfileSmart extends Component {
                 body: raw,
                 redirect: 'follow'
                 };
-                fetch(url+path,requestOptions)
+                fetch(url,requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     setTimeout(() => {
@@ -277,7 +312,10 @@ class ProfileSmart extends Component {
         let {} = this.state;
         const {navigation} = this.props;
             navigation.addListener ('didFocus', () =>{
+                setTimeout(() => {
                     this.fetch();
+                }, 20);
+                    
             });
             
     }
@@ -286,17 +324,26 @@ class ProfileSmart extends Component {
     
 
     fetch(){
-        const {config,login,id_user,idParam,old,item} =this.state;
+        const {login,id_user,idParam,old,item} =this.state;
         console.log(old);
-        var url=config.baseUrl;
-        var path=config.user_participant.dir;
+
+        
+
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"front/api/user/participant";
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+
+        // var url=config.baseUrl;
+        // var path=config.user_participant.dir;
         this.setState({loading:true});
                     const data={"id":"","id_user":id_user}
                     const param={"param":data}
                     var myHeaders = new Headers();
                     myHeaders.append("Content-Type", "application/json");
 
-                    console.log(url+path,JSON.stringify(param));
                     var raw = JSON.stringify(param);
                     var requestOptions = {
                     method: 'POST',
@@ -305,7 +352,7 @@ class ProfileSmart extends Component {
                     redirect: 'follow'
                     };
                     
-                    fetch(url+path,requestOptions)
+                    fetch(url,requestOptions)
                     .then(response => response.json())
                     .then(result => {
                         this.setState({loading:false});
@@ -645,10 +692,10 @@ class ProfileSmart extends Component {
                 var icon='';
                 var buttonDelete=false;
                 if(sourcePage=='summary'){
-                    icon='hand-point-left';
+                    icon='md-arrow-redo-outline';
                     buttonDelete=false
                 }else{
-                    icon='pencil-alt';
+                    icon='create-outline';
                     buttonDelete=true;
                 }
 
@@ -696,7 +743,7 @@ class ProfileSmart extends Component {
                                 }}
                             >
                                             <Icon
-                                                name="trash-alt"
+                                                name="ios-trash-outline"
                                                 size={18}
                                                 color={BaseColor.thirdColor}
                                                 style={{ textAlign: "center"}}
@@ -725,7 +772,7 @@ class ProfileSmart extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />

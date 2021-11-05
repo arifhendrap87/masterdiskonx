@@ -7,7 +7,7 @@ import { StyleSheet } from "react-native";
  * @url http://passionui.com/docs/felix-travel/theming
  */
 export const FontFamily = {
-    default: "Raleway"
+    default: "Lato"
 };
 
 /**

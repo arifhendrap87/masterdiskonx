@@ -121,7 +121,7 @@ export default class FilterSort extends Component {
                                 </Text>
                                 {item.checked && (
                                     <Icon
-                                        name="check"
+                                        name="checkmark-outline"
                                         size={14}
                                         color={BaseColor.primaryColor}
                                     />
@@ -136,7 +136,7 @@ export default class FilterSort extends Component {
                     onPress={() => this.onOpenSort()}
                 >
                     <Icon
-                        name={sortSelected.icon}
+                        name={'funnel-outline'}
                         size={16}
                         color={BaseColor.primaryColor}
                         solid
@@ -166,7 +166,7 @@ export default class FilterSort extends Component {
                         style={styles.contentFilter}
                     >
                         <Icon
-                            name="sync-alt"
+                            name="reload-outline"
                             size={16}
                             color={BaseColor.primaryColor}
                             solid
@@ -236,7 +236,7 @@ FilterSort.defaultProps = {
     ],
     sortSelected: {
         value: "high_rate",
-        icon: "sort-amount-up",
+        icon: "funnel-outline",
         text: "Sort"
     },
     modeView: "",

@@ -16,7 +16,6 @@ class Loading extends Component {
         this.state={
             DataMasterDiskon:DataMasterDiskon[0],
             error:false,
-            //loaderJson:'app/assets/loader_paperline.json'
         }
     }
 
@@ -26,7 +25,7 @@ class Loading extends Component {
         let { navigation, auth } = this.props;
         const {DataMasterDiskon} =this.state;
         var url=DataMasterDiskon.baseUrl;
-        var dir='front/api/common/config';
+        var dir=DataMasterDiskon.dir;
      
         var params={"param":{"username":DataMasterDiskon.username,"password":DataMasterDiskon.password}};
         console.log('getConfigsss',url+dir,JSON.stringify(params));
@@ -42,27 +41,58 @@ class Loading extends Component {
             fetch(url+dir,param)
                 .then(response => response.json())
                 .then(result => {
-                    //console.log('config',JSON.stringify(result));
-                    //this.props.actions.changeConfig(result);
                     var config=result;
+                    var configApi=this.generateConfigApi(config);
+                    console.log('configApi',JSON.stringify(configApi));
                     this.setState({config:config});
                     this.setState({loading_spinner:false});
                     AsyncStorage.setItem('config', JSON.stringify(config));
+                    AsyncStorage.setItem('configApi', JSON.stringify(configApi));
                     navigation.navigate('Home');
                 })
                 .catch(error => {
                     this.setState({error:true});
-                    //this.setState({loaderJson:'app/assets/lostconnection.json'})
-                    //alert('Kegagalan Respon Server')
                 });
 
     });
     }
 
+    generateConfigApi(config){
+        const {DataMasterDiskon} =this.state;
+        let configApi={};
+        if(DataMasterDiskon.status=="production"){
+            configApi.apiBaseUrl=config.apiBaseUrl;
+            configApi.apiToken=config.tokenMDIAccess;
+            configApi.apiTokenRefresh=config.tokenMDIRefresh;
+            
+            configApi.midtransUrl=config.midtransUrl;
+            configApi.midtransUrlSnap=config.midtransUrlSnap;
+            configApi.midtransUrlToken=config.midtransUrlToken;
+            configApi.midtransKey=config.midtransKey;
+
+            configApi.baseUrl=config.baseUrl;
+
+        }else{
+            configApi.apiBaseUrl=config.apiBaseUrlDev;
+            configApi.apiToken=config.tokenMDIAccessDev;
+            configApi.apiTokenRefresh=config.tokenMDIRefreshDev;
+            
+            configApi.midtransUrl=config.midtransUrlDev;
+            configApi.midtransUrlSnap=config.midtransUrlSnapDev;
+            configApi.midtransUrlToken=config.midtransUrlTokenDev;
+            configApi.midtransKey=config.midtransKeyDev;
+
+            configApi.baseUrl=config.baseUrlDev;
+        }
+        return configApi;
+
+
+    }
+
 
     onProcess() {
         let { navigation, auth } = this.props;
-        let status = auth.login.success;
+        // let status = auth.login.success;
 
         
         if(this.props.navigation.state.params && this.props.navigation.state.params.redirect){
@@ -137,8 +167,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        actions: bindActionCreators({AuthActions,ApplicationActions}, dispatch)
-
+        //actions: bindActionCreators({AuthActions,ApplicationActions}, dispatch)
+        actions: bindActionCreators(AuthActions, dispatch)
     };
 };
 

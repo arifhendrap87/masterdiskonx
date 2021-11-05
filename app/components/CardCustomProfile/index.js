@@ -205,7 +205,7 @@ export default class CardCustomProfile extends Component {
                                                 nav==true ?
                                                 <View style={styles.right}>
                                                     <Icon
-                                                    name="angle-right"
+                                                    name="md-arrow-forward-outline"
                                                     size={18}
                                                     color={BaseColor.primaryColor}
                                                 />

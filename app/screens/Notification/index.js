@@ -9,6 +9,7 @@ import { View } from "react-native-animatable";
 import CardCustomNotif from "../../components/CardCustomNotif";
 import NotYetLogin from "../../components/NotYetLogin";
 import DataEmpty from "../../components/DataEmpty";
+import AnimatedLoader from "react-native-animated-loader";
 
 
 export default class Notification extends Component {
@@ -16,7 +17,8 @@ export default class Notification extends Component {
         super(props);
         this.state = {
             refreshing: false,
-            login:true,
+            login:false,
+            loadingSpinner:true,
             notification:DataNotif,
             statuses: [
                 { id: "0", name: "Belum Dilihat", checked: true },
@@ -26,8 +28,20 @@ export default class Notification extends Component {
             status:"belum_dilihat",
 
         };
+        this.getConfigApi();
         this.getConfig();
         this.getSession();
+
+        
+    }
+
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
     }
     
     getConfig(){    
@@ -39,65 +53,41 @@ export default class Notification extends Component {
         });
     }
     
-    
     getSession(){    
         AsyncStorage.getItem('userSession', (error, result) => {
             if (result) {    
                 let userSession = JSON.parse(result);
                 var id_user=userSession.id_user;
+                
+                this.setState({login:true});
                 this.setState({id_user:id_user});
                 this.setState({userSession:userSession});
-                this.setState({login:true});
+                //this.getData(userSession);
+                console.log('userSession',JSON.stringify(userSession));
+            }else{
+                this.setState({loadingSpinner:false});
+                console.log('sessionnull');
             }
         });
     }
     
-    onSelectStatus(select) {
-        this.setState({
-            statuses: this.state.statuses.map(item => {
-                if (item.id == select.id) {
-                    return {
-                        ...item,
-                        checked: true
-                    };
-                } else {
-                    return {
-                        ...item,
-                        checked: false
-                    };
-                }
-            })
-        });
-        this.setState({idParam:select.id});
-        if(select.id=="0"){
-            this.setState({status:"belum_dilihat"});
-        }else{
-            this.setState({status:"dilihat"});
-        }
-        setTimeout(() => {
-            this.fetchs();
-        }, 50);
-        
-        
-    }
-    
-    fetchs(){
-        const {config,idParam,id_user,login} =this.state;
-        var url=config.baseUrl;
-        var path=config.user_notif.dir;
-        this.setState({ loading_spinner: true }, () => {
+    getData(){
+        const {idParam,login,userSession} =this.state;
+
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"front/api/user/notif";
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+            var id_user=userSession.id_user;
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             
-            if(login==true){
-                var param={"param":{"id_user":id_user,"seen":idParam}};            
-                var raw = JSON.stringify(param);
-            }else{
-                var param={"param":{"id_user":"1","seen":"1"}};            
-                var raw = JSON.stringify(param);
-            }
-
-            //var raw = JSON.stringify({"param":{"id_user":id_user,"seen":idParam}});
+            
+            var param={"param":{"id_user":id_user,"seen":"0"}};            
+            var raw = JSON.stringify(param);
+            
             
             var requestOptions = {
               method: 'POST',
@@ -105,23 +95,28 @@ export default class Notification extends Component {
               body: raw,
               redirect: 'follow'
             };
-            
-            fetch(url+path, requestOptions)
+            fetch(url, requestOptions)
                 .then(response => response.json())
               .then(result => {
-                this.setState({loading_spinner: false });
+                  console.log('notif',JSON.stringify(result));
+                this.setState({loadingSpinner:false});
                 this.setState({notification:result});
               })
               .catch(error => {
                 alert('Kegagalan Respon Server');
               });
-        });
     }
 
     notif_update(id){
-        const {config,idParam,id_user} =this.state;
-        var url=config.baseUrl;
-        var path='front/api/user/notif_update';
+        const {idParam,id_user} =this.state;
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+'front/api/user/notif_update';
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+        // var url=config.baseUrl;
+        // var path='front/api/user/notif_update';
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             var raw = JSON.stringify({"param":{"id":id}});
@@ -132,7 +127,7 @@ export default class Notification extends Component {
               redirect: 'follow'
             };
             
-            fetch(url+path, requestOptions)
+            fetch(url, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     
@@ -142,41 +137,19 @@ export default class Notification extends Component {
               });
     }
     
-    componentWillMount() {
-    
-    
-
-        let { navigation, auth } = this.props;
-        AsyncStorage.getItem('userSession', (error, result) => {
-            if (result) {    
-               
-                this.setState({login:true});
-              
-            }else{
-    
-                this.setState({login:false});
-            }
-        });
-    
-    }
-
-    componentDidMount() {
-        let {} = this.state;
+    componentDidMount(){
         const {navigation} = this.props;
-            navigation.addListener ('willFocus', () =>{
-                this.setState({idParam:"0"});
-                this.setState({ loading_spinner: true });
+            navigation.addListener ('didFocus', () =>{
                 setTimeout(() => {
-                    this.setState({notification:[]})
-                    //this.fetchs();
-                }, 50);
+                    this.getData();
+                }, 20);
+               
             });
     }
-
         
     render() {
         const { navigation } = this.props;
-        let { notification,statuses,login } = this.state;
+        let { notification,statuses,login,loadingSpinner} = this.state;
         var contents=<View />
         var content=<View></View>
         if (notification.length == 0) {
@@ -198,8 +171,8 @@ export default class Notification extends Component {
                                 image={item.image}
                                 txtLeftTitle={item.title}
                                 txtContent={item.content}
-                                txtRight={item.id_user}
-                                loading={this.state.loading_spinner}
+                                txtRight={item.date_added}
+                                loading={this.state.loadingSpinner}
                                 onPress={() => {
                                     var param={
                                         url:item.tautan+'?access=app',
@@ -225,38 +198,42 @@ export default class Notification extends Component {
                     /> 
         }
 
+        if(loadingSpinner==true){
+            contents=<View style={{flex: 1,backgroundColor:  "#FFFFFF",justifyContent: "center",alignItems: "center"}}>
+                        <View
+                            style={{
+                                position: "absolute",
+                                top: 220,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}
+                        >
+                            
+                            <AnimatedLoader
+                                visible={true}
+                                overlayColor="rgba(255,255,255,0.1)"
+                                source={require("app/assets/loader_wait.json")}
+                                animationStyle={{width: 250,height: 250}}
+                                speed={1}
+                            />
+                          
+                        </View>
+                    </View>
+        }else{
+
+
         if(login==true){ 
             contents=<View style={{}}>
-                        {/* <View style={[{flexDirection: "row",
-                                    paddingVertical:5,
-                                    backgroundColor:BaseColor.secondColor}]}>
-                            <View style={{marginLeft:20}}>
-                            <FlatList
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                data={statuses}
-                                keyExtractor={(item, index) => item.id}
-                                renderItem={({ item, index }) => (
-                                    <Tag
-                                        primary={item.checked}
-                                        style={{ marginRight: 10, width: 100,borderRadius:5 }}
-                                        outline={!item.checked}
-                                        onPress={() =>
-                                            this.onSelectStatus(item)
-                                        }
-                                    >
-                                        {item.name}
-                                    </Tag>
-                                )}
-                            />
-                            </View>
-                        </View> */}
                         {content}
                     </View>
         }else{
 
            contents=<NotYetLogin redirect={'Home'} navigation={navigation} />
         }
+    }
 
         return (
             <SafeAreaView
@@ -268,7 +245,7 @@ export default class Notification extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />

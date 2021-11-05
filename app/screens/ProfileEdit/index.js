@@ -1073,7 +1073,7 @@ export default class ProfileEdit extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />
@@ -1097,7 +1097,13 @@ export default class ProfileEdit extends Component {
                     
                 </ScrollView>
                 <View style={{ padding: 20 }}>
-                    <TouchableOpacity   onPress={() => this.updateParticipant()} >
+                    <TouchableOpacity   
+                    onPress={() => {
+                        this.updateParticipant()
+                    
+                    }} 
+                    
+                    >
                         <View pointerEvents='none' style={styles.groupinput}>
                             <Button
                                 loading={this.state.loading}

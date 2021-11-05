@@ -17,6 +17,7 @@ import DataImage from "../../components/DataImage";
 import CardCustom from "../../components/CardCustom";
 import CardCustomTitle from "../../components/CardCustomTitle";
 import PreviewBooking from "../../components/PreviewBooking";
+
 import {
     DataLoading,
     DataConfig,
@@ -113,6 +114,7 @@ export default class Pembayaran extends Component {
                                         icon:"",
                                         fee:5000,
                                         payment_type:"credit_card",
+                                        qris:false,
                                         payment_form:"screenOther"
                                     }
                                 ]
@@ -123,13 +125,23 @@ export default class Pembayaran extends Component {
                     payment_type_label: "eWallet",
                     option:true,
                     subPayment:[
+                                    // {
+                                    //     payment_sub:"gopay",
+                                    //     payment_sub_label:"Gopay",
+                                    //     icon:"",
+                                    //     fee:5000,
+                                    //     payment_type:"gopay",
+                                    //     qris:false,
+                                    //     payment_form:"screenLink"
+                                    // },
                                     {
                                         payment_sub:"gopay",
-                                        payment_sub_label:"Gopay",
+                                        payment_sub_label:"QRIS",
                                         icon:"",
                                         fee:5000,
                                         payment_type:"gopay",
-                                        payment_form:"screenLink"
+                                        qris:true,
+                                        payment_form:"screenOther"
                                     }
                                 ]
                 },
@@ -143,171 +155,43 @@ export default class Pembayaran extends Component {
                                     
                                     {
                                         payment_sub:"bni",
-                                        //payment_sub:"bni",
                                         payment_sub_label:"BNI",
                                         icon:"",
                                         fee:5000,
                                         payment_type:"bank_transfer",
+                                        qris:false,
                                         payment_form:"screenSelf"
                                     },
                                     {
                                         payment_sub:"permata",
-                                        //payment_sub:"permata",
                                         payment_sub_label:"PERMATA", 
                                         icon:"",
                                         fee:5000,
                                         payment_type:"bank_transfer",
+                                        qris:false,
                                         payment_form:"screenSelf"
                                     },
                                     {
                                         payment_sub:"echannel",
-                                        //payment_sub:"mandiri",
                                         payment_sub_label:"Mandiri",
                                         icon:"",
                                         fee:5000,
                                         payment_type:"echannel",
+                                        qris:false,
                                         payment_form:"screenSelf"
                                     },
                                     {
                                         payment_sub:"other_va",
-                                        //payment_sub:"bca",
                                         payment_sub_label:"BCA",
                                         icon:"",
                                         fee:5000,
                                         payment_type:"bank_transfer",
+                                        qris:false,
                                         payment_form:"screenOther"
                                     },
                                    
                                 ]
                 },
-                // {
-                //     payment_type:"echannel",
-                //     payment_type_label: "Echannel (Fee Rp 5.000,-)",
-                //     option:true,
-                //     subPayment:[
-                                    
-                                    
-                //                     {
-                //                         payment_sub:"echannel",
-                //                         payment_sub_label:"Mandiri",
-                //                         icon:"",
-                //                         fee:5000
-                //                     },
-                                    
-                                   
-                //                 ]
-                // },
-                // {
-                //     payment_type:"gopay",
-                //     payment_type_label: "Gopay",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"gopay",
-                //                         payment_sub_label:"Gopay",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"klik_bca",
-                //     payment_type_label: "Klik BCA",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"bca_klikbca",
-                //                         payment_sub_label:"Klik BCA",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"bca_klik_pay",
-                //     payment_type_label: "BCA KlikPay",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"bca_klikpay",
-                //                         payment_sub_label:"BCA KlikPay",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"cimb_clicks",
-                //     payment_type_label: "CIMB Clicks",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"cimb_clicks",
-                //                         payment_sub_label:"CIMB Clicks",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"danamon_online",
-                //     payment_type_label: "Danamon Online",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"danamon_online",
-                //                         payment_sub_label:"Danamon Online",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"telkomsel_cash",
-                //     payment_type_label: "Telkomsel Cash",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"visa_mastercard",
-                //                         payment_sub_label:"Kartu Kredit",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"indomart",
-                //     payment_type_label: "Indomart",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"indomaret",
-                //                         payment_sub_label:"Indomart",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"alfamart",
-                //     payment_type_label: "Alfamart",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"alfamart",
-                //                         payment_sub_label:"Alfamart",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-                // {
-                //     payment_type:"akulaku",
-                //     payment_type_label: "Akulaku",
-                //     option:false,
-                //     subPayment:[
-                //                     {
-                //                         payment_sub:"akulaku",
-                //                         payment_sub_label:"Akulaku",
-                //                         icon:"",
-                //                     }
-                //                 ]
-                // },
-             
-                
-                
             ],
             modalVisible:false,
             modalVisibleCancel:false,
@@ -358,9 +242,11 @@ export default class Pembayaran extends Component {
             loadingButton:false,
             reason:'',
             loadCancel:true,
-            enableCancel:false
+            enableCancel:false,
+            loadingPaymantMethod:true
         };
 
+        this.getConfigApi();
         this.getConfig();
         this.getSession();
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -378,6 +264,16 @@ export default class Pembayaran extends Component {
     handleBackButtonClick() {
         this.props.navigation.navigate('Booking');
         return true;
+    }
+
+    //memanggil config
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
     }
 
     getConfig(){    
@@ -414,6 +310,43 @@ export default class Pembayaran extends Component {
         var d = hours * 60 * 60 + minutes * 60 + seconds;
         return d;
     
+    }
+
+    getPaymentMethod(total){
+
+        let config=this.state.configApi;
+        let baseUrl=config.apiBaseUrl;
+        let url=baseUrl+'front/api/common/methodPayment/'+total+'/'+type;
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+        console.log('total',total);
+        
+        var type='';
+        if(total==0){
+            type='statis';
+        }
+        console.log('urlgetPaymentMethod',url);
+        var myHeaders = new Headers();
+        myHeaders.append("Cookie", "ci_session=naquthon3ikgs94iun6c7g7cj4v9ukok");
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+        };
+
+        fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            this.setState({loadingPaymantMethod:false});
+            console.log('getPaymentMethod',JSON.stringify(result));
+            this.setState({payment:result})
+
+        })
+        .catch(error => console.log('error', error));
+
+
     }
     
     content_countdown(){
@@ -473,7 +406,7 @@ export default class Pembayaran extends Component {
     
     
     content_payment(){
-        var url=this.state.config.baseUrl;
+        
         var item=this.state.dataBooking[0];
         var order_payment_recent=item.order_payment_recent;
         var order_payment=item.order_payment;
@@ -541,7 +474,7 @@ export default class Pembayaran extends Component {
 
 
                                                      <Icon
-                                                        name="angle-right"
+                                                        name="chevron-forward-outline"
                                                         size={18}
                                                         color={BaseColor.primaryColor}
                                                         style={{ textAlign: "center"}}
@@ -575,12 +508,20 @@ export default class Pembayaran extends Component {
                                         </View>
                                         <View style={{flex: 5,justifyContent: "center",alignItems: "flex-end"}}>
                                                     <CountDown
-                                                        size={12}
+                                                        size={10}
                                                         until={expiredTime}
-                                                        // onFinish={() => alert('Finished')}
+                                                        onFinish={() => {
+                                                            //alert('Finished')}
+                                                            var redirect='Pembayaran';
+                                                            var param={
+                                                                id_order:this.state.id_order,
+                                                                dataPayment:{},
+                                                            }
+                                                            this.props.navigation.navigate("Loading",{redirect:redirect,param:param});
+                                                        }}
                                                         style={{float:'left'}}
-                                                        digitStyle={{backgroundColor: '#FFF', borderWidth: 2, borderColor: BaseColor.primaryColor}}
-                                                        digitTxtStyle={{color: BaseColor.primaryColor}}
+                                                        digitStyle={{backgroundColor: expiredTime < 300 ? BaseColor.thirdColor : BaseColor.secondColor}}
+                                                        digitTxtStyle={{color: expiredTime < 300 ? BaseColor.whiteColor : BaseColor.blackColor}}
                                                         timeLabelStyle={{color: BaseColor.primaryColor, fontWeight: 'bold'}}
                                                         separatorStyle={{color: BaseColor.primaryColor}}
                                                         timeToShow={['H', 'M', 'S']}
@@ -787,6 +728,7 @@ export default class Pembayaran extends Component {
         
         var dataPayment={
             payment_type:item.payment_type,
+            param_qris:item.qris,
             payment_type_label:paymentChooseTemp.payment_type_label,
             payment_sub:item.payment_sub,
             payment_sub_label:item.payment_sub_label,
@@ -802,7 +744,12 @@ export default class Pembayaran extends Component {
 
 
         if(dataPayment.payment_form == "screenOther"){
-            this.tokenMidtransUpdate(param);
+            if(dataPayment.payment_type == "gopay"){
+                this.tokenMidtransUpdateCore(param);
+            }else{
+                this.tokenMidtransUpdate(param);
+            }
+            
         }else{
             this.tokenMidtransUpdateCore(param);
         }
@@ -823,6 +770,8 @@ export default class Pembayaran extends Component {
         console.log(config.midtransMethod);
         var dataPayment={
             payment_type:item.payment_type,
+            payment_qris:item.qris,
+            
             payment_type_label:item.payment_type_label,
             payment_sub:item.subPayment[0].payment_sub,
             payment_sub_label:item.subPayment[0].payment_sub_label,
@@ -836,8 +785,14 @@ export default class Pembayaran extends Component {
         }
         console.log('paramNosSub',JSON.stringify(param));
 
+       
         if(dataPayment.payment_form == "screenOther"){
-            this.tokenMidtransUpdate(param);
+            if(dataPayment.payment_type == "gopay"){
+                this.tokenMidtransUpdateCore(param);
+            }else{
+                this.tokenMidtransUpdate(param);
+            }
+            
         }else{
             this.tokenMidtransUpdateCore(param);
         }
@@ -863,14 +818,14 @@ export default class Pembayaran extends Component {
         var order_payment_recent=item.order_payment_recent;
 
         
-        if(dataPayment.payment_type=="credit_card"){
-            var fee=(parseInt(order_payment_recent.iv_total_amount)*0.026)+parseInt(dataPayment.payment_fee);
-            fee=Math.ceil(fee);
-        }else {
+        // if(dataPayment.payment_type=="credit_card"){
+        //     var fee=(parseInt(order_payment_recent.iv_total_amount)*0.026)+parseInt(dataPayment.payment_fee);
+        //     fee=Math.ceil(fee);
+        // }else {
             
-            var fee=dataPayment.payment_fee;
-        }
-        
+        //     var fee=dataPayment.payment_fee;
+        // }
+        var fee=dataPayment.payment_fee;
         var totalPembayaran=parseInt(order_payment_recent.iv_total_amount)+parseInt(fee);
        
        
@@ -965,6 +920,7 @@ export default class Pembayaran extends Component {
         .then(response => response.json())
         .then(result => {
             console.log('dataToken',JSON.stringify(result));
+            
             var paramPayMD={
                 "total_pembayaran":totalPembayaran,
                 "fee":fee,
@@ -973,16 +929,45 @@ export default class Pembayaran extends Component {
                 "token":result.token,
                 "order_code":dataBooking[0].order_code,
                 "id_order":idOrder,
-                "va_or_code_or_link":""
+                "va_or_code_or_link":result.redirect_url
                 }
-
-                console.log('snapTokenUpdate',JSON.stringify(paramPayMD));
-                this.snapTokenUpdate(paramPayMD,param);
+                if(dataPayment.payment_type=="gopay"){
+                    var qr_code_url=this.snapCharge(result.token);
+                    param.qr_code_url=qr_code_url;
+                    this.snapTokenUpdate(paramPayMD,param);
+                }else{
+                    this.snapTokenUpdate(paramPayMD,param);
+                }
+                // console.log('tokenMidtransUpdate',JSON.stringify(paramPayMD));
+                // this.snapTokenUpdate(paramPayMD,param);
 
         })
-        .catch(error => { alert('Kegagalan Respon Server');});
+        .catch(error => { alert('Kegagalan Respon Server tokenMidtransUpdate tokenMidtransUpdate');});
 
     
+    }
+
+    snapCharge(token){
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Basic U0ItTWlkLXNlcnZlci1rYUg3VlctakNpVjAyOGtWcmJmbjZITGY6");
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({"payment_type":"gopay"});
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        fetch("https://app.midtrans.com/snap/v2/transactions/"+token+"/charge", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            return result.qr_code_url;
+
+        })
+        .catch(error => { alert('Kegagalan Respon Server snapCharge');});
     }
 
 
@@ -990,9 +975,6 @@ export default class Pembayaran extends Component {
         const { navigation} = this.props;
 
          const {dataBooking,config}=this.state;
-         //var item=dataBooking[0];
-         //var order_payment_recent=item.order_payment_recent;
-         //var param=param;
          var url=config.baseUrl+'front/api/OrderSubmit/snap_token_update';
 
 
@@ -1055,7 +1037,7 @@ export default class Pembayaran extends Component {
                    
       
               })
-              .catch(error => { alert('Kegagalan Respon Server');});
+              .catch(error => { alert('Kegagalan Respon Server snapTokenUpdate');});
       
        
               
@@ -1069,6 +1051,7 @@ export default class Pembayaran extends Component {
     tokenMidtransUpdateCore(params){
         this.setState({ loading_spinner: true });
         var dataPayment=params.dataPayment;
+        console.log('dataPayment',JSON.stringify(dataPayment));
         var fee=dataPayment.payment_fee;
         var idOrder=params.id_order;
         
@@ -1126,6 +1109,7 @@ export default class Pembayaran extends Component {
     
      ];
 
+    //console.log('params',JSON.stringify(params));
     if(dataPayment.payment_type=="gopay"){
             var gopay={
             "secure": true,
@@ -1205,7 +1189,14 @@ export default class Pembayaran extends Component {
                 va_or_code_or_link=result.bill_key;
             }
         }else if(dataPayment.payment_type=="gopay"){
-            va_or_code_or_link=result.actions[1].url;
+            va_or_code_or_link=result.actions[0].url;
+            // if(dataPayment.qris==false){
+            //     va_or_code_or_link=result.actions[1].url;
+            // }else{
+            //     va_or_code_or_link=result.actions[0].url;
+            // }
+            
+            
             // if(dataPayment.payment_sub=="gopay"){
             //     va_or_code_or_link=result.actions[1].url;
             // }
@@ -1219,60 +1210,16 @@ export default class Pembayaran extends Component {
             "token":"",
             "order_code":dataBooking[0].order_code,
             "id_order":idOrder,
-            "va_or_code_or_link":va_or_code_or_link
+            "va_or_code_or_link":va_or_code_or_link,
             }
             console.log('paramPayMD',JSON.stringify(paramPayMD));
     
             this.snapTokenUpdate(paramPayMD,params);
        
     })
-    .catch(error => { alert('Kegagalan Respon Server');});
+    .catch(error => { alert('Kegagalan Respon Server tokenMidtransUpdateCore');});
     
     }
-
-
-    //buat code
-    // snapTokenUpdate(paramPayMD,param){
-    //     const { navigation} = this.props;
-    
-          
-    //     const {config}=this.state;
-    //      var url=config.baseUrl+'front/api/OrderSubmit/snap_token_update_new';
-    
-
-    //     console.log('urlss',url,JSON.stringify(paramPayMD));
-    //           var myHeaders = new Headers();
-    //           myHeaders.append("Content-Type", "application/json");
-    //           myHeaders.append("Cookie", "ci_session=6mmg253sca0no2e0gqas59up68f6ljlo");
-      
-    //           var raw = JSON.stringify(paramPayMD);
-      
-    //           var requestOptions = {
-    //           method: 'POST',
-    //           headers: myHeaders,
-    //           body: raw,
-    //           redirect: 'follow'
-    //           };
-      
-    //           fetch(url, requestOptions)
-    //           .then(response => response.json())
-    //           .then(result => {
-    //               console.log('hasilupdatetoken',JSON.stringify(result));
-               
-
-    //                 var params={
-    //                     id_order:param.id_order,
-    //                     dataPayment:{},
-    //                 }
-                
-    //                 navigation.navigate("Loading",{redirect:'Pembayaran',param:params});
-      
-    //           })
-    //           .catch(error => {
-    //               alert('Kegagalan Respon Server');
-    //           });
-    // }
-    
 
 
     cekStatusMidtrans(id_invoice,button){
@@ -1327,7 +1274,7 @@ export default class Pembayaran extends Component {
                 }
               })
               .catch(error => {
-                  alert('Kegagalan Respon Server');
+                  alert('Kegagalan Respon Server cekStatusMidtrans');
               });
     }
 
@@ -1368,7 +1315,7 @@ export default class Pembayaran extends Component {
              })
              .catch((error) => {
                 console.log(JSON.stringify(error));
-                alert('Kegagalan Respon Server');
+                alert('Kegagalan Respon Server submitChange');
               });
              
         
@@ -1390,6 +1337,8 @@ export default class Pembayaran extends Component {
             id_order:item.id_order,
             dataPayment:dataPayment,back:''
         }
+
+        console.log('order_payment_recent',JSON.stringify(order_payment_recent));
        
         if(order_payment_recent.payment_form=="screenOther"){
             navigation.navigate("PembayaranDetail",{
@@ -1398,7 +1347,6 @@ export default class Pembayaran extends Component {
         }else{
             var link=order_payment_recent.payment_va_or_code_or_link;
             Linking.openURL(link);
-            //alert(order_payment_recent.payment_va_or_code_or_link);
         }
 
     }
@@ -1460,41 +1408,59 @@ export default class Pembayaran extends Component {
 
 
         
-        this.state.payment.map((item, index) => (
-            content_bank.push(
-            <TouchableOpacity
-                            style={styles.profileItem}
-                            onPress={() => {
-                                console.log('itemoption',item.option);
-                                if(item.option==true){
-                                    this.modalShow(true,item);
-                                }else{
-                                    this.gotoPaymentDetail(item);
-                                }
-                                
-                            }}
-                        >
-                            <Text caption2 bold>{item.payment_type_label}</Text>
-                            <View
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center"
+            this.state.payment.map((item, index) => (
+                
+                
+                
+                content_bank.push(
+                <TouchableOpacity
+                                style={styles.profileItem}
+                                onPress={() => {
+                                    //console.log('itemoption',item.option);
+                                    if(this.state.loadingPaymantMethod==false){
+                                        if(item.option==true){
+                                            this.modalShow(true,item);
+                                        }else{
+                                            this.gotoPaymentDetail(item);
+                                        }
+                                    }
+                                    
+                                    
                                 }}
                             >
-                                <Icon
-                                    name="angle-right"
-                                    color={BaseColor.primaryColor}
-                                    style={{ marginLeft: 5 }}
-                                />
-                            </View>
-
-            </TouchableOpacity>
-            )
-        ))
+                                
+                                {this.state.loadingPaymantMethod==true ? <PlaceholderLine width={100} /> : <Text caption2 bold>{item.payment_type_label}</Text>}
+                                {
+                                    this.state.loadingPaymantMethod==true ? 
+                                    <View />
+                                    :
+                                    <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <Icon
+                                        name="chevron-forward-outline"
+                                        color={BaseColor.primaryColor}
+                                        style={{ marginLeft: 5 }}
+                                    />
+                                </View>
+                                }
+                                
+                                
+    
+                </TouchableOpacity>
+                )
+                
+                               
+            ))
+            
+        
         
         if(order_payment_recent != null){
                 var expiredTime=this.duration(order_payment_recent.expired);
-
+                
                 if(order_payment_recent.payment_type==""){
                     var title=<Text>Metode Pembayaran</Text>
                 }else{
@@ -1541,37 +1507,63 @@ export default class Pembayaran extends Component {
                                         </View>
                                         {
                                             order_payment_recent.payment_form=="screenSelf" ?
+                                            <View>
                                             <View
                                             style={{ flexDirection: "row", marginTop: 10 }}
-                                        >
-                                            <View style={{ flex: 1 }}>
-                                                <Text caption1 bold>Virtual Account</Text>
-                                            </View>
-                                            <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                                <View
-                                                    style={{flexDirection:'row'}}
-                                                >
-                                                    <Text caption2 bold primaryColor>
-                                                    {order_payment_recent.payment_va_or_code_or_link}
-                                                    </Text>
+                                            >
+                                                <View style={{ flex: 1 }}>
+                                                    <Text caption1 bold>Virtual Account</Text>
+                                                </View>
+                                                <View style={{ flex: 1, alignItems: "flex-end" }}>
+                                                    <View
+                                                        style={{flexDirection:'row'}}
+                                                    >
+                                                        <Text caption2 bold primaryColor>
+                                                        {order_payment_recent.payment_va_or_code_or_link}
+                                                        </Text>
 
-                                                    <TouchableOpacity onPress={() => 
-                                                        {
+                                                        <TouchableOpacity onPress={() => 
+                                                            {
 
-                                                            Clipboard.setString(order_payment_recent.payment_va_or_code_or_link);
-                                                            this.dropdown.alertWithType('success', 'Copy Text Invoice', order_payment_recent.payment_va_or_code_or_link);
+                                                                Clipboard.setString(order_payment_recent.payment_va_or_code_or_link);
+                                                                this.dropdown.alertWithType('success', 'Copy Text Invoice', order_payment_recent.payment_va_or_code_or_link);
 
-                                                        }}>
-                                                    <Icon
-                                                        name="copy"
-                                                        size={14}
-                                                        style={{marginLeft:10}}
-                                                        
-                                                    />
-                                                    </TouchableOpacity>
+                                                            }}>
+                                                        <Icon
+                                                            name="copy"
+                                                            size={14}
+                                                            style={{marginLeft:10}}
+                                                            
+                                                        />
+                                                        </TouchableOpacity>
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
+                                           {
+
+                                            order_payment_recent.payment_sub_label=='Mandiri' ?
+                                            <View
+                                            style={{ flexDirection: "row", marginTop: 10 }}
+                                            >
+                                                <View style={{ flex: 1 }}>
+                                                    <Text caption1 bold>Penyedia Jasa</Text>
+                                                </View>
+                                                <View style={{ flex: 1, alignItems: "flex-end" }}>
+                                                    <View
+                                                        style={{flexDirection:'row'}}
+                                                    >
+                                                        <Text caption2 bold primaryColor>
+                                                        Midtrans (70012)
+                                                        </Text>
+
+                                                        
+                                                    </View>
+                                                </View>
+                                                </View>
+                                                :
+                                                <View />
+                                                }
+                                            </View>
                                         :<View />
                                         }
                                         
@@ -1721,6 +1713,12 @@ export default class Pembayaran extends Component {
     }
 
     checkHL(idOrder,idInvoice){
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"front/api/order/check_code_hl/"+idOrder;
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
 
         const {navigation}=this.props;
         var type='';
@@ -1747,7 +1745,6 @@ export default class Pembayaran extends Component {
         headers: myHeaders,
         redirect: 'follow'
         };
-        var url="https://masterdiskon.com/front/api/order/check_code_hl/"+idOrder;
         console.log('checkHL',url);
         fetch(url, requestOptions)
         .then(response => response.json())
@@ -1759,12 +1756,7 @@ export default class Pembayaran extends Component {
 
             }else{
                 
-                // var param={
-                //     url:'https://masterdiskon.com/front/order/evoucher/detail/'+idOrder,
-                //     title:'Evoucher Hotel',
-                //     subTitle:''
-                // }
-                // navigation.navigate("EvoucherPdf",{param:param})
+                
                 param.codeHL=result.codeHL;
                 this.props.navigation.navigate("Evoucher",
                                         {
@@ -1775,11 +1767,17 @@ export default class Pembayaran extends Component {
               
             }
         })
-        .catch(error => {alert('Kegagalan Respon Server')});
+        .catch(error => {alert('Kegagalan Respon Server checkHL')});
     }
 
 
     getCodeHL(idInvoice){
+        let config=this.state.configApi;
+        let baseUrl=config.apiBaseUrl;
+        let url=baseUrl+"front/product/hotel/byPassCodeHl/"+idInvoice;
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
         var type='';
         if(this.state.dataBooking[0].product=='Trip'){
             type='trip';
@@ -1806,7 +1804,7 @@ export default class Pembayaran extends Component {
         redirect: 'follow'
         };
 
-        fetch("https://masterdiskon.com/front/product/hotel/byPassCodeHl/"+idInvoice, requestOptions)
+        fetch(url, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log('getCodeHL',JSON.stringify(result));
@@ -1826,6 +1824,12 @@ export default class Pembayaran extends Component {
     }
 
     showFormCancel(){
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"api/hotel/Hotelinx/getCheckHotelCancellationCharges/app";
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
         var id_order=this.state.id_order;
         var myHeaders = new Headers();
         myHeaders.append("Cookie", "ci_session=f16dtrsomtfqmusdvjgqs79f4u07f8u5");
@@ -1840,7 +1844,7 @@ export default class Pembayaran extends Component {
         redirect: 'follow'
         };
 
-        fetch("https://masterdiskon.com/api/hotel/Hotelinx/getCheckHotelCancellationCharges/app", requestOptions)
+        fetch(url, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log('keyCancel',JSON.stringify(result));
@@ -1860,9 +1864,17 @@ export default class Pembayaran extends Component {
     }
 
     processCancel(){
+        const {navigation}=this.props;
         var id_order=this.state.id_order;
         var reason=this.state.reason;
-        const {navigation}=this.props;
+
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"api/hotel/Hotelinx/getCancelBooking/app";
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+
         console.log('id_order',id_order);
         console.log('reason',reason);
         var myHeaders = new Headers();
@@ -1879,7 +1891,7 @@ export default class Pembayaran extends Component {
         redirect: 'follow'
         };
 
-        fetch("https://masterdiskon.com/api/hotel/Hotelinx/getCancelBooking/app", requestOptions)
+        fetch(url, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log('processCancel',JSON.stringify(result));
@@ -2186,72 +2198,6 @@ export default class Pembayaran extends Component {
     // }
 
     
-    getDataDashboard(){
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                
-                this.setState({ loading_dashboard: true }, () => {
-
-
-                var url=config.baseUrl;
-                var path=config.dashboard.dir;
-
-
-                        var myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        var requestOptions = {
-                        method: 'POST',
-                        headers: myHeaders,
-                        body:  JSON.stringify(),
-                        redirect: 'follow'
-                        };
-
-                        fetch(url+path, requestOptions)
-                        .then(response => response.json())
-                        .then(result => {
-
-
-                            this.setState({loading_dashboard:false});
-                            var listdata_product_hotel_package_room_promo=result.list_product_hotel_package_room_promo;
-                            var listdata_product_hotel_package_buy_now_stay_later=result.list_product_hotel_package_paynow_stay_later;
-                            var listdata_product_activities=result.list_product_activities;
-                            var listdata_product_trip=result.list_product_trip; 
-
-                            var list_hotel_package_city=result.list_hotel_package_city;
-                            var listdata_category_hotel_package=result.form_hotel_category;
-                            var listdata_slider=result.slider;
-
-                            var more_product_hotel_package_room_promo=result.more_product_hotel_package_room_promo;
-                            var more_product_hotel_package_buy_now_stay_later=result.more_product_hotel_package_buy_now_stay_later;
-                            var more_product_activities=result.more_product_activities;
-                            var more_product_trip=result.more_product_trip;
-                            var more_hotel_package_city=result.more_hotel_package_city;
-                            
-
-                            this.setState({listdata_product_hotel_package_room_promo:listdata_product_hotel_package_room_promo})
-                            this.setState({listdata_product_hotel_package_buy_now_stay_later:listdata_product_hotel_package_buy_now_stay_later})
-                            this.setState({listdata_product_activities:listdata_product_activities});
-                            this.setState({listdata_product_trip:listdata_product_trip});
-
-                            this.setState({more_product_hotel_package_room_promo:more_product_hotel_package_room_promo})
-                            this.setState({more_product_hotel_package_buy_now_stay_later:more_product_hotel_package_buy_now_stay_later})
-                            this.setState({more_product_activities:more_product_activities});
-                            this.setState({more_product_trip:more_product_trip});
-                            this.setState({more_hotel_package_city:more_hotel_package_city});
-
-                            this.setState({list_hotel_package_city:list_hotel_package_city});
-                            this.setState({listdata_category_hotel_package:listdata_category_hotel_package});
-                            this.setState({listdata_slider:listdata_slider});
-                            
-
-                        })
-                        .catch(error => {alert('Kegagalan Respon Server')});
-                });
-
-            }
-        });
-    }
 
     
     
@@ -2419,8 +2365,6 @@ export default class Pembayaran extends Component {
     componentDidMount(){
         const {navigation} = this.props;
         this.setState({ loading_spinner: true });
-        //this.getDataDashboard();
-        //this.fetch();
         navigation.addListener ('willFocus', () =>{
             this.setState({ loading_spinner: true });
             this.setState({ loading_evoucher: true });
@@ -2432,8 +2376,15 @@ export default class Pembayaran extends Component {
     }
 
     getCheckCancel(){
-        const {config,id_order,id_user} =this.state;
+        const {id_order,id_user} =this.state;
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+'api/hotel/Hotelinx/getBookingDetail/app';
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlssgetCheckCancel',url,id_order);
+        
         this.setState({ loadCancel: true }, () => {
+            
             var myHeaders = new Headers();
             myHeaders.append("Cookie", "ci_session=n8pbg26jcb13lnqi40e99gek5sujs8he");
 
@@ -2447,9 +2398,10 @@ export default class Pembayaran extends Component {
             redirect: 'follow'
             };
 
-            fetch("https://masterdiskon.com/api/hotel/Hotelinx/getBookingDetail/app", requestOptions)
+            fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
+                console.log('resultgetCheckCancel',JSON.stringify(result));
                 var cancelPrice=result.informasiPembatalan[0].CancellationPrice;
                 if(cancelPrice != 0){
                     var enableCancel=false;
@@ -2465,12 +2417,20 @@ export default class Pembayaran extends Component {
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
-                //alert('Kegagalan Respon Server');
+                //alert('Kegagalan Respon Server getCheckCancel');
             });
         });
     }
 
     getCodeHotelLinx(id){
+
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+'front/product/hotel/getCodeHL';
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+
         var myHeaders = new Headers();
         myHeaders.append("Cookie", "ci_session=ilba585ua0c2rl442pmjs1osqdpmm5re");
 
@@ -2484,7 +2444,7 @@ export default class Pembayaran extends Component {
         redirect: 'follow'
         };
 
-        fetch("https://masterdiskon.com/front/product/hotel/getCodeHL", requestOptions)
+        fetch(url, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log('resultCodeHotelLinx',JSON.stringify(result));
@@ -2492,19 +2452,25 @@ export default class Pembayaran extends Component {
         })
         .catch(error => {
                 console.log(JSON.stringify(error));
-                alert('Kegagalan Respon Server');
+                alert('Kegagalan Respon Server getCodeHotelLinx');
             });
 
     }
 
-    getStatusPayment(){
 
-    }
 
     fetch(){
-        const {config,id_order,id_user} =this.state;
-        var url=config.baseUrl;
-        var path=config.user_order.dir;
+        const {id_order,id_user} =this.state;
+
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"front/api/order/get_booking_history";
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+
+        //var url=config.baseUrl;
+        // path=config.user_order.dir;
         
         var data={"id":id_user,"id_order":id_order,"id_order_status":"","product":""}
         var parameter={"param":data}
@@ -2522,11 +2488,10 @@ export default class Pembayaran extends Component {
               }
 
               
-            console.log('get_booking_historys_param',url+path,parameter);
-            fetch(url+path, param)
+            fetch(url, param)
             .then(response => response.json())
             .then(result => {
-                console.log('result',JSON.stringify(result));
+                console.log('resultPembayaran',JSON.stringify(result));
                 var dataBooking=result;
                             
                            
@@ -2535,9 +2500,11 @@ export default class Pembayaran extends Component {
                             //this.cekStatusMidtrans(dataBooking[0].order_payment_recent.id_invoice,false);
                             var order_status=dataBooking[0].order_status.order_status_slug;
                             var product=dataBooking[0].product;
+                            //alert(dataBooking[0]['total_price']);
+                            this.getPaymentMethod(dataBooking[0]['total_price']);
                             if(product=='Flight' && order_status=='complete'){
                                 var order_code=dataBooking[0].aero_orderid;
-                                this.checkBooking(order_code);
+                                //this.checkBooking(order_code);
                             }else{
                                 this.setState({ loading_spinner: false });
                                 this.setState({loading_evoucher:false});
@@ -2546,7 +2513,7 @@ export default class Pembayaran extends Component {
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
-                alert('Kegagalan Respon Server');
+                alert('Kegagalan Respon Server fetch');
             });
 
 
@@ -2554,73 +2521,7 @@ export default class Pembayaran extends Component {
     }
     
     
-    checkBooking(order_code){
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                var access_token=config.token;
-                var url=config.aeroUrl;
-                var path='crm/MyOrder/v3/'+order_code;
-
-                var myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/json");
-                myHeaders.append("Authorization", "Bearer "+access_token);
-
-
-                var raw = JSON.stringify();
-                var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-                };
-                console.log(url+path);
-
-                fetch(url+path, requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    this.setState({ loading_spinner: false });
-                    this.setState({loading_evoucher:false});
-                    console.log('checkBooking',JSON.stringify(result));
-                    this.setState({dataBookingAero:result.data});
-                                
-                    var order_id_aero=result.data.order_id;
-                    var dataDeparture=result.data.orders[0].items[0].departure;
-                    var pnrDeparture=result.data.orders[0].items[0].departure.pnr;
-                    
-                    this.setState({order_id_aero:order_id_aero});
-                    
-                    this.setState({dataDeparture:dataDeparture});
-                    this.setState({pnrDeparture:pnrDeparture});
-                    
-                    var dataReturns=result.data.orders[0].items[0].returns;
-                    this.setState({dataReturns:dataReturns});
-
-                    if(dataReturns != null){
-                        var pnrReturns=result.data.orders[0].items[0].returns.pnr;
-                        this.setState({pnrReturns:pnrReturns});
-                    }
-    
-                })
-                .catch(error => {
-                    console.log(JSON.stringify(error));
-                    alert('Kegagalan Respon Server');
-                });
-
-                
-
-                fetch(url+path, requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                })
-                .catch(error => {
-                    console.log(JSON.stringify(error));
-                    alert('Kegagalan Respon Server');
-                });
-            }
-        });
-    }
-    
+   
 
     render() {
         const { navigation} = this.props;
@@ -2655,7 +2556,7 @@ export default class Pembayaran extends Component {
                 renderLeft={() => {
                     return (
                         <Icon
-                            name="arrow-left"
+                            name="md-arrow-back"
                             size={20}
                             color={BaseColor.whiteColor}
                         />
@@ -2664,7 +2565,7 @@ export default class Pembayaran extends Component {
                 renderRight={() => {
                     return (
                         <Icon
-                            name="sync-alt"
+                            name="reload-outline"
                             size={20}
                             color={BaseColor.whiteColor}
                         />

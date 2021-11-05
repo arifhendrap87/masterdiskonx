@@ -42,8 +42,28 @@ import BusItem from "./BusItem";
 import BusPlan from "./BusPlan";
 import EventItem from "./EventItem";
 import EventCard from "./EventCard";
+import FeedItem from "./FeedItem";
+import Kunjungan from "./Kunjungan";
+
+import HeaderHome from "./HeaderHome";
+import CardCustom from "./CardCustom";
+import CardCustomTitle from "./CardCustomTitle";
+import ProductListCommon from "./ProductList/Common.js";
+import ProductListBeauthHealth from "./ProductList/BeautyHealth.js";
+import ListProductMenu from "./ListProductMenu";
+import ListProductTag from "./ListProductTag";
+
 
 export {
+    HeaderHome,
+    CardCustomTitle,
+    CardCustom,
+    ProductListCommon,
+    ProductListBeauthHealth,
+    ListProductMenu,
+    ListProductTag,
+
+    FeedItem,
     BusPlan,
     BusItem,
     DatePicker,
@@ -78,6 +98,7 @@ export {
     RateDetail,
     PostListItem,
     Coupon,
+    Kunjungan,
     PostItem,
     Card,
     TourItem,

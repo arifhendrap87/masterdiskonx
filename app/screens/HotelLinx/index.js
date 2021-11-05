@@ -2,24 +2,21 @@ import React, { Component } from "react";
 import { ProgressBarAndroid, ProgressViewIOS,TouchableOpacity,FlatList, RefreshControl, View, Animated,ScrollView,StyleSheet,BackHandler,TouchableWithoutFeedback,Dimensions,ActivityIndicator} from "react-native";
 import { BaseStyle, BaseColor } from "@config";
 import { Header, SafeAreaView, Icon, HotelItem,Text,Button} from "@components";
-// import styles from "./styles";
 import * as Utils from "@utils";
 import {AsyncStorage} from 'react-native';
 import CardCustom from "../../components/CardCustom";
-import FilterSortHotelLinx from "../../components/FilterSortHotelLinx";
 import FilterSortHotelLinxBottom from "../../components/FilterSortHotelLinxBottom";
-import CardCustomTitle from "../../components/CardCustomTitle";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp
   } from "react-native-responsive-screen";
-  import AnimatedLoader from "react-native-animated-loader";
   import DropdownAlert from 'react-native-dropdownalert';
-  import { CirclesLoader, PulseLoader, TextLoader, DotsLoader} from 'react-native-indicator';
 
 
 // Load sample data
-import {DataLoading,DataConfig,DataHotelPackage,DataTrip,DataHotelLinx} from "@data";
+import {
+    DataConfig,
+    DataHotelLinx} from "@data";
 import {
     Placeholder,
     PlaceholderMedia,
@@ -105,7 +102,10 @@ export default class HotelLinx extends Component {
 
             
         };
+
         this.getConfig();
+        this.getConfigApi();
+        this.getSession();
         this.filterProcess = this.filterProcess.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onFilter = this.onFilter.bind(this);
@@ -126,7 +126,6 @@ export default class HotelLinx extends Component {
     }
     
     handleBackButtonClick() {
-        //this.setState({abort:true});
         this.props.navigation.goBack();
         return true;
     }
@@ -203,17 +202,17 @@ export default class HotelLinx extends Component {
                 this.setState({param:param});
               
             }
-
             setTimeout(() => {
-                if(param.typeSearch != 'area'){
-                    this.getProductHotelList(param);
-                }else{
-                    this.getProductHotelListPerArea(param);
-                }
+                this.getProductHotelList(param);
 
-                  
-                
             }, 50);
+            // setTimeout(() => {
+            //     if(param.typeSearch != 'area'){
+            //         this.getProductHotelList(param);
+            //     }else{
+            //         this.getProductHotelListPerArea(param);
+            //     }
+            // }, 50);
         
     }
     
@@ -233,7 +232,7 @@ export default class HotelLinx extends Component {
                     param.ratingH="";
                     param.rHotel="";
                     param.srcdata="";
-                    param.minimbudget="40000";
+                    param.minimbudget="0";
                     param.maximbudget="15000000";
                     param.shortData="";
                     param.startkotak="0";
@@ -262,18 +261,22 @@ export default class HotelLinx extends Component {
        
     
         setTimeout(() => {
-            console.log('paramUpdate',JSON.stringify(param));
-            if(param.typeSearch != 'area'){
-                this.getProductHotelList(param);
-            }else{
-                this.getProductHotelListPerArea(param);
-            }
-            
+            this.getProductHotelList(param);
         }, 50);
 
 
     }
     
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                console.log('configApi',JSON.stringify(config));
+                this.setState({configApi:config});
+            }
+        });
+    }
+
     
     getConfig(){
         AsyncStorage.getItem('config', (error, result) => {
@@ -284,11 +287,28 @@ export default class HotelLinx extends Component {
             }
         });
     }
+
+     //memanggil session
+     getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                console.log('userSessions',JSON.stringify(userSession));
+
+                var id_user=userSession.id_user;
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.setState({login:true});
+            }
+        });
+    }
+    
+
+    
     
     
     getProductHotelLinxDetail(){
         const {param,paramOriginal}=this.state;
-        //this.setState({abort:true});
         const {config} =this.state;
         const {navigation}=this.props;
         const data={  
@@ -296,8 +316,17 @@ export default class HotelLinx extends Component {
         }
         const paramSearch={"param":data};
         this.setState({ loading_product_hotel_linx: true }, () => {
-            var url=config.baseUrl;
-            var path="front/api/product/product_hotel_linx_detail";
+
+            let config=this.state.configApi;
+            let baseUrl=config.baseUrl;
+            let url=baseUrl+"front/api/product/product_hotel_linx_detail";
+            console.log('configApi',JSON.stringify(config));
+            console.log('urlss',url);
+
+
+
+            // var url=config.baseUrl;
+            // var path="front/api/product/product_hotel_linx_detail";
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
@@ -309,14 +338,14 @@ export default class HotelLinx extends Component {
             body: raw,
             redirect: 'follow'
             };
-            
-            fetch(url+path, requestOptions)
+            fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
-                console.log('ProductDetail',JSON.stringify(result));
+                console.log('ProductDetailss',JSON.stringify(result));
                 this.setState({ progressBarProgress: 0.0 });
                 this.setState({ loading_product_hotel_linx: false });
                 param.city=result[0].product_place_id;
+                console.log('HotelLinxSS',JSON.stringify({param:param,paramOriginal:paramOriginal,product:result[0],product_type:'hotelLinx'}));
                 navigation.navigate("ProductDetail",{param:param,paramOriginal:paramOriginal,product:result[0],product_type:'hotelLinx'})
             })
             .catch(error => {
@@ -327,201 +356,54 @@ export default class HotelLinx extends Component {
         });
     }
 
+
+    reformatDate(dateStr)
+    {
+    dArr = dateStr.split("-");  // ex input "2010-01-18"
+    return dArr[2]+ "-" +dArr[1]+ "-" +dArr[0]; //ex out: "18/01/10"
+    }
+
     getProductHotelList(param){
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-           
-
-        const {currentPage}=this.state;
-        console.log('paramgetProductHotelList2',JSON.stringify(param));
-        console.log('tokenMDIgetProductHotelList2',JSON.stringify(config.tokenMDI));
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer "+config.tokenMDI);
-        myHeaders.append("Content-Type", "application/json");
-
-        
-
-        var paramUrl={
-            "page": currentPage,
-            "stringh_dewasa": param.Adults,
-            "children": param.Children,
-            "stringh_anak": param.stringChild,
-            "umurank": param.umurank=="" ? "0" : param.umurank,
-            "room": param.room,
-            "stringh_kamar": param.stringRoom,
-            "adultnchildparam4": param.adultnchildparam,
-            "NamaKota": "",
-            "citySeach": param.city,
-            "provinceid": param.province,
-            "paramdata": "provinsi"
-        }
-        console.log('paramUrl',JSON.stringify(paramUrl));
-        var raw = JSON.stringify(
-            paramUrl
-            );
-
-        var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-        };
-
-        fetch("https://api.masterdiskon.com/v1/product/hotel/hotellist", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-
-            //console.log('resultHotellListNew',JSON.stringify(result));
-
-            console.log('hotellist',JSON.stringify(result));
-            this.setState({loading_product_hotel_linx: false });
-            this.setState({listdata_product_hotel_linx: this.rebuild(result.data)});
-            this.setState({arrayPrice: this.rebuildArrayPrice(result.data)});
-            this.setState({listdata_product_hotel_linx_original: this.rebuild(result.data)});            
-            this.setState({banyakData:result.meta.total});
-            //this.setState({banyakPage:Math.ceil(parseInt(result.banyakData)/parseInt(10))})
-            this.setState({banyakPage:result.meta.total_page})
-
-        })
-        .catch(error => {
-            this.setState({loading_product_hotel_linx: false });
-            this.setState({listdata_product_hotel_linx:[]});
-        });
-
-            }
-        });
-
-    }
-
-
-
-    getProductHotelList2(param){
-        const {config} =this.state;
-        this.setState({progressBarProgress:0.0});
-        console.log('getProductHotelLinx2param',JSON.stringify(param));
+        console.log('paramgetProductHotelList',JSON.stringify(param));
         this.setState({ loading_product_hotel_linx: true }, () => {
-        //this.setState({ abort: true }, () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Cookie", "ci_session=jjprqnbtcsfbu89nd6ih0tdvmhqd0qia");
-        var paramProduct={"param":{
-            "city": param.city.toString(),
-            "checkin": param.checkin,
-            "checkout": param.checkout,
-            "adults": param.adults,
-            "child": param.child,
-            "room": param.room,
-            "newIdSlide": "",
-            "umurank": param.umurank,
-            "stringumurank": param.stringumurank,
-            "stringAdults": param.stringAdults,
-            "stringChild": param.stringChild,
-            "stringRoom": param.stringRoom,
-            
-    
-            "ratingH": param.ratingH,//1:3 --- rating
-            "rHotel": param.rHotel,//true atau kosong --- rekomendasi
-            "srcdata": param.srcdata,//string
-            "minimbudget": param.minimbudget,
-            "maximbudget": param.maximbudget,
-            
-           
-            "startkotak": param.startkotak,//->1:11/21
-            "shortData": param.shortData,//asc -> harga terendah: desc -> harga tertinggi
+          
+            let config=this.state.configApi;
+            let baseUrl=config.apiBaseUrl;
+            let url=baseUrl+'product/hotel/hllist';
+            console.log('configApi',JSON.stringify(config));
+            console.log('urlss',url);
+             
 
-        }}
-        console.log('paramProduct',JSON.stringify(paramProduct));
+            // let config=this.state.configApi;
+            // let baseUrl=config.baseUrl;
 
-
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Cookie", "ci_session=1s0j9nb8gegvpcmnguagmrni0uqu4uec");
-
-        var raw = JSON.stringify(paramProduct);
-
-        var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-        };
-
-            fetch("https://masterdiskon.com/front/product/hotel/hotellist/app", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-
-                console.log('hotellist',JSON.stringify(result));
-                this.setState({loading_product_hotel_linx: false });
-                this.setState({listdata_product_hotel_linx: this.rebuild(result.dataHotel)});
-                this.setState({arrayPrice: this.rebuildArrayPrice(result.dataHotel)});
-                this.setState({listdata_product_hotel_linx_original: this.rebuild(result.dataHotel)});            
-                this.setState({banyakData:result.banyakData});
-                this.setState({banyakPage:Math.ceil(parseInt(result.banyakData)/parseInt(10))})
-
-                
-
-                // this.setState({abort:false});
-                // setTimeout(() => {
-                //     console.log('abort',this.state.abort);
-                //     this.getPrice(result.arrPrice);
-                // }, 50);
-            })
-            .catch(error => {
-                this.setState({loading_product_hotel_linx: false });
-                this.setState({listdata_product_hotel_linx:[]});
-            });
-        //});
-
-    });
-    }
-
-
-
-    getProductHotelListPerArea(param){
-        const {config} =this.state;
-        this.setState({progressBarProgress:0.0});
-        console.log('getProductHotelLinx2param',JSON.stringify(param));
-        this.setState({ loading_product_hotel_linx: true }, () => {
-        //this.setState({ abort: true }, () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Cookie", "ci_session=jjprqnbtcsfbu89nd6ih0tdvmhqd0qia");
-        var paramProduct={"param":{
-            "area":param.area.trim(),
-            "country":param.country.trim(),
-            //"city": param.city.toString(),
-            "checkin": param.checkin,
-            "checkout": param.checkout,
-            "adults": param.adults,
-            "child": param.child,
-            "room": param.room,
-            "newIdSlide": "",
-            "umurank": param.umurank,
-            "stringumurank": param.stringumurank,
-            "stringAdults": param.stringAdults,
-            "stringChild": param.stringChild,
-            "stringRoom": param.stringRoom,
-            
-    
-            "rating": param.ratingH,//1:3 --- rating
-            "rHotel": param.rHotel,//true atau kosong --- rekomendasi
-            "srcdata": param.srcdata,//string
-            "minimbudget": param.minimbudget,
-            "maximbudget": param.maximbudget,
-            
-           
-            "startkotak": param.startkotak,//->1:11/21
-            "shortData": param.shortData,//asc -> harga terendah: desc -> harga tertinggi
-            "hotelid":param.hotelid
-
-        }}
-        console.log('paramProduct',JSON.stringify(paramProduct));
-
-
+            console.log('config.apiToken',config.apiToken);
             var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer "+config.apiToken);
             myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Cookie", "ci_session=1s0j9nb8gegvpcmnguagmrni0uqu4uec");
 
-            var raw = JSON.stringify(paramProduct);
+            const {currentPage}=this.state;
+           
+            var raw = JSON.stringify(
+                {
+                "page":currentPage,
+                "minimbudget":param.minimbudget,
+                "maximbudget":param.maximbudget,
+                "rHotel":false,
+                "ratingH":param.ratingH,
+                "orderType":param.shortData,
+                "search":param.srcdata,
+                "checkin":this.reformatDate(param.tglAwal),
+                "checkout":this.reformatDate(param.tglAkhir),
+                "adult":param.stringAdults,
+                "children":param.stringChild,
+                "string_adult":param.stringAdults,
+                "stringh_anak":param.stringChild,
+                "umurank":param.umurank.replace(",","_"),
+                "room":param.room,
+                "citySeach":param.city
+            });
+            console.log('paramhllist',raw);
 
             var requestOptions = {
             method: 'POST',
@@ -530,33 +412,35 @@ export default class HotelLinx extends Component {
             redirect: 'follow'
             };
 
-            fetch("https://masterdiskon.com/front/product/hotel/hotellistPerArea/app", requestOptions)
+            fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
-
-                console.log('getProductHotelListPerArea',JSON.stringify(result));
+                console.log('resultgetProductHotelList2',JSON.stringify(result));
+                if(result.success==true){
+                //console.log('resultgetProductHotelList2',JSON.stringify(result));
                 this.setState({loading_product_hotel_linx: false });
-                this.setState({listdata_product_hotel_linx: this.rebuild(result.dataHotel)});
-                this.setState({arrayPrice: this.rebuildArrayPrice(result.dataHotel)});
-                this.setState({listdata_product_hotel_linx_original: this.rebuild(result.dataHotel)});            
-                this.setState({banyakData:result.banyakData});
-                this.setState({banyakPage:Math.ceil(parseInt(result.banyakData)/parseInt(10))})
+                this.setState({listdata_product_hotel_linx: this.rebuild(result.data)});
+                this.setState({arrayPrice: this.rebuildArrayPrice(result.data)});
+                this.setState({listdata_product_hotel_linx_original: this.rebuild(result.data)});            
+                this.setState({banyakData:result.meta.total});
+                this.setState({banyakPage:result.meta.total_page})
+                }else{
+                    this.setState({loading_product_hotel_linx: false });
+                this.setState({listdata_product_hotel_linx: []});
+                this.setState({arrayPrice: []});
+                this.setState({listdata_product_hotel_linx_original: []});            
+                this.setState({banyakData:0});
+                this.setState({banyakPage:0})
 
-                
+                }
 
-                // this.setState({abort:false});
-                // setTimeout(() => {
-                //     console.log('abort',this.state.abort);
-                //     this.getPrice(result.arrPrice);
-                // }, 50);
             })
             .catch(error => {
-                this.setState({loading_product_hotel_linx: false });
-                this.setState({listdata_product_hotel_linx:[]});
+               
             });
-        //});
+           
+        });
 
-    });
     }
 
 
@@ -640,28 +524,11 @@ export default class HotelLinx extends Component {
     componentDidMount() {
             let {param} = this.state;
             const {navigation} = this.props;
-            //this.getProductHotelList2(param);
-            if(param.typeSearch != 'area'){
-                this.getProductHotelList(param);
-                //this.getProductHotelList(param);
-            }else{
-                this.getProductHotelListPerArea(param);
-            }
+            console.log('parammxxx',JSON.stringify(param));
 
-            // navigation.addListener ('didFocus', () =>{
-                
-                
-            //         if(param.typeSearch != 'area'){
-            //             this.getProductHotelList(param);
-            //         }else{
-            //             this.getProductHotelListPerArea(param);
-            //         }
-                
-            // });
-            
-            
-            
-           
+            setTimeout(() => {
+                this.getProductHotelList(param);
+            }, 20);
     }
 
     renderItem(item,index) {
@@ -676,32 +543,6 @@ export default class HotelLinx extends Component {
             item=DataHotelLinx[0];
         }
         return (
-            
-
-            // <CardCustom
-            //                                             propImage={{height:wp("30%"),url:item.gambar}}
-            //                                             propInframe={{top:item.cityname,bottom:''}}
-            //                                             propTitle={{text:item.hotelname}}
-            //                                             propDesc={{text:""}}
-            //                                             propPrice={{price:this.state.loading_product_hotel_linx == true ? 'loading' : this.state.arrayPrice[index].hargaminPrice,startFrom:true}}
-            //                                             propPriceCoret={{price:'',discount:'',discountView:true}}
-
-            //                                             propStar={{rating:item.rating,enabled:true}}
-            //                                             propLeftRight={{left:item.filter_recommended,right:''}}
-            //                                             onPress={() =>
-            //                                                 {
-            //                                                     param.hotelid=item.hotelid;
-            //                                                     this.getProductHotelLinxDetail();
-            //                                                 }
-            //                                             }
-            //                                             loading={this.state.loading_product_hotel_linx}
-            //                                             propOther={{inFrame:true,horizontal:false,width:(width - 50) / 2}}
-
-            //                                             style={[
-            //                                                 index % 2 ? { marginLeft: 10 } : {}
-            //                                             ]
-            //                                             }
-            //                                         />
 
             <View style={{flexDirection:'row',flex:1,backgroundColor:BaseColor.whiteColor,justifyContent:'space-between',marginTop:10}}>
                 <View style={{flex:3,padding:10}}>
@@ -714,38 +555,6 @@ export default class HotelLinx extends Component {
                 </View>
                 
             </View>
-                                               
-                                                    // <CardCustom
-                                                    //     propImage={{height:wp("20%"),url:item.gambar}}
-                                                    //     propTitle={{text:item.hotelname}}
-                                                    //     propDesc={{text:''}}
-                                                    //     propPrice={{price:this.state.loading_product_hotel_linx == true ? 'loading' : this.state.arrayPrice[index].hargaminPrice,startFrom:true}}
-                                                    //     propPriceCoret={{price:'',discount:'',discountView:true}}
-
-                                                    //     propInframe={{top:item.cityname,bottom:''}}
-                                                    //     propTitle={{text:item.hotelname}}
-                                                    //     propDesc={{text:""}}
-                                                    //     propStar={{rating:item.rating,enabled:true}}
-                                                    //     propLeftRight={{left:item.filter_recommended,right:''}}
-                                                    //     onPress={() =>{ 
-                                                    //         param.hotelid=item.hotelid;
-                                                    //         this.getProductHotelLinxDetail();
-                                                    //     }
-                                                           
-                                                    //     }
-                                                    //     loading={this.state.loading_product_hotel_linx}
-                                                    //     propOther={{inFrame:true,horizontal:false,width:'100%'}}
-                                                    //     propIsCampaign={false}
-                                                    //     propPoint={0}       
-
-                                                    //     style={
-                                                    //     [
-                                                    //         {marginBottom:10}
-                                                    //     ]
-                                                        
-                                                    //     }
-                                                    //     sideway={true}
-                                                    // />
 
         );
     }
@@ -766,44 +575,7 @@ export default class HotelLinx extends Component {
                                     this.state.listdata_product_hotel_linx.length != 0 ?
                                     <View>
                                         <View style={{marginHorizontal:20,marginBottom:5}}>
-                                        {/* {
-                                            ( Platform.OS === 'android' )
-                                            ?
-                                            ( <ProgressBarAndroid progress = { this.state.progressBarProgress } styleAttr = "Horizontal" indeterminate = { false } /> )
-                                            :
-                                            ( <ProgressViewIOS progress = { this.state.progressBarProgress } /> )
-                                        }
-                                            <Text caption1 style = { styles.text }>Update harga terbaru : { this.state.progressBarProgress * 100 }%</Text> */}
                                          </View>
-                                        {/* <FlatList
-                                                numColumns={2}
-                                                columnWrapperStyle={{
-                                                    flex: 1,
-                                                    justifyContent: 'space-evenly',
-                                                    marginBottom:10
-                                                }}
-                                                style={{marginHorizontal:20}}
-                                                data={this.state.listdata_product_hotel_linx}
-                                                showsHorizontalScrollIndicator={false}
-                                                keyExtractor={(item, index) => item.id}
-
-                                                removeClippedSubviews={true} // Unmount components when outside of window 
-                                                initialNumToRender={2} // Reduce initial render amount
-                                                maxToRenderPerBatch={1} // Reduce number in each render batch
-                                                maxToRenderPerBatch={1000} // Increase time between renders
-                                                windowSize={7} // Reduce the window size
-
-                                                getItemLayout={(item, index) => (
-                                                    {length: 70, offset: 70 * index, index}
-                                                  )}
-                                                //   onScrollEndDrag={() => ////console.log("end")}
-                                                //   onScrollBeginDrag={() => ////console.log("start")}
-                                                  //onScroll={(e) => ////console.log(e.nativeEvent.contentOffset.y)}
-                                                renderItem={({ item,index }) => this.renderItem(item,index)}
-
-
-                                                
-                                            /> */}
 
 
                                             <FlatList
@@ -824,7 +596,7 @@ export default class HotelLinx extends Component {
                                                 renderItem={({ item,index }) => (
 
                                                     <CardCustom
-                                                        propImage={{height:wp("30%"),url:item.gambar}}
+                                                        propImage={{height:wp("25%"),url:item.gambar != "" ? item.gambar : 'https://masterdiskon.com/assets/images/image-not-found.png'}}
                                                         propTitle={{text:item.hotelname}}
                                                         propPrice={{price:this.state.loading_product_hotel_linx == true ? 'loading' : this.state.arrayPrice[index].hargaminPrice,startFrom:true}}
                                                         propPriceCoret={{price:'',discount:'',discountView:true}}
@@ -855,30 +627,6 @@ export default class HotelLinx extends Component {
                                                         sideway={true}
                                                     />
 
-                                                    // <CardCustom
-                                                    //     propImage={{height:wp("30%"),url:item.gambar}}
-                                                    //     propInframe={{top:item.cityname,bottom:''}}
-                                                    //     propTitle={{text:item.hotelname}}
-                                                    //     propDesc={{text:""}}
-                                                    //     propPrice={{price:this.state.loading_product_hotel_linx == true ? 'loading' : this.state.arrayPrice[index].hargaminPrice,startFrom:true}}
-                                                    //     propPriceCoret={{price:'',discount:'',discountView:true}}
-
-                                                    //     propStar={{rating:item.rating,enabled:true}}
-                                                    //     propLeftRight={{left:item.filter_recommended,right:''}}
-                                                    //     onPress={() =>
-                                                    //         {
-                                                    //             param.hotelid=item.hotelid;
-                                                    //             this.getProductHotelLinxDetail();
-                                                    //         }
-                                                    //     }
-                                                    //     loading={this.state.loading_product_hotel_linx}
-                                                    //     propOther={{inFrame:true,horizontal:false,width:(width - 50) / 2}}
-
-                                                    //     style={[
-                                                    //         index % 2 ? { marginLeft: 10 } : {}
-                                                    //     ]
-                                                    //     }
-                                                    // />
                                                 )}
 
                                                
@@ -946,7 +694,7 @@ export default class HotelLinx extends Component {
             >
                 
                     <View style={{flex:1,flexDirection:'column'}}>
-                        <View style={{flexDirection:'row',flex:0.05,backgroundColor:BaseColor.primaryColor,}}>
+                        <View style={{flexDirection:'row',flex:0.05,backgroundColor:BaseColor.primaryColor,paddingVertical:5}}>
                             <View style={{flex:2,justifyContent: 'center'}}>
                                 <TouchableOpacity 
                                         onPress={() => 
@@ -956,7 +704,7 @@ export default class HotelLinx extends Component {
                                             style={{marginLeft:20}}
                                         >
                                     <Icon
-                                    name="arrow-left"
+                                    name="md-arrow-back"
                                     size={20}
                                     color={BaseColor.whiteColor}
                                     style={{}}
@@ -964,6 +712,7 @@ export default class HotelLinx extends Component {
                                     </TouchableOpacity>
 
                             </View>
+                            
                             <View style={{flex:8}}>
                                 <View style={{paddingBottom:5,justifyContent:'center',alignItems:'center'}}>
                                     <Text caption1 whiteColor>{param.searchTitle} - {param.room} kamar, {param.jmlTamu} tamu</Text>
@@ -981,7 +730,7 @@ export default class HotelLinx extends Component {
                                                 }}
                                             >
                                         <Icon
-                                        name="edit"
+                                        name="create-outline"
                                         size={14}
                                         color={BaseColor.secondColor}
                                         style={{marginLeft:10}}
@@ -993,6 +742,14 @@ export default class HotelLinx extends Component {
                             </View>
                             <View style={{flex:2}} />
                         </View>
+                        <View style={{flexDirection:'row',backgroundColor:BaseColor.secondColor}}>
+                            <View style={{flex:1}}>
+                                <View style={{paddingBottom:5,paddingTop:5,justifyContent:'center',alignItems:'center'}}>
+                                            <Text caption1 bold>Silahkan Pilih Hotels</Text>                                       
+                                </View>
+                             </View>
+                        </View>
+
                         <ScrollView
                                 onScroll={Animated.event([
                                     {
@@ -1022,20 +779,6 @@ export default class HotelLinx extends Component {
                                 {this.renderItem(listdata_product_hotel_linx[1],0)}
                                 </View>
 
-                                {/* <View style={{marginHorizontal:20,flex:1,flexDirection:'row'}}>
-                                {this.renderItem(listdata_product_hotel_linx[0],0)}
-                                {this.renderItem(listdata_product_hotel_linx[0],1)}
-                                </View>
-
-                                <View style={{marginHorizontal:20,flex:1,flexDirection:'row'}}>
-                                {this.renderItem(listdata_product_hotel_linx[0],0)}
-                                {this.renderItem(listdata_product_hotel_linx[0],1)}
-                                </View>
-
-                                <View style={{marginHorizontal:20,flex:1,flexDirection:'row'}}>
-                                {this.renderItem(listdata_product_hotel_linx[0],0)}
-                                {this.renderItem(listdata_product_hotel_linx[0],1)}
-                                </View> */}
                             </View>
                             :
                             <View style={{flex:1}}>
@@ -1044,6 +787,7 @@ export default class HotelLinx extends Component {
                             </View>
                         }
                         </ScrollView>
+                        
                         <FilterSortHotelLinxBottom
                             onFilter={this.onFilter}
                             onClear={this.onClear}

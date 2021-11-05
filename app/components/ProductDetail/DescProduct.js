@@ -115,7 +115,7 @@ export default class DescProduct extends Component {
 
                             }}>
                             <Icon
-                                    name="tag"
+                                    name="pricetag-outline"
                                     color={BaseColor.lightPrimaryColor}
                                     size={20}
                                     style={{marginRight:5}}
@@ -135,7 +135,7 @@ export default class DescProduct extends Component {
 
                             }}>
                             <Icon
-                                    name="share-alt"
+                                    name="share-social-outline"
                                     color={BaseColor.lightPrimaryColor}
                                     size={20}
                                     style={{marginRight:5}}

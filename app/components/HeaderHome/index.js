@@ -67,11 +67,11 @@ export default class HeaderHome extends Component {
         <Image
       source={Images.logo_masdis}
       style={{
-        height: 255/7,
-        width: 255/7,
-        
         // height: 255/7,
-        // width: 600/7
+        // width: 255/7,
+        
+        height: 255/7,
+        width: 600/7
         }}
       />                
         {/* <Text title2 style={{color:BaseColor.primaryColor}}>{title}</Text> */}

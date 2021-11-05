@@ -2108,7 +2108,7 @@ export default class Pembayaran extends Component {
                 renderLeft={() => {
                     return (
                         <Icon
-                            name="arrow-left"
+                            name="md-arrow-back"
                             size={20}
                             color={BaseColor.whiteColor}
                         />
@@ -2117,7 +2117,7 @@ export default class Pembayaran extends Component {
                 renderRight={() => {
                     return (
                         <Icon
-                            name="sync-alt"
+                            name="reload-outline"
                             size={20}
                             color={BaseColor.primaryColor}
                         />

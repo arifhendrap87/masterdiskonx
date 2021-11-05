@@ -11,11 +11,14 @@ import {
     Tag,
     Button,
     HelpBlock,
-    Coupon
+    Coupon,
+    Kunjungan
 } from "@components";
 import styles from "./styles";
 import CardCustomProfile from "../../components/CardCustomProfile";
 import NotYetLogin from "../../components/NotYetLogin";
+import AnimatedLoader from "react-native-animated-loader";
+import {DataMasterDiskon} from "@data";
 import {
     GoogleSignin,
     GoogleSigninButton,
@@ -31,9 +34,18 @@ import appleAuth, {
   import CardCustomTitle from "../../components/CardCustomTitle";
   import CouponCard from "../../components/CouponCard";
 // Load sample data
-import { UserData, HotelData, TourData,CouponsData} from "@data";
+import { UserData, HotelData, TourData,CouponsData,DataKunjungan} from "@data";
 import ImagePicker from 'react-native-image-crop-picker';
 import DropdownAlert from 'react-native-dropdownalert';
+import {GetSocialUI, InvitesView} from 'getsocial-react-native-sdk';
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    Fade
+  } from "rn-placeholder";
+  import ProductListCommon from "../../components/ProductList/Common.js";
+
 
 //import Share from 'react-native-share';
 export default class Profile1 extends Component {
@@ -42,12 +54,13 @@ export default class Profile1 extends Component {
 
         // Temp data define
         this.state = {
-
+            DataMasterDiskon:DataMasterDiskon[0],
+            kunjungan:DataKunjungan,
             tours: TourData,
             hotels: HotelData,
             userData: UserData[0],
             listdata_customer:[{"key":1,"label":"Contact","old":"adult","fullname":"Mr arif pambudi","firstname":"arif","lastname":"pambudi","birthday":"","nationality":"Indonesia","passport_number":"","passport_country":"","passport_expire":"","phone":"79879879879","title":"Mr","email":"matadesaindotcom@gmail.com","nationality_id":"ID","nationality_phone_code":"62","passport_country_id":""}],
-            login:true,
+            login:false,
             userSession:{},
             modalVisible:false,
             avatar:Images.defaultAvatar,
@@ -65,14 +78,25 @@ export default class Profile1 extends Component {
                 },
             ],
             coupons: CouponsData,
-            loadingCoupon:true
+            loadingSpinner:true
 
         };
         this.updateParticipant = this.updateParticipant.bind(this);
         this.updateParticipantPassword = this.updateParticipantPassword.bind(this);
+        this.getConfigApi();
+        this.getConfig();
+        this.getSession();
     
     }
 
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
+    }
 
     getConfig(){    
         AsyncStorage.getItem('config', (error, result) => {
@@ -84,26 +108,73 @@ export default class Profile1 extends Component {
         
         });
     }
-    
-    
+
     getSession(){    
+        
         AsyncStorage.getItem('userSession', (error, result) => {
             if (result) {    
                 let userSession = JSON.parse(result);
-                console.log('getSession',userSession);
                 var id_user=userSession.id_user;
-                var avatar=userSession.avatar;
-
-                if(avatar != null){
-                    this.setState({avatar:{uri:avatar}});
-                }
-
+                
+                this.setState({login:true});
 
                 this.setState({id_user:id_user});
                 this.setState({userSession:userSession});
+
+
+
+                console.log('userSession',JSON.stringify(userSession));
+            }else{
+                this.setState({loadingSpinner:false});
+                console.log('sessionnull');
             }
         });
     }
+
+    getCoupon(){
+        const {login,userSession}=this.state;
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"front/api/product/coupon";
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+
+            var myHeaders = new Headers();
+            myHeaders.append("Accept", "application/json");
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Cookie", "ci_session=gur1sg8tu7micu8i028lqn1sa4tcaa5k");
+    
+            var raw="";
+            var param={"param":{"id_user":userSession.id_user}};
+            var raw = JSON.stringify(param);
+            console.log('paramCoupon',JSON.stringify(param));
+            
+    
+            var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+            };
+    
+            fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                this.setState({loadingSpinner:false});
+
+                console.log('resultCoupon',JSON.stringify(result));
+                this.setState({coupons:result.data});
+    
+            })
+            .catch(error => {
+                console.log(JSON.stringify(error));
+                alert('Kegagalan Respon Server getCoupon');
+            });
+    
+    
+    }
+
     
     onLogOut() {
         var loginVia=this.state.userSession.loginVia;
@@ -266,6 +337,7 @@ export default class Profile1 extends Component {
      }
 
      setUser(){
+        let {userSession} = this.state;
         let minDatePassport = new Date();
         minDatePassport = this.formatDateToString(minDatePassport);
         minDatePassport=minDatePassport;
@@ -282,9 +354,6 @@ export default class Profile1 extends Component {
         var def_email="email@gmail.com";
 
 
-        AsyncStorage.getItem('userSession', (error, result) => {
-            if (result) {  
-            let userSession = JSON.parse(result);
             var customer = [];
             for (var i=1; i<=1; i++) {
             var obj = {};
@@ -318,9 +387,7 @@ export default class Profile1 extends Component {
             }, 50);
 
             
-            }
-        });
-
+           
 
      }
 
@@ -393,32 +460,89 @@ export default class Profile1 extends Component {
 
     }
 
-     renderItem(item) {
+    renderItemKunjungan(item,index,loading) {
         const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-
+       
+        if(index==0){
+            var margin={ marginLeft: 0,marginRight:10 }
+        }else{
+            var margin={ marginRight: 10 }
+        }
         return (
-            <Coupon
-                style={{
-                    marginVertical: 0,
-                    marginRight: 10,
-                    width:200
-                }}
-                name={item.coupon_code}
-                code={item.coupon_code}
-                description={item.coupon_code}
-                valid={this.convertDateText(item.end_date)}
-                remain={priceSplitter('Rp '+item.minimum)}
-                onPress={() => {
-                    //alert(item.id_coupon);
-                    this.claimCoupon(item.id_coupon);
-                    //this.props.navigation.navigate("HotelDetail");
-                }}
-                quantity={item.quantity}
-                claimed={item.claimed}
-                usedKuota={item.usedKuota}
-                claimable={item.claimed}
-                usedCoupon={false}
-            />
+            <View>
+                {
+                    loading == true ? 
+                    <View />
+                    :
+                    <Kunjungan
+                    style={[{
+                        marginVertical: 0,
+                        width:200,
+
+                    },margin]}
+                    backgroundHeader={BaseColor.primaryColor}
+                    name={item.coupon_name}
+                    code={item.coupon_code}
+                    description={item.coupon_code}
+                    valid={this.convertDateText(item.end_date)}
+                    remain={priceSplitter('Rp '+item.minimum)}
+                    onPress={() => {
+                        //alert(item.id_coupon);
+                        this.claimCoupon(item.id_coupon);
+                        //this.props.navigation.navigate("HotelDetail");
+                    }}
+                    quantity={item.quantity}
+                    claimed={item.claimed}
+                    usedKuota={item.usedKuota}
+                    claimable={item.claimed}
+                    usedCoupon={false}
+                />
+                }
+            
+            </View>
+        );
+    }
+
+     renderItem(item,index,loading) {
+        const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+       
+        if(index==0){
+            var margin={ marginLeft: 0,marginRight:10 }
+        }else{
+            var margin={ marginRight: 10 }
+        }
+        return (
+            <View>
+                {
+                    loading == true ? 
+                    <View />
+                    :
+                    <Coupon
+                    style={[{
+                        marginVertical: 0,
+                        width:200,
+
+                    },margin]}
+                    backgroundHeader={BaseColor.primaryColor}
+                    name={item.coupon_name}
+                    code={item.coupon_code}
+                    description={item.coupon_code}
+                    valid={this.convertDateText(item.end_date)}
+                    remain={priceSplitter('Rp '+item.minimum)}
+                    onPress={() => {
+                        //alert(item.id_coupon);
+                        this.claimCoupon(item.id_coupon);
+                        //this.props.navigation.navigate("HotelDetail");
+                    }}
+                    quantity={item.quantity}
+                    claimed={item.claimed}
+                    usedKuota={item.usedKuota}
+                    claimable={item.claimed}
+                    usedCoupon={false}
+                />
+                }
+            
+            </View>
         );
     }
 
@@ -431,82 +555,26 @@ export default class Profile1 extends Component {
         return d.getDate()+" "+months[d.getMonth()]+" "+d.getFullYear();
     }
 
-
-     componentWillMount() {
-
-        let { navigation, auth } = this.props;
-        AsyncStorage.getItem('userSession', (error, result) => {
-            if (result) {    
-               
-                this.setState({login:true});
-              
-            }else{
-    
-                this.setState({login:false});
-            }
-        });
-    
-    }
     
     componentDidMount(){
         const {navigation} = this.props;
-        this.getConfig();
-        this.getSession();
-        this.setUser();
-
-        
-
             navigation.addListener ('didFocus', () =>{
-                this.setState({ loading_spinner: true });
                 setTimeout(() => {
-                    if(this.state.login==true){
                     this.getCoupon();
-                    }
-                }, 50);
+                    this.setUser();
+                
+                }, 20);
+                //this.getSession();
+                
+                
             });
 
         
     }
 
-    getCoupon(){
-        const {login,userSession}=this.state;
-        
-        this.setState({ loadingCoupon: true }, () => {
-            var myHeaders = new Headers();
-            myHeaders.append("Accept", "application/json");
-            myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Cookie", "ci_session=gur1sg8tu7micu8i028lqn1sa4tcaa5k");
+    
 
-            var raw="";
-            if(login==true){
-                var param={"param":{"id_user":userSession.id_user}};
-                var raw = JSON.stringify(param);
-                console.log('paramCoupon',JSON.stringify(param));
-            
-
-            var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-            };
-
-            fetch("https://masterdiskon.com/front/api/product/coupon", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log('resultCoupon',JSON.stringify(result));
-                this.setState({coupons:result.data});
-
-            })
-            .catch(error => {
-                console.log(JSON.stringify(error));
-                alert('Kegagalan Respon Server getCoupon');
-            });
-            }
-
-        });
-
-    }
+    
 
     updateParticipant(
         key,
@@ -526,12 +594,8 @@ export default class Profile1 extends Component {
           passport_country_id,
         type
         ){
-        AsyncStorage.getItem('config', (error, res) => {
-            if (res) {    
-                let config = JSON.parse(res);
-
-                AsyncStorage.getItem('userSession', (error, result) => {
-                    if (result) {    
+            AsyncStorage.getItem('userSession', (error, result) => {
+                if (result) {  
                         let userSession = JSON.parse(result);
                         //console.log('getSession',userSession);
                         var id_user=userSession.id_user;
@@ -564,10 +628,15 @@ export default class Profile1 extends Component {
                             un_nationality: userSession.un_nationality,
                             username: userSession.username,
                         }
-                        // console.log('userSessionUpdate',JSON.stringify(userSessionUpdate));
                         AsyncStorage.setItem('userSession', JSON.stringify(userSessionUpdate));
-                        var url=config.baseUrl;
-                        var path='front/api/user/user_update';
+
+                        let config=this.state.configApi;
+                        let baseUrl=config.baseUrl;
+                        let url=baseUrl+'front/api/user/user_update';
+                        console.log('configApi',JSON.stringify(config));
+                        console.log('urlss',url);
+
+
                         var params={"param":userSessionUpdate}
                         console.log('userSessionUpdate',JSON.stringify(params));
 
@@ -582,7 +651,7 @@ export default class Profile1 extends Component {
                           }
             
                         
-                        fetch(url+path, param)
+                        fetch(url, param)
                         .then(response => response.json())
                         .then(result => {
                             console.log('resultuserSessionUpdate',JSON.stringify(result));
@@ -597,8 +666,7 @@ export default class Profile1 extends Component {
                         this.getSession();
                     }
                 });
-            }
-        });
+            
   }
 
   updateParticipantPassword(
@@ -698,306 +766,412 @@ export default class Profile1 extends Component {
 
     render() {
         const { navigation } = this.props;
-        let { tours, hotels, userData,userSession,login,coupons } = this.state;
+        let { tours, hotels, userData,userSession,login,coupons,loadingSpinner,kunjungan } = this.state;
         var contents=<View />
-        if(login==true){ 
-            contents=<ScrollView style={{ marginBottom: 20 }}>
-            {/* Profile Information */}
-
-            {
-            Platform.OS=='android' ?
-            
-            <View style={{ alignItems: "center",backgroundColor:BaseColor.primaryColor,paddingBottom:10 }}>
-                    <TouchableOpacity
-                                    style={{}}
+        if(loadingSpinner==true){
+            contents=<View style={{flex: 1,backgroundColor:  "#FFFFFF",justifyContent: "center",alignItems: "center"}}>
+                        <View
+                            style={{
+                                position: "absolute",
+                                top: 220,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}
+                        >
+                            
+                            <AnimatedLoader
+                                visible={true}
+                                overlayColor="rgba(255,255,255,0.1)"
+                                source={require("app/assets/loader_wait.json")}
+                                animationStyle={{width: 250,height: 250}}
+                                speed={1}
+                            />
+                            
+                        </View>
+                    </View>
+        }else{
+            if(login==true){ 
+                
+                contents=<ScrollView style={{ marginBottom: 20 }}>
+                    <View style={{}}>
+                        <View style={{ width: "100%" }}>
+                            <View>
+                                <CardCustomProfile 
+                                    title={'Profile'}
+                                    subtitle={'Edit Profile'}
+                                    icon={'ios-person-outline'}
                                     onPress={() => {
-                                        //this.setState({modalVisible:true});
-                                        //this.selectImageFromCamera();
-                                        alert('Masih Perbaikan');
-                                    }}
-                    >
-                    <Icon
-                        name="pencil-alt"
-                        size={20}
-                        color={BaseColor.primaryColor}
-                        style={{top:20,left:100}}
-                    />
-                    <Image source={this.state.avatar} style={styles.image} />
-                 </TouchableOpacity>
-                <Text caption1 whiteColor>
-                    {userSession.fullname}
-                </Text>
-                <Text subhead whiteColor>
-                    {userSession.email}
-                </Text>
-                {/* <Text subhead grayColor>
-                   Ref. Code : {userSession.referral_code}
-                </Text> */}
-                {/* <Tag primary style={styles.tagFollow}
-                onPress={() => {
-                    this.props.navigation.navigate("ProfileEdit",{
-                        sourcePage:'profile',
-                        key:1,
-                        label:'',
-                        fullname:userSession.fullname,
-                        firstname:userSession.firstname,
-                        lastname:userSession.lastname,
-                        birthday:userSession.birthday,
-                        nationality:userSession.nationality,
-                        passport_number:userSession.passport_number,
-                        passport_country:userSession.passport_country,
-                        passport_expire:userSession.passport_expire,
-                        phone:userSession.phone,
-                        title:userSession.title,
-                        email:userSession.email,
-
-                        nationality_id:userSession.nationality_id,
-                        nationality_phone_code:userSession.nationality_phone_code,
-                        
-                        passport_country_id:userSession.passport_country_id,
-
-                        updateParticipant: this.updateParticipant,
-                        type:'guest',
-                        old:'',
-                        typeProduct:''
-                        
+                                        this.props.navigation.navigate("ProfileEdit",{
+                                            sourcePage:'profile',
+                                            key:1,
+                                            label:'',
+                                            fullname:userSession.fullname,
+                                            firstname:userSession.firstname,
+                                            lastname:userSession.lastname,
+                                            birthday:userSession.birthday,
+                                            nationality:userSession.nationality,
+                                            passport_number:userSession.passport_number,
+                                            passport_country:userSession.passport_country,
+                                            passport_expire:userSession.passport_expire,
+                                            phone:userSession.phone,
+                                            title:userSession.title,
+                                            email:userSession.email,
                     
-                    });
-                }}
-                >
-                    Edit
-                </Tag> */}
-            </View>
-            :
-            <View />
-            }
-            
-            <View style={{}}>
-                <View style={{ width: "100%" }}>
-                    <View>
-                        <CardCustomProfile 
-                            title={'Profile'}
-                            subtitle={'Edit Profile'}
-                            icon={'user'}
-                            onPress={() => {
-                                this.props.navigation.navigate("ProfileEdit",{
-                                    sourcePage:'profile',
-                                    key:1,
-                                    label:'',
-                                    fullname:userSession.fullname,
-                                    firstname:userSession.firstname,
-                                    lastname:userSession.lastname,
-                                    birthday:userSession.birthday,
-                                    nationality:userSession.nationality,
-                                    passport_number:userSession.passport_number,
-                                    passport_country:userSession.passport_country,
-                                    passport_expire:userSession.passport_expire,
-                                    phone:userSession.phone,
-                                    title:userSession.title,
-                                    email:userSession.email,
-            
-                                    nationality_id:userSession.nationality_id,
-                                    nationality_phone_code:userSession.nationality_phone_code,
-                                    
-                                    passport_country_id:userSession.passport_country_id,
-            
-                                    updateParticipant: this.updateParticipant,
-                                    type:'guest',
-                                    old:'',
-                                    typeProduct:''
-                                    
+                                            nationality_id:userSession.nationality_id,
+                                            nationality_phone_code:userSession.nationality_phone_code,
+                                            
+                                            passport_country_id:userSession.passport_country_id,
+                    
+                                            updateParticipant: this.updateParticipant,
+                                            type:'guest',
+                                            old:'',
+                                            typeProduct:''
+                                            
+                                        
+                                        });
+                                    }}
                                 
-                                });
-                            }}
-                        
-                        />
+                                />
 
-                        {/* <CardCustomProfile 
-                            title={'Promo Kupon'}
-                            subtitle={'Silakan klaim kupon'}
-                            icon={'gift'}
-                            onPress={() => {
-                                this.props.navigation.navigate("ProfileSmart",{sourcePage:'profile'});
-                            }}
+                                {/* <CardCustomProfile 
+                                    title={'Promo Kupon'}
+                                    subtitle={'Silakan klaim kupon'}
+                                    icon={'gift'}
+                                    onPress={() => {
+                                        this.props.navigation.navigate("ProfileSmart",{sourcePage:'profile'});
+                                    }}
+                                
+                                /> */}
+                                <CardCustomProfile 
+                                    title={'QuickPick'}
+                                    subtitle={'Isi data penumpang, dengan satu klik'}
+                                    icon={'people-outline'}
+                                    onPress={() => {
+                                        this.props.navigation.navigate("ProfileSmart",{sourcePage:'profile'});
+                                    }}
+                                
+                                />
+                                {
+                                userSession.loginVia==="form" ?
+                                
+                                <CardCustomProfile 
+                                    title={'Ubah Kata Sandi'}
+                                    subtitle={'Pesenan lebih cepat, isi data penumpang, dengan satu klik'}
+                                    icon={'lock'}
+                                    onPress={() => {
+                                        this.props.navigation.navigate("ProfileEditPassword",{
+                                            updateParticipantPassword: this.updateParticipantPassword,
+                                        });
+                                    }}
+                                
+                                />
+                                :
+                                <View></View>
+                                }
+
+
+                                
+                                <CardCustomProfile 
+                                    title={'Handphone'}
+                                    subtitle={userSession.nationality_phone_code+"-"+userSession.phone}
+                                    icon={'phone-portrait-outline'}
+                                    onPress={() => {
+                                        //this.props.navigation.navigate("ProfileSmart",{sourcePage:'profile'});
+                                    }}
+                                
+                                />
+
+                                <CardCustomProfile 
+                                    title={'Kode Referal'}
+                                    subtitle={'Share kode'}
+                                    icon={'ios-code-outline'}
+                                    onPress={() => {
+                                        this.onShare(userSession.username);
+                                    }}
+                                
+                                />
+
+                                <CardCustomProfile 
+                                    title={'Sign Out'}
+                                    subtitle={'Keluar akun'}
+                                    icon={'ios-log-out-outline'}
+                                    onPress={() => {
+                                        this.onLogOut();
+                                    }}
+                                
+                                />
+
+                                
+
+                                <CardCustomProfile 
+                                    title={Platform.OS=="android" ? this.state.DataMasterDiskon.versionInPlayStoreName : this.state.DataMasterDiskon.versionInAppStoreName}
+                                    subtitle={'App Version'}
+                                    icon={'ios-information-outline'}
+                                    nav={false}
+                                    onPress={() => {
+                                        this.setState({modalVisible:true});
+                                        //this.props.navigation.navigate("ProfileSmart",{sourcePage:'profile'});
+                                    }}
+                                
+                                />
+
+
+                                {/* <HelpBlock
+                                title={'Bantuan'}
+                                description={'Apa yang bisa kami bantu?'}
+                                phone={'021 - 87796010'}
+                                email={'cs@masterdiskon.com'}
+                                style={{ margin: 20 }}
+                                onPress={() => {
+                                    // navigation.navigate("ContactUs");
+                                }}
+                                /> */}
+                            
+                                {/* <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',marginHorizontal:20}}>
+                                    <View style={{flex:4}}>
+                                        <CouponCard
+                                            style={{
+                                                marginVertical: 10,
+                                                marginRight: 5,
+                                                borderRadius:10,
+                                            }}
+                                            name={'Handphone'}
+                                            //code={userSession.email}
+                                            description={userSession.nationality_phone_code+"-"+userSession.phone}
+                                            // valid={'ad'}
+                                            // remain={'ad'}
+                                            
+                                            onPress={() => {
+                                                this.props.navigation.navigate("HotelDetail");
+                                            }}
+                                            clickAction={false}
+                            
+                                        />
+                                    </View>
+                                    <View style={{flex:8}}>
+                                            <CouponCard
+                                                style={{
+                                                    marginVertical: 10,
+                                                    marginLeft: 5
+                                                }}
+                                                name={'Kode Referal'}
+                                                //code={'as'}
+                                                description={userSession.username}
+                                                // valid={'ad'}
+                                                // remain={'ad'}
+                                                onPress={() => {
+                                                    //alert(userSession.refferal_code);
+                                                    this.onShare(userSession.username);
+                                                    //this.props.navigation.navigate("HotelDetail");
+                                                }}
+                                                clickAction={true}
+                                
+                                            />
+                                    </View>
+                                </View> */}
+
+                                {/* <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',marginHorizontal:20}}>
+                                
+                                    <View style={{flex:12}}>
+                                    {
+                                    Platform.OS=='android' ?
+                    
+                                            <CouponCard
+                                                style={{
+                                                    marginVertical: 10,
+                                                    marginLeft: 5
+                                                }}
+                                                name={'Invite'}
+                                                //code={'as'}
+                                                description={'Undang teman Anda'}
+                                                // valid={'ad'}
+                                                // remain={'ad'}
+                                                onPress={() => {
+                                                    new InvitesView().show();
+                                                    //alert(userSession.refferal_code);
+                                                    //this.onShare(userSession.usernam);
+                                                    //this.props.navigation.navigate("HotelDetail");
+                                                    
+                                                }}
+                                                clickAction={true}
+                                
+                                            />
+                                        :
+                                        <View />
+                                        }
+                                    </View>
+                                </View> */}
+
+                                
+
+                                
+
+                            </View>
+                        </View>
+                        <ProductListCommon navigation={navigation} slug={'hotels'} title={'Tempat yang pernah dikunjungi'}/>
+
+
+{
+                            coupons.length != 0 ?
                         
-                        /> */}
-                        <CardCustomProfile 
-                            title={'QuickPick'}
-                            subtitle={'Isi data penumpang, dengan satu klik'}
-                            icon={'users'}
-                            onPress={() => {
-                                this.props.navigation.navigate("ProfileSmart",{sourcePage:'profile'});
-                            }}
-                        
-                        />
-                        {
-                        userSession.loginVia==="form" ?
-                         
-                        <CardCustomProfile 
-                            title={'Ubah Kata Sandi'}
-                            subtitle={'Pesenan lebih cepat, isi data penumpang, dengan satu klik'}
-                            icon={'lock'}
-                            onPress={() => {
-                                this.props.navigation.navigate("ProfileEditPassword",{
-                                    updateParticipantPassword: this.updateParticipantPassword,
-                                });
-                            }}
-                        
-                        />
+                        <View>
+                            <CardCustomTitle 
+                                style={{marginLeft:20}} 
+                                title={'Promo'} 
+                                desc={''}  
+                                more={false}
+                                onPress={() =>
+                                    navigation.navigate("HotelCity")
+                                }
+                            />
+
+                            <View style={{marginLeft:20}}>
+                                <FlatList
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                data={coupons}
+                                keyExtractor={(item, index) => item.id_coupon}
+                                renderItem={({ item,index }) => this.renderItem(item,index,this.state.loadingSpinner)}
+                                />
+                            </View>
+                        </View>
                         :
                         <View></View>
                         }
-
-
-                        
-
-                        {/* <HelpBlock
-                        title={'Bantuan'}
-                        description={'Apa yang bisa kami bantu?'}
-                        phone={'021 - 87796010'}
-                        email={'cs@masterdiskon.com'}
-                        style={{ margin: 20 }}
-                        onPress={() => {
-                            // navigation.navigate("ContactUs");
-                        }}
-                        /> */}
-                      
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',marginHorizontal:20}}>
-                            <View style={{flex:4}}>
-                                <CouponCard
-                                    style={{
-                                        marginVertical: 10,
-                                        marginRight: 5
-                                    }}
-                                    name={'Handphone'}
-                                    //code={userSession.email}
-                                    description={userSession.nationality_phone_code+"-"+userSession.phone}
-                                    // valid={'ad'}
-                                    // remain={'ad'}
-                                    
-                                    onPress={() => {
-                                        this.props.navigation.navigate("HotelDetail");
-                                    }}
-                                    clickAction={false}
-                    
-                                />
-                            </View>
-                            <View style={{flex:8}}>
-                                    <CouponCard
-                                        style={{
-                                            marginVertical: 10,
-                                            marginLeft: 5
-                                        }}
-                                        name={'Kode Referal'}
-                                        //code={'as'}
-                                        description={userSession.username}
-                                        // valid={'ad'}
-                                        // remain={'ad'}
-                                        onPress={() => {
-                                            //alert(userSession.refferal_code);
-                                            this.onShare(userSession.usernam);
-                                            //this.props.navigation.navigate("HotelDetail");
-                                        }}
-                                        clickAction={true}
-                        
-                                    />
-                            </View>
-                        </View>
-
-                        {
-                            this.state.loadingCoupon== true ?
-                            <View /> :
-                            coupons.length != 0 ?
-
-                            <View>
-                                <CardCustomTitle 
-                                    style={{marginLeft:20}} 
-                                    title={'Promo'} 
-                                    desc={''}  
-                                    more={false}
-                                    onPress={() =>
-                                        navigation.navigate("HotelCity")
-                                    }
-                                />
-
-                                <View style={{marginLeft:20}}>
-                                    <FlatList
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={coupons}
-                                    keyExtractor={(item, index) => item.id_coupon}
-                                    renderItem={({ item }) => this.renderItem(item)}
-                                    />
-                                </View>
-                            </View>
-                            :
-                            <View />
-
-                        }
-
-                        
-
                     </View>
-                </View>
-            </View>
-            
-            <View style={{ marginHorizontal: 20}}>
-                <Button
-                    full
-                    loading={this.state.loading}
-                    onPress={() => this.onLogOut()}
-                >
-                    Sign Out
-                </Button>
-            </View>
-            
-            <Modal
-                        isVisible={this.state.modalVisible}
-                        onBackdropPress={() => {
-                            this.setState({modalVisible:false});
-                        }}
-                        onSwipeComplete={() => {
-                            this.setState({modalVisible:false});
-                        }}
-                        swipeDirection={["down"]}
-                        style={styles.bottomModal}
-                    >
-                        <View style={styles.contentFilterBottom}>
-                            <View style={styles.contentSwipeDown}>
-                                <View style={styles.lineSwipeDown} />
-                            </View>
-                            {this.state.option.map((item, index) => (
-                                <TouchableOpacity
-                                    style={styles.contentActionModalBottom}
-                                    key={item.value}
-                                    onPress={() => {
-                                    //this.onSelect(item)
-                                    this.selectImageFromCamera(item);
-                                    
-                                    }}
-                                >
-                                    <Text
-                                        body2
-                                        semibold
-                                        primaryColor={item.checked}
+                
+                    {/* <View style={{ marginHorizontal: 20}}>
+                        <Button
+                            full
+                            loading={this.state.loading}
+                            onPress={() => this.onLogOut()}
+                        >
+                            Sign Out
+                        </Button>
+                    </View> */}
+                
+                    <Modal
+                            isVisible={this.state.modalVisible}
+                            onBackdropPress={() => {
+                                this.setState({modalVisible:false});
+                            }}
+                            onSwipeComplete={() => {
+                                this.setState({modalVisible:false});
+                            }}
+                            swipeDirection={["down"]}
+                            style={styles.bottomModal}
+                        >
+                            <View style={styles.contentFilterBottom}>
+                                <View style={styles.contentSwipeDown}>
+                                    <View style={styles.lineSwipeDown} />
+                                </View>
+                                {this.state.option.map((item, index) => (
+                                    <TouchableOpacity
+                                        style={styles.contentActionModalBottom}
+                                        key={item.value}
+                                        onPress={() => {
+                                        //this.onSelect(item)
+                                        this.selectImageFromCamera(item);
+                                        
+                                        }}
                                     >
-                                        {item.option_list_label}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                          
-                        </View>
-                    </Modal>
-        </ScrollView>
+                                        <Text
+                                            body2
+                                            semibold
+                                            primaryColor={item.checked}
+                                        >
+                                            {item.option_list_label}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            
+                            </View>
+                        </Modal>
+                    </ScrollView>
 
-        }else{
+                {
+                Platform.OS=='android' ?
+                
+                <View style={{ alignItems: "center",backgroundColor:BaseColor.primaryColor,paddingBottom:10 }}>
+                        <TouchableOpacity
+                                        style={{}}
+                                        onPress={() => {
+                                            //this.setState({modalVisible:true});
+                                            //this.selectImageFromCamera();
+                                            alert('Masih Perbaikan');
+                                        }}
+                        >
+                        <Icon
+                            name="pencil-alt"
+                            size={20}
+                            color={BaseColor.primaryColor}
+                            style={{top:20,left:100}}
+                        />
+                        <Image source={this.state.avatar} style={styles.image} />
+                    </TouchableOpacity>
+                    <Text caption1 whiteColor>
+                        {userSession.fullname}
+                    </Text>
+                    <Text subhead whiteColor>
+                        {userSession.email}
+                    </Text>
+                    {/* <Text subhead grayColor>
+                    Ref. Code : {userSession.referral_code}
+                    </Text> */}
+                    {/* <Tag primary style={styles.tagFollow}
+                    onPress={() => {
+                        this.props.navigation.navigate("ProfileEdit",{
+                            sourcePage:'profile',
+                            key:1,
+                            label:'',
+                            fullname:userSession.fullname,
+                            firstname:userSession.firstname,
+                            lastname:userSession.lastname,
+                            birthday:userSession.birthday,
+                            nationality:userSession.nationality,
+                            passport_number:userSession.passport_number,
+                            passport_country:userSession.passport_country,
+                            passport_expire:userSession.passport_expire,
+                            phone:userSession.phone,
+                            title:userSession.title,
+                            email:userSession.email,
 
-            contents=<NotYetLogin redirect={'Home'} navigation={navigation} />
+                            nationality_id:userSession.nationality_id,
+                            nationality_phone_code:userSession.nationality_phone_code,
+                            
+                            passport_country_id:userSession.passport_country_id,
 
+                            updateParticipant: this.updateParticipant,
+                            type:'guest',
+                            old:'',
+                            typeProduct:''
+                            
+                        
+                        });
+                    }}
+                    >
+                        Edit
+                    </Tag> */}
+                </View>
+                :
+                <View />
+                }
+                
+                
+                
+
+            }else{
+
+                contents=<NotYetLogin redirect={'Home'} navigation={navigation} />
+
+            }
         }
         return (
             <SafeAreaView
-            style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.bgColor}]}
+            style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.whiteColor}]}
             forceInset={{ top: "always" }}
             >
                 <Header
@@ -1005,7 +1179,7 @@ export default class Profile1 extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />

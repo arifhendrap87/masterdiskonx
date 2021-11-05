@@ -67,11 +67,24 @@ export default StyleSheet.create({
   iconContent: {
     justifyContent: "center",
     alignItems: "center",
-    width: 40,
-    height: 40,
-    borderRadius: 5,
-    backgroundColor: BaseColor.whiteColor,
-    marginBottom: 5
+    width: 70,
+    height: 70,
+    borderRadius: 70/2,
+    //backgroundColor: BaseColor.whiteColor,
+    marginBottom: 5,
+    // borderColor:BaseColor.primaryColor,
+    // borderWidth:1,
+    
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+
   },
   iconContentColor: {
     justifyContent: "center",
@@ -86,7 +99,7 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
-    paddingTop: 10
+    paddingTop: 10,
   },
   promotionItem: {
     borderRadius: 8,
@@ -102,11 +115,7 @@ export default StyleSheet.create({
 
 
 
-  wrapper: {
-    width: "100%",
-    height: Utils.scaleWithPixel(300),
-    justifyContent: "flex-end"
-  },
+
   slide: {
     flex: 1,
     justifyContent: 'center',
@@ -119,10 +128,10 @@ export default StyleSheet.create({
   },
 
   wrapper: {
-    width: "90%",
-    height: Utils.scaleWithPixel(100),
+    width: "100%",
+    height: Utils.scaleWithPixel(130),
     justifyContent: "flex-end",
-    marginLeft:20,
+    marginLeft:0,
     borderRadius: 8,
    
 },
@@ -133,7 +142,7 @@ img: {
     width: "100%",
     height: "100%",
     backgroundColor:'#00b9df',
-    borderRadius: 8,
+    borderRadius: 0,
 },
 
 
@@ -262,9 +271,10 @@ img: {
   modalView: {
     margin: 20,
     backgroundColor: "white",
-    borderRadius: 0,
+    
     padding: 35,
     alignItems: "center",
+    borderRadius: 0,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

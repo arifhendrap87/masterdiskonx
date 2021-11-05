@@ -8,7 +8,7 @@ import {
     ScrollView
 } from "react-native";
 import { BaseStyle, BaseColor } from "@config";
-import { Header, SafeAreaView, Icon, Text, Image } from "@components";
+import { Header, SafeAreaView, Icon, Text, Image,Button } from "@components";
 // import styles from "./styles";
 
 // Load sample flight data list
@@ -63,9 +63,48 @@ export default class SelectHotelLinx extends Component {
             listdata_kota:[],
             listdata_hotel:[],
             listdata_area:[],
+            listdata_search:[],
             listdata_bestTenCity:[],
-            loading_spinner:true
+            loading_spinner:true,
+            textSearch:''
         };
+        this.getConfigApi();
+        this.getConfig();
+        this.getSession();
+    }
+
+    //memanggil config
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
+    }
+
+    getConfig(){
+            AsyncStorage.getItem('config', (error, result) => {
+                if (result) {    
+                    let config = JSON.parse(result);
+                    this.setState({config:config});
+                }
+            });
+    }
+
+    //memanggil session
+    getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                console.log('userSessions',JSON.stringify(userSession));
+
+                var id_user=userSession.id_user;
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.setState({login:true});
+            }
+        });
     }
 
     componentDidMount() {
@@ -88,12 +127,15 @@ export default class SelectHotelLinx extends Component {
 
     bestTenCity(){
         this.setState({ loading_spinner: true }, () => {
-
-            AsyncStorage.getItem('config', (error, result) => {
-                if (result) {   
-                    let config = JSON.parse(result);
-                    var url=config.baseUrl;
-                    var path='front/api/product/bestTenCity';
+            let config=this.state.configApi;
+            let baseUrl=config.baseUrl;
+            let url=baseUrl+'front/api/product/bestTenCity';
+            console.log('configApi',JSON.stringify(config));
+            console.log('urlss',url);
+             
+                    // let config = JSON.parse(result);
+                    // var url=config.baseUrl;
+                    // var path='front/api/product/bestTenCity';
 
                     var myHeaders = new Headers();
 
@@ -105,9 +147,8 @@ export default class SelectHotelLinx extends Component {
                     body: raw,
                     redirect: 'follow'
                     };
-                    console.log('bestTenCity',url+path);
 
-                    fetch(url+path, requestOptions)
+                    fetch(url, requestOptions)
                     .then(response => response.json())
                     .then(result => {
                         this.setState({loading_spinner:false})
@@ -120,8 +161,7 @@ export default class SelectHotelLinx extends Component {
                         alert('Kegagalan Respon Server')
                     });
 
-                }
-            }); 
+                
         }); 
 
     }
@@ -170,6 +210,42 @@ export default class SelectHotelLinx extends Component {
 
     }
 
+
+
+    searchHotelApi(value){
+        this.setState({loading_spinner:true});
+        let config=this.state.configApi;
+        let baseUrl=config.apiBaseUrl;
+        let url=baseUrl+"booking/autocomplete?product=hotel&q="+value;
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
+
+
+                var requestOptions = {
+                    method: 'GET',
+                    redirect: 'follow'
+                  };
+                  
+                  fetch(url, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        this.setState({loading_spinner:false});
+                        console.log('searchHotelApi',JSON.stringify(result));
+                        var arr_search=result.data;
+                        this.setState({listdata_search:this.rebuild_search(arr_search)});
+                        
+
+                    })
+                    .catch(error => {
+
+                        alert('Kegagalan Respon Server')
+                    });
+           
+
+    }
+
+
+
     rebuild_bestTenCity(listdata){
         var listdata_new = [];
         var a=1;
@@ -195,6 +271,44 @@ export default class SelectHotelLinx extends Component {
         });
 
        return listdata_new;
+    }
+
+
+    rebuild_search(listdata){
+
+        var listdata_new = [];
+        var a=1;
+        listdata.map(item => {
+            var obj = {};
+
+    //         "id": 1401,
+    //   "level": "city",
+    //   "name": "Kuantan Singingi",
+    //   "fullname": "Kuantan Singingi, Riau, Indonesia",
+    //   "productId": null
+          
+            obj['total'] = '';
+            obj['cityid'] =  '';
+            obj['cityname'] = '';
+            obj['countryname'] = '';
+
+
+            obj['searchType'] = item.level;
+            obj['searchCity'] = item.id;
+            obj['searchHotel'] = item.productId;
+            obj['searchTitle'] = item.name;
+            obj['searchArea'] = item.name;
+            obj['searchCountry'] = item.name;
+            obj['searchProvince'] = item.name;
+            
+            listdata_new.push(obj);
+            a++;
+        });
+        console.log('listdata_search_new',JSON.stringify(listdata_new));
+
+       return listdata_new;
+
+
     }
 
     rebuild_kota(listdata){
@@ -286,17 +400,23 @@ export default class SelectHotelLinx extends Component {
     }
 
     search(value){
-        if(value.length >= 3){
-            this.setState({listdata_bestTenCity:[]});
-            this.searchHotel(value);
-            
-        }else{
-            this.setState({listdata_kota:[]});
-            this.setState({listdata_hotel:[]});
-            this.setState({listdata_area:[]});
-            this.bestTenCity();
-            
-        }
+        this.setState({textSearch:value});
+        // setTimeout(() => {
+        //     if(value.length >= 3){
+        //         this.setState({listdata_bestTenCity:[]});
+        //         //this.searchHotel(value);
+        //         this.searchHotelApi(value);
+                
+        //     }else{
+        //         this.setState({listdata_kota:[]});
+        //         this.setState({listdata_hotel:[]});
+        //         this.setState({listdata_area:[]});
+        //         this.setState({listdata_search:[]});
+        //         this.bestTenCity();
+                
+        //     }
+        // }, 2000);
+        
      }
 
     
@@ -305,17 +425,17 @@ export default class SelectHotelLinx extends Component {
 
     render() {
         const { navigation } = this.props;
-        let { flight, loading, airplane,loading_spinner,listdata_kota,listdata_hotel,listdata_area,listdata_bestTenCity } = this.state;
+        let { flight, loading, airplane,loading_spinner,listdata_kota,listdata_hotel,listdata_area,listdata_bestTenCity,listdata_search } = this.state;
 
         var listdata_bestTenCity_content=<View></View>
         if(listdata_bestTenCity.length != 0){
             listdata_bestTenCity_content=<View style={{marginTop:10,width:'100%'}}>
-                                    <View style={{flexDirection: "row",paddingVertical:5,paddingHorizontal:5,backgroundColor:BaseColor.bgColor}}>
+                                    <View style={{flexDirection: "row",paddingVertical:5,paddingHorizontal:5,backgroundColor:BaseColor.secondColor}}>
                                         <Text caption2 bold>
                                             Populer Destination
                                         </Text>
                                     </View>
-                                    <View style={{flexDirection: "row"}}>
+                                    <View style={{flexDirection: "row",paddingHorizontal:10}}>
                                     <FlatList
                                     data={listdata_bestTenCity}
                                     keyExtractor={(item, index) => item.cityid}
@@ -508,6 +628,57 @@ export default class SelectHotelLinx extends Component {
 
         }
 
+
+
+        var listdata_search_content=<View></View>
+        if(listdata_search.length != 0){
+            listdata_search_content=<View style={{marginTop:10,width:'100%'}}>
+                                    <View style={{flexDirection: "row",paddingVertical:5,paddingHorizontal:5,backgroundColor:BaseColor.secondColor}}>
+                                        <Text caption2 bold>
+                                            Hasil Cari
+                                        </Text>
+                                    </View>
+                                    <View style={{flexDirection: "row",paddingHorizontal:10}}>
+                                    <FlatList
+                                    data={listdata_search}
+                                    keyExtractor={(item, index) => item.area}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            style={styles.item}
+                                            onPress={() => this.onChange(item)}
+                                        >
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center"
+                                                }}
+                                            >
+                                                <View style={styles.left}>
+                                                    <Text caption1 semibold>
+                                                    {item.searchTitle}
+                                                    </Text>
+                                                    <Text
+                                                        note
+                                                        numberOfLines={1}
+                                                        footnote
+                                                        grayColor
+                                                        style={{
+                                                            paddingTop: 5
+                                                        }}
+                                                    >
+                                                        {item.searchType
+                                                        }
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )}
+                                    />
+                                    </View>
+                                </View>
+
+        }
+
         
         return (
             <SafeAreaView
@@ -519,7 +690,7 @@ export default class SelectHotelLinx extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />
@@ -547,15 +718,35 @@ export default class SelectHotelLinx extends Component {
                     //onPressRight={() => this.onSave()}
                 />
                 <View style={styles.contain}>
-                    <TextInput
-                        style={BaseStyle.textInput}
-                        onChangeText={text => this.search(text)}
-                        autoCorrect={false}
-                        placeholder="Search Hotel"
-                        placeholderTextColor={BaseColor.grayColor}
-                        selectionColor={BaseColor.primaryColor}
-                        autoFocus
-                    />
+                    <View style={{height:40,width:'100%',flexDirection:'row'}}>
+                        <TextInput
+                            style={{
+                                height: 46,
+                                backgroundColor: BaseColor.fieldColor,
+                                borderRadius: 5,
+                                padding: 10,
+                                width:'80%'
+                            }}
+                            onChangeText={text => this.search(text)}
+                            autoCorrect={false}
+                            placeholder="Search Hotel"
+                            placeholderTextColor={BaseColor.grayColor}
+                            selectionColor={BaseColor.primaryColor}
+                            autoFocus
+                        />
+                         <Button
+                            
+                            style={{height:40,width:'20%',margin:0}}
+                            onPress={() => {  
+                                
+                                this.searchHotelApi(this.state.textSearch);
+                            
+                            }}
+                        >
+                            cari
+                        </Button>
+                    </View>
+                    
                     <ScrollView>
                     <View style={{ width: "100%", height: "100%",flexDirection:'row' }}>
                         {
@@ -602,10 +793,12 @@ export default class SelectHotelLinx extends Component {
                             </Placeholder>
                             :
                             <View>
-                            <View style={{flexDirection:'row',width: "100%"}}>{listdata_area_content}</View>
+                                <View style={{flexDirection:'row',width: "100%"}}>{listdata_search_content}</View>
+                                <View style={{flexDirection:'row',width: "100%"}}>{listdata_bestTenCity_content}</View>
+                            {/* <View style={{flexDirection:'row',width: "100%"}}>{listdata_area_content}</View>
                             <View style={{flexDirection:'row',width: "100%"}}>{listdata_bestTenCity_content}</View>
                             <View style={{flexDirection:'row',width: "100%"}}>{listdata_kota_content}</View>
-                            <View style={{flexDirection:'row',width: "100%"}}>{listdata_hotel_content}</View>
+                            <View style={{flexDirection:'row',width: "100%"}}>{listdata_hotel_content}</View> */}
                             </View>
                         }
                     </View>

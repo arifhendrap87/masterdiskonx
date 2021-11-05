@@ -11,7 +11,7 @@ import {
     ProfileDetail,
     
 } from "@components";
-import {AsyncStorage} from 'react-native';
+import {AsyncStorage,Platform} from 'react-native';
 import { PackageData } from "@data";
 import {PostData} from '../../services/PostData';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -98,7 +98,7 @@ export default class Summary extends Component {
             paramAll=this.props.navigation.state.params.param;
         }
 
-        //console.log('paramupdate',JSON.stringify(param));
+        console.log('paramAll',JSON.stringify(paramAll));
         
         //------------------------parameter untuk flight------------------------//
         var selectDataDeparture=paramAll.selectDataDeparture;
@@ -182,7 +182,7 @@ export default class Summary extends Component {
         // var param=this.props.navigation.state.params.param;
         // var product=this.props.navigation.state.params.product;
         // var productPart=this.props.navigation.state.params.productPart;
-        // console.log('product',JSON.stringify(product));
+        console.log('product',JSON.stringify(product));
         
         // var param=[];
         // if(this.props.navigation.state.params.param){
@@ -316,7 +316,9 @@ export default class Summary extends Component {
             couponCode:"Pilih kupon",
             couponCodeList:[],
             loadingCheckCoupon:false,
-            loadingPoint:true
+            loadingPoint:true,
+            biayaPenanganan:false,
+            biayaPenangananValue:10000,
             
 
         };
@@ -325,64 +327,23 @@ export default class Summary extends Component {
         this.setTitle = this.setTitle.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.useCoupon=this.useCoupon.bind(this);
+        this.useCouponForm=this.useCouponForm.bind(this);
         this.setCoupon=this.setCoupon.bind(this);
 
         this.getConfig();
+        this.getConfigApi();
         this.getSession();
         this.getTokenFireBase();
-        //this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
 
 
     }
-    // componentWillMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
-    
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
-    
-    // handleBackButtonClick() {
-    //     this.props.navigation.goBack(null);
-    //     return true;
-    // }
-
-    // componentWillMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
-    
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
-    
-    // handleBackButtonClick() {
-    //     //this.props.navigation.goBack();
-    //     //this.props.navigation.navigate('Booking');
-
-    //     // if(this.state.param.type=='hotelLinx'){
-    //     //     alert('asd');
-    //     //     // this.setState({abort:true});
-    //     //     // var link='HotelLinx';
-    //     //     // this.props.navigation.navigate(link,
-    //     //     //     {
-    //     //     //         param:this.state.param,
-    //     //     //         paramOriginal:this.state.paramOriginal
-    //     //     //     });
-    //     //     //return true;
-    //     // }else{
-    //     //     this.props.navigation.goBack();
-    //     //     //return true;
-
-    //     // }
-    // }
-
-    getTokenFireBase(){
-        AsyncStorage.getItem('tokenFirebase', (error, result) => {
-            if (result) {
-                this.setState({
-                    tokenFirebase: result
-                });
+    //memanggil config
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
             }
         });
     }
@@ -412,12 +373,90 @@ export default class Summary extends Component {
         });
     }
 
+    count(){
+        
+               
+    
+                // let config = JSON.parse(result);
+                // let url=config.apiBaseUrl+"booking/count";
+                let param=this.state.param;
+
+                let config=this.state.configApi;
+                let baseUrl=config.apiBaseUrl;
+                let url=baseUrl+'booking/search';
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+                var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Cookie", "access_token="+config.apiToken);
+
+                var raw = JSON.stringify({
+                    "product": "flight",
+                    "key": param.key,
+                    "point": this.state.usePointUser,
+                    "insurance": this.state.remindersInsurance,
+                    "coupon": [],
+                    "paymentMethod": 1,
+                    "platform": "app"
+                    });
+
+                var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+                };
+
+                fetch(config.apiBaseUrl+"booking/count", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    this.setState({ loading_spinner: false });
+
+                    var dataPrice={      
+                        required_dob:false,
+                        required_passport:false,
+                        total_price:result.data.total,
+                        subtotal_price:result.data.subtotal,
+                        nett_price:result.data.subtotal,
+                        iwjr:result.data.iwjr,
+                        insurance_total:result.data.insurance,
+                        transaction_fee:result.data.fee,
+                        tax_fee:result.data.tax,
+                        point_user:result.data.point
+                    }
+                    
+                    console.log('countResult',JSON.stringify(dataPrice));
+                })
+                .catch(error => console.log('error', error));
+       
+
+    }
+
+
+    getTokenFireBase(){
+        AsyncStorage.getItem('tokenFirebase', (error, result) => {
+            if (result) {
+                this.setState({
+                    tokenFirebase: result
+                });
+            }
+        });
+    }
+
+   
+
     getProfile(userSession){
         this.setState({ loadingPoint: true }, () => {
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                var url=config.baseUrl;
+       
+
+                let config=this.state.configApi;
+                let baseUrl=config.apiBaseUrl;
+                let url=baseUrl+"front/api/user/profile";
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+
                 var myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
                 myHeaders.append("Cookie", "ci_session=2m7aungmqk0gqvsacjk2gb3giuos2ill");
@@ -430,12 +469,12 @@ export default class Summary extends Component {
                 body: raw,
                 redirect: 'follow'
                 };
-                console.log('getProfile',JSON.stringify({"param":{"id_user":userSession.id_user}}));
-                fetch(url+"front/api/user/profile", requestOptions)
+                console.log('getProfile1',JSON.stringify({"param":{"id_user":userSession.id_user}}));
+                fetch(url, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     this.setState({loadingPoint:false});
-                    console.log('getProfile',result.user);
+                    console.log('getProfile2',result.user);
                     userSession.point=result.user.point;
                     this.setState({discountPointLabel:result.user.point});
                     this.setState({discountPointSisa:result.user.point});
@@ -445,9 +484,8 @@ export default class Summary extends Component {
                     //return result.user;
 
                 })
-                .catch(error => { alert('Kegagalan Respon Server');});
-            }
-        });
+                .catch(error => { alert('Kegagalan Respon Server Get profile');});
+           
         });
     }
 
@@ -483,6 +521,16 @@ export default class Summary extends Component {
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
         return days[d.getDay()]+", "+d.getDate()+" "+months[d.getMonth()]+" "+d.getFullYear();
+    }
+
+    convertDateDMY(date){
+        var today = new Date(date);
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = dd + '-' + mm + '-' + yyyy;
+        return today;
     }
 
     convertOld(param){
@@ -534,7 +582,7 @@ export default class Summary extends Component {
         param.insurance=insurance;
         param.id_coupon=id_coupon;
         param.id_coupon_history=id_coupon_history;
-        param.tokenMDI=config.tokenMDI;
+        param.tokenMDI=config.apiToken;
 
         if(this.state.discount >= param.totalPrice){
             param.total=0;
@@ -642,15 +690,16 @@ export default class Summary extends Component {
             "toCode": this.state.param.Destination
         }
         const paramData={"param":data}
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+'front/api/api/get_type_flight';
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
         
-       
-
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {   
-                let config = JSON.parse(result);
-                var access_token=config.token;
-                var path=config.common_type_flight.dir;
-                var url=config.baseUrl;
+                // let config = JSON.parse(result);
+                // var access_token=config.token;
+                // var path=config.common_type_flight.dir;
+                // var url=config.baseUrl;
                 var param={
                     method: 'POST',
                     headers: {
@@ -660,7 +709,7 @@ export default class Summary extends Component {
                     body: JSON.stringify(paramData),
                   }
 
-                                fetch(url+path,param)
+                                fetch(url,param)
                                 .then(response => response.json())
                                 .then(result => {
                                     console.log('typeFlightsss',JSON.stringify(result));
@@ -668,11 +717,9 @@ export default class Summary extends Component {
                 
                                 })
                                 .catch(error => {
-                
-                                    alert('Kegagalan Respon Server')
+                                    alert('Kegagalan Respon Server type flight')
                                 });
-            }
-        }); 
+            
         
     }    
 
@@ -1103,213 +1150,144 @@ export default class Summary extends Component {
             var param=this.state.param;
             var customer=this.state.listdata_customer;
             var guest=this.state.listdata_participant;
-            var departurePost=this.state.departurePost;
-            var returnPost=this.state.returnPost;
             var dataPrice=this.state.dataPrice;
-            var departurePrice=dataPrice.detail_price[0];
-            var returnPrice=dataPrice.detail_price[1];
-            
-            var departureCart={
-                "international": departurePost.international,
-                "combinable": departurePost.combinable,
-                "match_id": departurePost.match_id,
-                "supplier_id": departurePost.supplier_id,
-                "airline_id": departurePost.airline_id,
-                "validating_carrier": departurePost.validating_carrier,
-                "from": departurePost.from,
-                "to": departurePost.to,
-                "adult": departurePost.adult,
-                "child": departurePost.child,
-                "infant": departurePost.infant,
-                "currency": departurePost.currency,
-                "price_type": departurePost.price_type,
-                "supplier_code": departurePost.supplier_code,
-                "airline_code": departurePost.airline_code,
-                "reference": departurePost.reference,
-                "subclasses": departurePost.subclasses,
-                "airline_name": departurePost.airline_name,
-                "airline_logo": departurePost.airline_logo,
-                "departure_date": departurePost.departure_date,
-                "departure_time": departurePost.departure_time,
-                "departure_timezone": departurePost.departure_timezone,
-                "gmt_departure": departurePost.gmt_departure,
-                "arrival_date": departurePost.arrival_date,
-                "arrival_time": departurePost.arrival_time,
-                "arrival_timezone": departurePost.arrival_timezone,
-                "gmt_arrival": departurePost.gmt_arrival,
-                "duration": departurePost.duration,
-                "transit": departurePost.transit,
-                "from_name": departurePost.from_name,
-                "from_city": departurePost.from_city,
-                "from_country": departurePost.from_country,
-                "from_country_code": departurePost.from_country_code,
-                "to_name": departurePost.to_name,
-                "to_city": departurePost.to_city,
-                "to_country": departurePost.to_country,
-                "to_country_code": departurePost.to_country_code,
-                "flight_schedule":departurePost.flight_schedule,
-                "price":departurePrice
-            };
-
-            if(param.IsReturn==true){
-                    var returnCart={
-                        "international": returnPost.international,
-                        "combinable": returnPost.combinable,
-                        "match_id": returnPost.match_id,
-                        "supplier_id": returnPost.supplier_id,
-                        "airline_id": returnPost.airline_id,
-                        "validating_carrier": returnPost.validating_carrier,
-                        "from": returnPost.from,
-                        "to": returnPost.to,
-                        "adult": returnPost.adult,
-                        "child": returnPost.child,
-                        "infant": returnPost.infant,
-                        "currency": returnPost.currency,
-                        "price_type": returnPost.price_type,
-                        "supplier_code": returnPost.supplier_code,
-                        "airline_code": returnPost.airline_code,
-                        "reference": returnPost.reference,
-                        "subclasses": returnPost.subclasses,
-                        "airline_name": returnPost.airline_name,
-                        "airline_logo": returnPost.airline_logo,
-                        "departure_date": returnPost.departure_date,
-                        "departure_time": returnPost.departure_time,
-                        "departure_timezone": returnPost.departure_timezone,
-                        "gmt_departure": returnPost.gmt_departure,
-                        "arrival_date": returnPost.arrival_date,
-                        "arrival_time": returnPost.arrival_time,
-                        "arrival_timezone": returnPost.arrival_timezone,
-                        "gmt_arrival": returnPost.gmt_arrival,
-                        "duration": returnPost.duration,
-                        "transit": returnPost.transit,
-                        "from_name": returnPost.from_name,
-                        "from_city": returnPost.from_city,
-                        "from_country": returnPost.from_country,
-                        "from_country_code": returnPost.from_country_code,
-                        "to_name": returnPost.to_name,
-                        "to_city": returnPost.to_city,
-                        "to_country": returnPost.to_country,
-                        "to_country_code": returnPost.to_country_code,
-                        "flight_schedule":returnPost.flight_schedule,
-                        "price":returnPrice
-                    };
-            }else{
-                    var returnCart=null;
-            }
+      
             
             var contact= {
                 "title": customer[0].title,
-                "first_name": customer[0].firstname,
-                "last_name": customer[0].lastname,
-                "country": customer[0].nationality_id,
-                "area_phone_code": customer[0].nationality_phone_code,
-                "phone_number": customer[0].phone,
+                "firstName": customer[0].firstname,
+                "lastName": customer[0].lastname,
+                //"country": customer[0].nationality_id,
+                "phoneCode": customer[0].nationality_phone_code,
+                "phone": customer[0].phone,
                 "email": customer[0].email
                 };
-
-
 
             
             var participant = [];
             var a=1;
             guest.map(item => {
                 var obj = {};
-                obj['type'] = this.state.arr_old[a];
+                obj['type'] = this.convertOldVia(this.state.arr_old[a]);
                 obj['title'] = item.title;
-                obj['nationality'] = item.nationality_id;
-                obj['first_name'] = item.firstname;
-                obj['last_name'] = item.lastname;
-                obj['dob'] = item.birthday;
-                obj['identity_number'] = item.passport_number;
-                obj['issuing_country'] = item.passport_country_id;
-                obj['expiry_date'] = item.passport_expire;
-                obj['departure_baggage'] = "0";
-                obj['return_baggage'] = "0";
+                //obj['nationality'] = item.nationality_id;
+                obj['firstName'] = item.firstname;
+                obj['lastName'] = item.lastname;
+                obj['dob'] = this.convertDateDMY(item.birthday);
+                //obj['identity_number'] = item.passport_number;
+                //obj['issuing_country'] = item.passport_country_id;
+                //obj['expiry_date'] = item.passport_expire;
+                //obj['departure_baggage'] = "0";
+                //obj['return_baggage'] = "0";
+                // obj['passport'] = {
+                //             "nat": item.passport_country_id,
+                //             "num": item.passport_number,
+                //             "doi": "",
+                //             "doe":  this.convertDateDMY(item.passport_expire)
+                //         }
+
+
+                // {
+                //     "type": "adult",
+                //     "title": "Mr",
+                //     "firstName": "Hamdan",
+                //     "lastName": "Awaludin",
+                //     "passport": {
+                //         "nat": "ID",
+                //         "num": "1ku2gutf2yi2",
+                //         "doi": "26-08-2021",
+                //         "doe": "26-06-2026"
+                //     }
+                // }
+
+
                 participant.push(obj);
                 a++;
             });
-        
-            var paramGetCart = {
-                "Origin": param.Origin,
-                "Destination": param.Destination,
-                "DepartureDate": param.DepartureDate,
-                "ReturnDate": param.ReturnDate,
-                "Adults": param.Adults,
-                "Children": param.Children,
-                "Infants": param.Infants,
-                "CorporateCode": "",
-                "contact":contact,
-                "pax":participant,
-                "departure":departureCart,
-                "return":returnCart,
-                "insurance_included":this.state.insurance_included,
-
-            };
-
             
-                this.setState({ loading_spinner: true }, () => {
-                this.setState({loading_spinner_file:require("app/assets/loader_flight.json")});
-                this.setState({loading_spinner_title:'Connecting to Maskapai'});
-                
-    
-                AsyncStorage.getItem('config', (error, result) => {
-                    if (result) {    
-                        const controller = new AbortController();
-                        const signal = controller.signal;
-                        setTimeout(() => controller.abort(), 120000);
+            console.log('param',JSON.stringify(param));
+            console.log('contact',JSON.stringify(contact));
+            console.log('guestSubmit',JSON.stringify(guest));
+            console.log('participant',JSON.stringify(participant));
+            console.log('dataprice',JSON.stringify(dataPrice));
 
-                        let config = JSON.parse(result);
-                        var access_token=config.token;
-                        var url=config.aeroUrl;
-        
+            this.setState({ loading_spinner: true }, () => {
+            this.setState({loading_spinner_file:require("app/assets/loader_flight.json")});
+            this.setState({loading_spinner_title:'Connecting to Maskapai'});
+                
+                        let config=this.state.configApi;
+                        let baseUrl=config.apiBaseUrl;
+                        let url=baseUrl+'booking/checkout';
+                        console.log('configApi',JSON.stringify(config));
+                        console.log('urlss',url);
+                 
+                        
+                        let access_token=config.apiToken;
+                      
+
+
+                        var paramCheckout={};
+                        paramCheckout.product="flight";
+                        paramCheckout.key=param.key;
+                        paramCheckout.price={
+                            "subtotal": dataPrice.subtotal_price,
+                            "insurance": false,
+                            "tax": dataPrice.tax_fee,
+                            "iwjr": dataPrice.iwjr,
+                            "fee": dataPrice.transaction_fee,
+                            "fee2": dataPrice.transaction_fee,
+                            "discount": 0,
+                            "point": 0,
+                            "total": dataPrice.total_price,
+                        }
+                        paramCheckout.paymentMethod=0;
+                        paramCheckout.contact=contact;
+                        paramCheckout.guest=participant;
+                        paramCheckout.coupon=[];
+                        paramCheckout.platform=Platform.OS;
+                        console.log('paramCheckout',JSON.stringify(paramCheckout));
+                        
+                        
+
                         var myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("Authorization", "Bearer "+access_token);
-                        
-        
-                        var raw = JSON.stringify(paramGetCart);
+                        myHeaders.append("Cookie", "access_token="+access_token);
+
+                        var raw = JSON.stringify(paramCheckout);
+
                         var requestOptions = {
                         method: 'POST',
                         headers: myHeaders,
                         body: raw,
-                        redirect: 'follow',
-                        signal
+                        redirect: 'follow'
                         };
 
-                        console.log('paramGetCart',JSON.stringify(paramGetCart));
-                       
-
-                        fetch(url+'flight/Cart',requestOptions)
+                        fetch(url, requestOptions)
                         .then(response => response.json())
                         .then(result => {
-                            if(result.errors){
-                                this.setState({ loading_spinner: false });
-                                this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.errors));
-                            }else if(result.status==="error"){
-                                this.setState({ loading_spinner: false });
-                                this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
-                            }else if(result.status==="success"){
-                                var dataCartArray = [];
-                                var dataCart = {};
-                                var dataCart=result.data;
+                            this.setState({loading_spinner:false});
+                            console.log('resultcheckout',JSON.stringify(result));
+                            var redirect='Pembayaran';
+                                var id_order=result.data.id_order;
+                                
+                                var param={
+                                    id_order:id_order,
+                                    dataPayment:{},
+                                    back:''
+                                }
+                                this.props.navigation.navigate("Pembayaran",{param:param});
 
-                                    var cartToBeSaved = dataCart;
-                                    cartToBeSaved.participant=this.state.listdata_participant;
-                                    cartToBeSaved.typeProduct=this.state.param.type;
-                                    console.log('cartToBeSaved',JSON.stringify(cartToBeSaved));
-                                    this.onSubmitOrder(cartToBeSaved);
-                            }
-        
                         })
                         .catch(error => {
-                            this.setState({loading_spinner:false});
-                            this.setState({loading:false});
-                            alert('Kegagalan Respon Server');
+                            alert('Kegagalan Respon Server')
                         });
-                    }
-                });
-
+                        
+                    
+         
             });
+
+            
+            
 
 
         }else{
@@ -1425,6 +1403,17 @@ export default class Summary extends Component {
         var expiredPasportMonth=this.getDateDiff(date2,date1);
         return expiredPasportMonth;
     }
+
+    convertOldVia(oldType){
+        if(oldType=='ADT'){
+            old='adult';
+        }else if(oldType=='CHD'){
+            old='child';
+        }else if(oldType=='INF'){
+            old='infant';
+        }
+        return old;
+    }
     
 
     onSubmit() {
@@ -1515,18 +1504,33 @@ export default class Summary extends Component {
         var item=cartToBeSaved;
         this.setState({loading_spinner_file:require("app/assets/loader_wait.json")});
         this.setState({loading_spinner_title:'Create Order'});
-            AsyncStorage.getItem('config', (error, result) => {
-                if (result) {    
-                    let config = JSON.parse(result);
-                    var access_token=config.token;
-                    var midtransMethod=config.midtransMethod;
-                    var path=config.user_order_submit.dir;
-                    var url=config.baseUrl;
+              
+                    // let config = JSON.parse(result);
+                    // var access_token=config.token;
+
+                    // let config=this.state.configApi;
+                    // let baseUrl=config.apiBaseUrl;
+
+                    // let url=baseUrl+"front/api/OrderSubmit/submit";
+                    // console.log('configApi',JSON.stringify(config));
+                    // console.log('urlss',url);
+
+
+
+                    // //var midtransMethod=config.midtransMethod;
+                    // var path=config.user_order_submit.dir;
+                    // var url=config.baseUrl;
+
+                    let config=this.state.configApi;
+                    let baseUrl=config.baseUrl;
+                    let url=baseUrl+"front/api/OrderSubmit/submit";
+                    console.log('configApi',JSON.stringify(config));
+                    console.log('urlss',url);
                     
                     var param=this.state.param;
                     param.discountCoupon=this.state.discountCoupon;
                     param.discountPoint=this.state.discountPoint;
-                    param.platform=this.state.config.from;
+                    param.platform=Platform.OS;
                     var dataCartArrayRealSend={
                     "token":access_token,
                     "id_user":this.state.id_user,
@@ -1536,7 +1540,8 @@ export default class Summary extends Component {
                     "fee":0,
                     "insurance":this.state.insurance_included,
                     "param":param,
-                    "otherUser":this.state.otherUser
+                    "otherUser":this.state.otherUser,
+                    "couponCodeList":this.state.couponCodeList
                     }
                     
                     console.log("---------------data cart array cart kirim  ------------");
@@ -1560,7 +1565,7 @@ export default class Summary extends Component {
                     };
                     
 
-                    fetch(url+path,requestOptions)
+                    fetch(url,requestOptions)
                         .then(response => response.json())
                         .then(result => {
                             this.setState({ loading_spinner: false });
@@ -1580,11 +1585,10 @@ export default class Summary extends Component {
         
                     })
                         .catch(error => {
-                            alert('Kegagalan Respon Server')
+                            alert('Kegagalan Respon Server submitorder')
                     });
 
-                }
-            });
+                
     
 
     }
@@ -1814,12 +1818,15 @@ export default class Summary extends Component {
                 fetch(url+path,requestOptions)
                 .then(response => response.json())
                 .then(result => {
-    
+                    setTimeout(() => {
+                        this.validation();
+                    }, 50);
+      
     
                 })
                 .catch(error => {
     
-                    alert('Kegagalan Respon Server')
+                    alert('Kegagalan Respon Server save participant')
                 });
     }
 
@@ -1933,6 +1940,7 @@ export default class Summary extends Component {
     validaton_participant(){
         var hasil = false;
         const products=this.state.listdata_participant;
+        console.log('validaton_participant',JSON.stringify(products));
 
 
            const filters = {
@@ -1942,8 +1950,8 @@ export default class Summary extends Component {
 
         const  filtered = this.filterArray(products, filters);
         var jml=filtered.length;
-        ////console.log("----------------validation participant------------------------------------");
-        ////console.log(JSON.stringify(filtered));
+        console.log("----------------validation participant------------------------------------");
+        console.log(JSON.stringify(filtered));
         return jml;
     }
     
@@ -1961,15 +1969,16 @@ export default class Summary extends Component {
 
         const  filtered = this.filterArray(products, filters);
         var jml=filtered.length;
-        ////console.log("----------------validation participant------------------------------------");
-        ////console.log(JSON.stringify(filtered));
+        console.log("----------------validation customer------------------------------------");
+        console.log(JSON.stringify(filtered));
         return jml;
     }
 
     validation(){
         var jml_empty_participant=this.validaton_participant();
         var jml_empty_customer=this.validaton_customer();
-
+        console.log('jml_empty_participant',jml_empty_participant);
+        console.log('jml_empty_customer',jml_empty_customer);
 
         if(jml_empty_participant == 0 && jml_empty_customer == 0 ){
                     this.setState({colorButton:BaseColor.secondColor});
@@ -2077,7 +2086,7 @@ export default class Summary extends Component {
         ){
     const {userSession}=this.state;
     
-
+            console.log('type',type);
     if(type=='guest'){
             AsyncStorage.getItem('setDataParticipant', (error, result) => {
             if (result) {
@@ -2135,7 +2144,7 @@ export default class Summary extends Component {
             
                     let response = await fetch("https://masterdiskon.com/front/api/user/participant_check", requestOptions);
                     let json = await response.json();
-                    //console.log('checkParticipant',JSON.stringify(json));
+                    console.log('checkParticipant',JSON.stringify(json));
 
                     // console.log('countPersons',countPersons.length);
                     var id=0;
@@ -2148,7 +2157,7 @@ export default class Summary extends Component {
                             fullname: fullname, 
                             firstname: firstname,
                             lastname:lastname,
-                            birthday:birthday,
+                            birthday:this.convertParticipantBirthday(old),
                             nationality:nationality,
                             passport_number:passport_number,
                             passport_country:passport_country,
@@ -2167,6 +2176,11 @@ export default class Summary extends Component {
     
                     AsyncStorage.setItem('setDataParticipant',JSON.stringify(newProjects));
                     this.setState({listdata_participant:newProjects});
+                    // setTimeout(() => {
+                    //     console.log('listdata_participant',JSON.stringify(this.state.listdata_participant));
+                    // }, 200);
+
+                    
 
                     this.saveParticipant( 
                         id,
@@ -2186,7 +2200,7 @@ export default class Summary extends Component {
                         passport_country_id,
                         old
                         );
-          
+                       
 
                     
                     // setTimeout(() => {
@@ -2245,11 +2259,12 @@ export default class Summary extends Component {
                 padding: 5,
             }});
             this.setState({error_form_customer:false});
+            setTimeout(() => {
+                this.validation();
+            }, 50);
     }
 
-    setTimeout(() => {
-        this.validation();
-    }, 50);
+  
 
 
   }
@@ -2294,27 +2309,107 @@ export default class Summary extends Component {
         return (yyyy + "-" + MM + "-" + dd);
      }
     
-     useCoupon(data){
-         const {param}=this.state;
-         if(data.success==false){
-             alert(data.message);
-         }else{
-            this.setState({discount:data.discount});
-            this.setState({id_coupon:data.id_coupon});
-            this.setState({id_coupon_history:data.id_coupon_history});
-            this.setState({param:param});
-        setTimeout(() => {
-            this.totalPrice();
-        }, 50);
-        console.log('couponsummary',JSON.stringify(data));
-         }
-        
+     useCoupon(item){
+        // alert('asd');
+        const {userSession,param,couponCode,discount,couponCodeList,product}=this.state;
+        console.log('useCoupon',JSON.stringify(item));
+        console.log('paramUseCoupn',JSON.stringify(param));
+
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json");
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Cookie", "ci_session=gur1sg8tu7micu8i028lqn1sa4tcaa5k");
+
+      
+            var params={"param":
+                {
+                    "id_coupon_history": item.id_coupon_history,
+                    "id_coupon": item.id_coupon,
+                    "id_user":  this.state.id_user,
+                    "total": param.total,
+                    "platform": item.detail_coupon.platform,
+                    "product": param.type,
+                    "payment_method": item.detail_coupon.payment_method,
+                    "parameter":param
+                }
+            };
+            var raw = JSON.stringify(params);
+            console.log('paramsuscoup',raw);
+            //console.log('param',JSON.stringify(param));
+
+
+            var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+            };
+            var url="https://masterdiskon.com/front/api/product/useCoupon";
+            
+
+            fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log('resultuSEcOUPON',JSON.stringify(result));
+
+
+                if(result.success==true){
+               
+                    const arrayIncludesInObj = (arr, key, valueToCheck) => {
+                        return arr.some(value => value[key] === valueToCheck);
+                      }
+    
+                    const found = arrayIncludesInObj(couponCodeList, "couponCode", item.coupon_code); // true
+                    console.log(found);
+                    if(found==false){
+                        this.setState({discount:parseInt(discount)+parseInt(result.data.discount)});
+                        couponCodeList.push({
+                            couponCode:result.data.coupon_code,
+                            couponName:result.data.coupon_name,
+                            couponAmount:result.data.discount,
+                            couponIdHistory:result.data.id_coupon_history,
+                            couponId:result.data.id_coupon,
+                            from:param.type=='hotelLinx' ? param.city :  param.bandaraAsalCode,
+                        to:param.type=='hotelLinx' ? "" :  param.bandaraTujuanCode
+                        });
+                        
+                        console.log('couponCodeListpush',JSON.stringify(couponCodeList));
+                        var discountCoupon=0;
+                        couponCodeList.map(item => {
+                            discountCoupon+=parseInt(item.couponAmount);
+                        });
+    
+                        this.setState({discountCoupon:discountCoupon});
+                        this.setState({couponCodeList:couponCodeList});
+                        
+                        
+    
+                    }
+                    
+                    //this.setState({couponCode:"Pilih Kupon"});
+                    setTimeout(() => {
+                        this.totalPrice();
+                        console.log('discount',this.state.discount);
+                        console.log('couponCodeList',JSON.stringify(this.state.couponCodeList));
+                    }, 50);
+
+                }else{
+                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+
+                }
+
+            })
+            .catch(error => { alert('Kegagalan Respon Server');});
+            //this.setState({couponCode:item.coupon_code});
      }
 
 
-    checkCoupon(){
+     useCouponForm(couponCode){
         const {navigation}=this.props;
-        const {userSession,param,couponCode,discount,couponCodeList,product}=this.state;
+        const {userSession,param,discount,couponCodeList,product}=this.state;
+        console.log('product',JSON.stringify(product));
+        console.log('param',JSON.stringify(param));
+        
         this.setState({loadingCheckCoupon:true});
         console.log('discount',discount);
         var myHeaders = new Headers();
@@ -2325,14 +2420,17 @@ export default class Summary extends Component {
         headers: myHeaders,
         redirect: 'follow'
         };
-        //var url="https://masterdiskon.com/front/page/coupon/get_coupon_detail?platform=app&id=''code="+couponCode+"&total="+param.total+"&product=hotelpackage&id_user="+userSession.id_user;
         var paramCode="code="+couponCode.toLowerCase();
         var paramTotal="&total="+param.total;
         var paramProduct="&product="+param.type;
         var paramIdUser="&id_user="+userSession.id_user;
         var paramPlatform="&platform=app";
-        var paramId="&id="+product.id;
-        var paramUrl=paramCode+paramTotal+paramProduct+paramIdUser+paramPlatform+paramId;
+        var paramId=param.type=='hotelLinx' ? "&id="+product.id :  "&id=";
+        var from=param.type=='hotelLinx' ? "&from="+param.city :  "&from="+param.bandaraAsalCode;
+        var to=param.type=='hotelLinx' ? "&to=" :  "&to="+param.bandaraTujuanCode;
+        
+        var paramUrl=paramCode+paramTotal+paramProduct+paramIdUser+paramPlatform+paramId+from+to;
+        console.log('paramCouponForm',JSON.stringify(paramUrl));
         var url="https://masterdiskon.com/front/page/coupon/get_coupon_detail?"+paramUrl;
        
         
@@ -2342,7 +2440,7 @@ export default class Summary extends Component {
         .then(result => {
             console.log('checkCoupon',JSON.stringify(result));
             this.setState({loadingCheckCoupon:false});
-            if(result.code==200){
+            if(result.status=="success"){
                
                 const arrayIncludesInObj = (arr, key, valueToCheck) => {
                     return arr.some(value => value[key] === valueToCheck);
@@ -2352,9 +2450,13 @@ export default class Summary extends Component {
                 if(found==false){
                     this.setState({discount:parseInt(discount)+parseInt(result.res.amount)});
                     couponCodeList.push({
-                        couponCode:this.state.couponCode,
+                        couponCode:result.res.coupon_code,
                         couponName:result.res.coupon_name,
                         couponAmount:result.res.amount,
+                        couponIdHistory:"",
+                        couponId:result.res.id_coupon,
+                        from:param.type=='hotelLinx' ? param.city :  param.bandaraAsalCode,
+                        to:param.type=='hotelLinx' ? "" :  param.bandaraTujuanCode
                     });
                     
                     var discountCoupon=0;
@@ -2369,14 +2471,14 @@ export default class Summary extends Component {
 
                 }
                 
-                this.setState({couponCode:"Pilih Kupon"});
+                //this.setState({couponCode:"Pilih Kupon"});
                 setTimeout(() => {
                     this.totalPrice();
                     console.log('discount',this.state.discount);
                     console.log('couponCodeList',JSON.stringify(this.state.couponCodeList));
                 }, 50);
             }else{
-                this.setState({couponCode:"Pilih Kupon"});
+                //this.setState({couponCode:"Pilih Kupon"});
                 console.log('resultCheckCoupon',JSON.stringify(result));
                 this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
 
@@ -2387,94 +2489,136 @@ export default class Summary extends Component {
         .catch(error => {
 
         });
+       
+     }
+
+
+     setCoupon(data){
+        //this.setState({couponCode:item.coupon_code});
+        //  const {param}=this.state;
+        //  console.log('useCoupon',JSON.stringify(data));
+        //  if(data.success==false){
+        //      alert(data.message);
+        //  }else{
+        //     this.setState({discount:data.discount});
+        //     this.setState({id_coupon:data.id_coupon});
+        //     this.setState({id_coupon_history:data.id_coupon_history});
+        //     this.setState({param:param});
+        // setTimeout(() => {
+        //     this.totalPrice();
+        // }, 50);
+        // console.log('couponsummary',JSON.stringify(data));
+        //  }
     }
 
-    setCoupon(item){
-        this.setState({couponCode:item.product_code});
+    checkCoupon(){
+        const {navigation}=this.props;
+        const {userSession,param,couponCode,discount,couponCodeList,product}=this.state;
+        console.log('product',JSON.stringify(product));
+        
+        this.setState({loadingCheckCoupon:true});
+        console.log('discount',discount);
+        var myHeaders = new Headers();
+        myHeaders.append("Cookie", "ci_session=t8rooel5ugjfvjll6fv4fu0b7b1nif93");
+
+        var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+        };
+        var paramCode="code="+couponCode.toLowerCase();
+        var paramTotal="&total="+param.total;
+        var paramProduct="&product="+param.type;
+        // var paramIdUser="&id_user="+userSession.id_user;
+        // var paramPlatform="&platform=app";
+        // var paramId="&id="+product.id;
+        var paramUrl=paramCode+paramTotal+paramProduct;
+        //var paramUrl=paramCode+paramTotal+paramProduct+paramIdUser+paramPlatform+paramId;
+        var url="https://masterdiskon.com/front/page/coupon/get_coupon_detail?"+paramUrl;
+       
+        
+        console.log('urlcheckCoupon',url);
+        fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log('checkCoupon',JSON.stringify(result));
+            this.setState({loadingCheckCoupon:false});
+            // if(result.code==200){
+               
+            //     const arrayIncludesInObj = (arr, key, valueToCheck) => {
+            //         return arr.some(value => value[key] === valueToCheck);
+            //       }
+
+            //     const found = arrayIncludesInObj(couponCodeList, "couponCode", this.state.couponCode); // true
+            //     if(found==false){
+            //         this.setState({discount:parseInt(discount)+parseInt(result.res.amount)});
+            //         couponCodeList.push({
+            //             couponCode:this.state.couponCode,
+            //             couponName:result.res.coupon_name,
+            //             couponAmount:result.res.amount,
+            //         });
+                    
+            //         var discountCoupon=0;
+            //         couponCodeList.map(item => {
+            //             discountCoupon+=parseInt(item.couponAmount);
+            //         });
+
+            //         this.setState({discountCoupon:discountCoupon});
+            //         this.setState({couponCodeList:couponCodeList});
+                    
+                    
+
+            //     }
+                
+            //     //this.setState({couponCode:"Pilih Kupon"});
+            //     setTimeout(() => {
+            //         this.totalPrice();
+            //         console.log('discount',this.state.discount);
+            //         console.log('couponCodeList',JSON.stringify(this.state.couponCodeList));
+            //     }, 50);
+            // }else{
+            //     //this.setState({couponCode:"Pilih Kupon"});
+            //     console.log('resultCheckCoupon',JSON.stringify(result));
+            //     this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+
+            // }
+             
+
+        })
+        .catch(error => {
+
+        });
     }
+
+   
     
 
     getCouponDetail(){
 
         const {navigation}=this.props;
         const {userSession,param}=this.state;
-        //navigation.navigate('SelectCoupon',{userSession:userSession,param:param,useCoupon:this.useCoupon});
-        navigation.navigate('SelectCoupon',{setCoupon:this.setCoupon});
-
-        // AsyncStorage.getItem('config', (error, result) => {
-        //     if (result) {    
-        //         let config = JSON.parse(result);
-        //         var url=config.baseUrl;
-
-
-        //         var totalPrice=this.state.param.totalPrice;
-        //         var couponCode=this.state.couponCode;
-        //         var typeProduct=this.state.param.type;
-        //         var id_user=this.state.id_user;
-        //         var param=this.state.param;
-
-        //         var myHeaders = new Headers();
-        //         myHeaders.append("Cookie", "ci_session=h5so0bdflp6msbs9plucp347muaaq6fn");
-
-        //         var requestOptions = {
-        //         method: 'GET',
-        //         headers: myHeaders,
-        //         redirect: 'follow'
-        //         };
-        //         var url=url+"front/page/coupon/get_coupon_detail?code="+couponCode+"&total="+totalPrice+"&product="+typeProduct+"&id_user="+id_user+"&app=1";
-        //         console.log('urlGetCoupon',url);
-        //         fetch(url, requestOptions)
-        //         .then(response => response.json())
-        //         .then(result => {
-        //             console.log('getCouponDetail',JSON.stringify(result));
-        //             if(result.status=='error'){
-        //                     this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
-        //             }else if(result.status=='success'){
-        //                 if(result.code=='200'){
-        //                     param.discount=result.res.amount;
-        //                     param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
-        //                     this.setState({param:param});
-        //                 }
-        //             }
-        //         })
-        //         .catch(error => {
-        //             alert('Kegagalan Respon Server')
-        //         });
-        //     }
-        // }); 
+        navigation.navigate('SelectCoupon',{userSession:userSession,param:param,useCoupon:this.useCoupon,useCouponForm:this.useCouponForm});
+        
 
     }
 
-    // componentWillMount() {
-    //     let { navigation, auth } = this.props;
-    //     AsyncStorage.getItem('userSession', (error, result) => {
-    //         if (result) {    
-               
-    //             this.setState({login:true});
-              
-    //         }else{
     
-    //             this.setState({login:false});
-    //         }
-    //     });
-    
-    // }
-    
-
-    
-
     componentDidMount() {
 
         var param=this.state.param;
         var typeProduct=param.type;
         var typeFlight=this.state.typeFlight;
+        console.log('param',JSON.stringify(param));
       
+        setTimeout(() => {
+            this.count();
+            if(param.type=='flight'){
+                this.typeFlight();
+            }
+        }, 20);
+        
 
-        this.totalPrice();
-
-        if(param.type=='flight'){
-            this.typeFlight();
-        }
+        
         
         let dtDefPassportExpired = new Date();
         dtDefPassportExpired = this.addDate(dtDefPassportExpired, +3, 'days');
@@ -2620,7 +2764,7 @@ export default class Summary extends Component {
         var nationality_phone_code=customer.nationality_phone_code;
         var passport_country_id=customer.passport_country_id;
         var type='guest';
-        
+        var old='adult';
         
         var paraVal={
             firstname:firstname,
@@ -2657,6 +2801,7 @@ export default class Summary extends Component {
             this.setState({error_form_customer:true});
             this.setState({ reminders: false });
         }else{
+            
             this.updateParticipant(
                 key,
                 fullname,
@@ -2673,14 +2818,16 @@ export default class Summary extends Component {
                 nationality_id,
                 nationality_phone_code,
                 passport_country_id,
-                type
+                type,
+                old,
+                ''
             );
         }
         
         
 
         }else{
-
+            
         var key=1;
         var fullname='';
         var firstname='';
@@ -2715,7 +2862,9 @@ export default class Summary extends Component {
         nationality_id,
         nationality_phone_code,
         passport_country_id,
-        type
+        type,
+        old,
+        ''
         );
 
 
@@ -2737,22 +2886,25 @@ export default class Summary extends Component {
     toggleSwitchInsurance = value => {
         var param=this.state.param;
         this.setState({ remindersInsurance: value });
-        if(value==true){
-            var total_all=parseInt(this.state.dataPrice.total_price)+parseInt(this.state.dataPrice.insurance_total);
-            this.setState({total_all:total_all});
-            this.setState({insurance_included:true});
-            param.insurance=this.state.dataPrice.insurance_total;
-            param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
-            this.setState({param:param});
-        }else{
-            var total_all=parseInt(this.state.dataPrice.total_price);
-            this.setState({total_all:total_all});
-            this.setState({insurance_included:false});
+        setTimeout(() => {
+            this.count();
+        }, 50);
+        // if(value==true){
+        //     var total_all=parseInt(this.state.dataPrice.total_price)+parseInt(this.state.dataPrice.insurance_total);
+        //     this.setState({total_all:total_all});
+        //     this.setState({insurance_included:true});
+        //     param.insurance=this.state.dataPrice.insurance_total;
+        //     param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
+        //     this.setState({param:param});
+        // }else{
+        //     var total_all=parseInt(this.state.dataPrice.total_price);
+        //     this.setState({total_all:total_all});
+        //     this.setState({insurance_included:false});
 
-            param.insurance=0;
-            param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
-            this.setState({param:param});
-        }
+        //     param.insurance=0;
+        //     param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
+        //     this.setState({param:param});
+        // }
     };
 
    
@@ -2770,53 +2922,50 @@ export default class Summary extends Component {
         
         const {param}=this.state;
         this.setState({ usePointUser: value });
-       
-        var userPoint=this.state.userSession.point;
-        
-        
-       
-        if(value==true){
-            console.log('total',param.total);
-            console.log('discountPoint',this.state.discountPoint);
+        // var userPoint=this.state.userSession.point;
+        // if(value==true){
+        //     console.log('total',param.total);
+        //     console.log('discountPoint',this.state.discountPoint);
 
             
-            if(param.total <= userPoint){
-                //alert('1');
-                var discountPointSisa=parseInt(userPoint)-parseInt(this.state.param.total);
+        //     if(param.total <= userPoint){
+        //         //alert('1');
+        //         var discountPointSisa=parseInt(userPoint)-parseInt(this.state.param.total);
                 
-                //setTimeout(() => {
-                    var discountPoint=parseInt(userPoint)-parseInt(discountPointSisa);
-                    console.log('discountPoint',discountPoint);
-                    this.setState({discountPoint:discountPoint});
-                    //console.log('discountPoint',parseInt(userPoint)-parseInt(this.state.discountPoint));
-                //}, 50);
+        //         //setTimeout(() => {
+        //             var discountPoint=parseInt(userPoint)-parseInt(discountPointSisa);
+        //             console.log('discountPoint',discountPoint);
+        //             this.setState({discountPoint:discountPoint});
+        //             //console.log('discountPoint',parseInt(userPoint)-parseInt(this.state.discountPoint));
+        //         //}, 50);
                 
-            }else{
-                //alert('2');
-                var discountPointSisa=0;
-                var discountPoint=userPoint;
-                console.log('discountPoint',discountPoint);
-                this.setState({discountPoint:discountPoint});
-                // setTimeout(() => {
-                //     console.log('discountPoint',this.state.discountPoint);
-                // }, 50);
-            }
+        //     }else{
+        //         //alert('2');
+        //         var discountPointSisa=0;
+        //         var discountPoint=userPoint;
+        //         console.log('discountPoint',discountPoint);
+        //         this.setState({discountPoint:discountPoint});
+        //         // setTimeout(() => {
+        //         //     console.log('discountPoint',this.state.discountPoint);
+        //         // }, 50);
+        //     }
 
-            this.setState({discountPointSisa:discountPointSisa});
-            this.setState({pointUser:true});
-            this.setState({discount:parseInt(this.state.discount)+parseInt(userPoint)});
-        }else{
-            this.setState({discountPoint:0});
+        //     this.setState({discountPointSisa:discountPointSisa});
+        //     this.setState({pointUser:true});
+        //     this.setState({discount:parseInt(this.state.discount)+parseInt(userPoint)});
+        // }else{
+        //     this.setState({discountPoint:0});
             
-            //this.usePointCancel();
-            this.setState({pointUser:false});
-            this.setState({discountPointSisa:this.state.userSession.point});
-            this.setState({discount:parseInt(this.state.discount)-parseInt(userPoint)});
-        }
+        //     //this.usePointCancel();
+        //     this.setState({pointUser:false});
+        //     this.setState({discountPointSisa:this.state.userSession.point});
+        //     this.setState({discount:parseInt(this.state.discount)-parseInt(userPoint)});
+        // }
 
         setTimeout(() => {
-            console.log('discount',this.state.discount);
-            this.totalPrice();
+            // console.log('discount',this.state.discount);
+            // this.totalPrice();
+            this.count();
         }, 50);
         
     };
@@ -2844,6 +2993,10 @@ export default class Summary extends Component {
     }
 
     removeItem(object, key, item) {
+        //this.state.couponCodeList, "couponCode", item
+        console.log('couponCodeList',JSON.stringify(object));
+        console.log('couponCode',JSON.stringify(key));
+        console.log('item',JSON.stringify(item));
         var value=item.couponCode;
         var discount=this.state.discount;
         if (value == undefined)
@@ -2902,12 +3055,13 @@ export default class Summary extends Component {
 
         const contentCodeCouponList = this.state.couponCodeList.map((item) => {
             return (
-                <View style={{flexDirection:'row',marginTop:0,justifyContent:"space-between"}}>
-                        <Text caption2 style={{fontStyle: 'italic'}}>{item.couponName} - ({item.couponCode}) - (Rp {priceSplitter(item.couponAmount)})</Text>
+                <View style={{flexDirection:'row',marginBottom:3,justifyContent:"space-between"}}>
+                        <Text caption2 style={{fontStyle: 'italic',color:BaseColor.primaryColor}}>({item.couponCode}) - (Rp {priceSplitter(item.couponAmount)})</Text>
                         <TouchableOpacity
                             style={{flexDirection:'row',borderRadius:3,paddingHorizontal:5,paddingVertical:3,backgroundColor:BaseColor.thirdColor}}
                             onPress={() =>
                                 {
+                                   
                                     this.removeItem(this.state.couponCodeList, "couponCode", item);
                                 }
                             }
@@ -2920,6 +3074,7 @@ export default class Summary extends Component {
                                         />
                                         <Text caption2 whiteColor>Hapus</Text>
                         </TouchableOpacity>
+                        
                 </View>
             )
         })       
@@ -2927,21 +3082,19 @@ export default class Summary extends Component {
 
 
         var contentFormCoupon=<View>
-            <View style={[styles.line,{flexDirection:'column'}]} />
-                <Text caption2 style={{ paddingTop: 10}}>
-                    Kode kupon
-                </Text>
+            <View style={[{flexDirection:'column'}]} />
+                
         
                 <View style={{
                 flexDirection: "row",
-                marginBottom: this.state.couponCodeList.length == 0 ? 15 :0,
+                //marginBottom: this.state.couponCodeList.length == 0 ? 15 :0,
                 }}>
-                    <TouchableOpacity
-                    style={{flex: 9}}
-                        onPress={() =>
-                            {
-                            this.getCouponDetail();
-                            }}
+                    <View
+                    style={{flex: 9,justifyContent:'center'}}
+                        // onPress={() =>
+                        //     {
+                        //     this.getCouponDetail();
+                        //     }}
                     >
                     {/* <TextInput
                         style={[BaseStyle.textInput,{flex:9}]}
@@ -2953,15 +3106,16 @@ export default class Summary extends Component {
                         placeholderTextColor={BaseColor.grayColor}
                         selectionColor={BaseColor.primaryColor}
                     /> */}
-                    <Text style={[BaseStyle.textInput]}>{this.state.couponCode}</Text>
-                    </TouchableOpacity>
+                    <Text>{this.state.couponCode}</Text>
+                    </View>
                     <Button
                             loading={this.state.loadingCheckCoupon}
                             style={[{backgroundColor:BaseColor.primaryColor},{flex:3,borderRadius:5,height:40,marginTop:0}]}
                             
                             onPress={() =>
                                 {
-                                this.checkCoupon();
+                                //this.checkCoupon();
+                                this.getCouponDetail();
                                 }}
                         >
                             <Text style={{color:BaseColor.whiteColor}}>Gunakan</Text>
@@ -2980,8 +3134,8 @@ export default class Summary extends Component {
                 </View>
                 <View>
                     {contentCodeCouponList}
-                    
                 </View>
+                
             </View>
 
         var contentFormPoint=<View>
@@ -3373,23 +3527,26 @@ export default class Summary extends Component {
                         </View>
 
         }else if(this.state.param.type=='flight'){
-        
-            var dataDeparture=<View style={{flexDirection: "row",marginTop: 10,justifyContent: "space-between"}}>
+            var dataDeparture=<View />
+            var dataReturn=<View />
+            dataDeparture=<View style={{flexDirection: "row",marginTop: 10,justifyContent: "space-between"}}>
                                 <View style={{flexDirection: "row", alignItems: "center"}}>
                                     <Image
                                         style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
                                         resizeMode="contain"
-                                        source={{uri: this.state.selectDataDeparture.flight_schedule[0].airline_logo.includes("https") ? this.state.selectDataDeparture.flight_schedule[0].airline_logo : 'https:'+this.state.selectDataDeparture.flight_schedule[0].airline_logo}}
+                                        source={{uri: this.state.selectDataDeparture.image}}
                                     />
                                     <View>
                                         <Text caption1>
-                                            {this.state.selectDataDeparture.flight_schedule[0].airline_name}
+                                            {this.state.selectDataDeparture.name}
                                         </Text>
                                         <Text caption2>
-                                            {this.state.selectDataDeparture.flight_schedule[0].from} - 
-                                            {this.state.selectDataDeparture.flight_schedule[0].to} | 
-                                            {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
-                                            {this.state.selectDataDeparture.flight_schedule[0].departure_time} |
+                                            {this.state.selectDataDeparture.detail.flight[0].departure.code} - 
+                                            {this.state.selectDataDeparture.detail.flight[0].arrival.code} | 
+                                            {this.state.selectDataDeparture.detail.flight[0].arrival.date} | 
+                                            {this.state.selectDataDeparture.detail.flight[0].arrival.time}
+                                            {/* {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
+                                            {this.state.selectDataDeparture.flight_schedule[0].departure_time} | */}
                                         </Text>
                                     </View>
                                 </View>
@@ -3403,26 +3560,28 @@ export default class Summary extends Component {
                             </View>
             
     
-            var dataReturn=null;
-            if(this.state.selectDataReturn){
+            
+            if(this.state.selectDataReturn != null){
                 dataReturn=<View style={{flexDirection: "row",marginTop: 10,justifyContent: "space-between"}}>
                             <View style={{flexDirection: "row", alignItems: "center"}}>
-                                <Image
-                                    style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
-                                    resizeMode="contain"
-                                    source={{uri: this.state.selectDataReturn.flight_schedule[0].airline_logo.includes("https") ? this.state.selectDataReturn.flight_schedule[0].airline_logo : 'https:'+this.state.selectDataReturn.flight_schedule[0].airline_logo}}
+                                    <Image
+                                        style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
+                                        resizeMode="contain"
+                                        source={{uri: this.state.selectDataReturn.image}}
                                     />
-                                <View>
-                                    <Text caption1>
-                                        {this.state.selectDataReturn.flight_schedule[0].airline_name}
-                                    </Text>
-                                    <Text caption2>
-                                        {this.state.selectDataReturn.flight_schedule[0].from} - 
-                                        {this.state.selectDataReturn.flight_schedule[0].to} | 
-                                        {this.convertDateText(this.state.selectDataReturn.flight_schedule[0].departure_date)} 
-                                        {this.state.selectDataReturn.flight_schedule[0].departure_time}
-                                    </Text>
-                                </View>
+                                    <View>
+                                        <Text caption1>
+                                            {this.state.selectDataReturn.name}
+                                        </Text>
+                                        <Text caption2>
+                                            {this.state.selectDataReturn.detail.flight[0].departure.code} - 
+                                            {this.state.selectDataReturn.detail.flight[0].arrival.code} | 
+                                            {this.state.selectDataReturn.detail.flight[0].arrival.date} | 
+                                            {this.state.selectDataReturn.detail.flight[0].arrival.time}
+                                            {/* {this.convertDateText(this.state.selectDataReturn.flight_schedule[0].departure_date)} | 
+                                            {this.state.selectDataReturn.flight_schedule[0].departure_time} | */}
+                                        </Text>
+                                    </View>
                             </View>
                             <View
                                 style={{ flexDirection: "row", alignItems: "flex-end" }}
@@ -3633,7 +3792,7 @@ export default class Summary extends Component {
                         <View style={{flex: 6,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.param.subtotal)}
+                                {'IDR '+priceSplitter(this.state.dataprice.subtotal)}
                                 </Text>
                         </View>
                     </View>
@@ -3693,7 +3852,7 @@ export default class Summary extends Component {
                         <View style={{flex: 6,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.param.subtotal)}
+                                {'IDR '+priceSplitter(this.state.dataprice.subtotal)}
                                 </Text>
                         </View>
                     </View>
@@ -3758,7 +3917,7 @@ export default class Summary extends Component {
                         <View style={{flex: 5,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.param.subtotal)}
+                                {'IDR '+priceSplitter(this.state.dataPrice.subtotal_price)}
                                 </Text>
                         </View>
                     </View>
@@ -3825,7 +3984,7 @@ export default class Summary extends Component {
                         <View style={{flex: 5,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.param.total)}
+                                {'IDR '+priceSplitter(this.state.dataPrice.total_price)}
                                 </Text>
                         </View>
                     </View>
@@ -3846,7 +4005,7 @@ export default class Summary extends Component {
                         <View style={{flex: 6,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.param.subtotal)}
+                                {'IDR '+priceSplitter(this.state.dataprice.subtotal)}
                                 </Text>
                         </View>
                     </View>
@@ -3891,6 +4050,28 @@ export default class Summary extends Component {
                 </View>
                 
             </View>
+        }
+
+
+        var contentBiayaPenanganan=<View />
+        if(this.state.param.total==0){
+            var contentBiayaPenanganan=<View style={{flexDirection:'row',paddingLeft:20,paddingRight:20,paddingTop:5,paddingBottom:5}} >
+                    <View style={{flexDirection:'row',flex: 10,justifyContent: "flex-start",alignItems: "center"}}>
+                        <View style={{ flex: 5,flexDirection: "row",justifyContent: "flex-start",alignItems: "center"}}>
+                            <View>
+                                <Text caption2 grayColor numberOfLines={1}>
+                                    Biaya Penanganan
+                                </Text>
+                            
+                            </View>
+                        </View>
+                        <View style={{flex: 5,justifyContent: "center",alignItems: "flex-end"}}>
+                                <Text caption1 semibold numberOfLines={1}>
+                                {'IDR '+priceSplitter(10000)}
+                                </Text>
+                        </View>
+                    </View>
+                </View>
         }
 
 
@@ -3984,7 +4165,9 @@ export default class Summary extends Component {
                 {contentformParticipant}
                 
                 {contentFormCoupon}
-
+                {
+                this.state.couponCodeList.length == 0 ? <View /> : <View style={styles.line} />
+                }
                 {
                 this.state.loadingPoint==true ?
                 <View />
@@ -3997,6 +4180,7 @@ export default class Summary extends Component {
                 
             </View>
             {contentPrice}
+            {contentBiayaPenanganan}
             {contentButton}
         </ScrollView>
         }else{
@@ -4015,7 +4199,7 @@ export default class Summary extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />
@@ -4025,7 +4209,7 @@ export default class Summary extends Component {
                     renderRight={() => {
                         return (
                             <Icon
-                                name="sync-alt"
+                                name="reload-outline"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />

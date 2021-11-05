@@ -57,7 +57,7 @@ export default class FlightPlanCustom extends Component {
                                             
                                       >
                                 <Icon
-                                            name={'plane-departure'}
+                                            name={'airplane-outline'}
                                             size={14}
                                             color={BaseColor.primaryColor}
                                 />
@@ -88,7 +88,7 @@ export default class FlightPlanCustom extends Component {
                                             
                                       >
                                 <Icon
-                                            name={'plane-arrival'}
+                                            name={'airplane-outline'}
                                             size={14}
                                             color={BaseColor.primaryColor}
                                 />

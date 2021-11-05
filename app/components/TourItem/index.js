@@ -16,9 +16,7 @@ export default class TourItem extends Component {
         const {
             style,
             image,
-            url,
             name,
-            nameSub,
             price,
             rate,
             rateCount,
@@ -30,11 +28,7 @@ export default class TourItem extends Component {
         return (
             <View style={style}>
                 <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
-                    <Image 
-                    // source={image} 
-                    source={{uri : url+image}} 
-                    style={styles.blockImage} 
-                    />
+                    <Image source={image} style={styles.blockImage} />
                     <View style={styles.blockPriceContent}>
                         <Text title3 whiteColor semibold>
                             {price}
@@ -45,14 +39,13 @@ export default class TourItem extends Component {
                     <ProfileDetail
                         image={author.image}
                         textFirst={name}
-                        textSecond={nameSub}
+                        textSecond={author.name}
                         point={author.point}
                         icon={false}
                         style={{ marginTop: 10 }}
                         onPress={onPressUser}
-                        viewImage={false}
                     />
-                    {/* <View style={styles.blockDetailContent}>
+                    <View style={styles.blockDetailContent}>
                         <View
                             style={{
                                 flexDirection: "row",
@@ -91,7 +84,7 @@ export default class TourItem extends Component {
                         >
                             Book Now
                         </Tag>
-                    </View> */}
+                    </View>
                 </View>
             </View>
         );
@@ -105,7 +98,6 @@ export default class TourItem extends Component {
             style,
             image,
             name,
-            nameSub,
             location,
             price,
             rate,
@@ -238,7 +230,6 @@ export default class TourItem extends Component {
             style,
             image,
             name,
-            nameSub,
             location,
             price,
             travelTime,
@@ -308,9 +299,7 @@ TourItem.propTypes = {
     block: PropTypes.bool,
     grid: PropTypes.bool,
     image: PropTypes.node.isRequired,
-    url: PropTypes.string,
     name: PropTypes.string,
-    nameSub: PropTypes.string,
     location: PropTypes.string,
     startTime: PropTypes.string,
     price: PropTypes.string,
@@ -330,10 +319,8 @@ TourItem.defaultProps = {
     list: true,
     block: false,
     grid: false,
-    url: "",
     image: "",
     name: "",
-    nameSub: "",
     location: "",
     price: "",
     rate: 0,

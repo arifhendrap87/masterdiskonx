@@ -190,7 +190,7 @@ export default class QuantityPickerHorizontal extends Component {
                                         onPress={() => this.onChange("down")}
                                     >
                                         <Icon
-                                            name="minus-circle"
+                                            name="remove-circle-outline"
                                             size={24}
                                             color={BaseColor.grayColor}
                                         />
@@ -201,7 +201,7 @@ export default class QuantityPickerHorizontal extends Component {
                                         onPress={() => this.onChange("up")}
                                     >
                                         <Icon
-                                            name="plus-circle"
+                                            name="add-circle-outline"
                                             size={24}
                                             color={BaseColor.primaryColor}
                                         />

@@ -49,7 +49,7 @@ export default class WebViewPage extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.primaryColor}
                             />
@@ -62,7 +62,7 @@ export default class WebViewPage extends Component {
                     // renderRight={() => {
                     //     return (
                     //         <Icon
-                    //             name="sync-alt"
+                    //             name="reload-outline"
                     //             size={20}
                     //             color={BaseColor.blackColor}
                     //         />

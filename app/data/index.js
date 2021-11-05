@@ -31,6 +31,8 @@ import { DataFlight } from "./dataFlight";
 import { DataTrip } from "./dataTrip";
 import { DataHotelPackage } from "./dataHotelPackage";
 import { DataHotelLinx } from "./dataHotelLinx";
+import { DataTopFlight } from "./dataTopFlight";
+import { DataGetProvince } from "./dataGetProvince";
 import { DataActivities } from "./dataActivities";
 import { DataHotelPackageCity } from "./dataHotelPackageCity";
 import { DataSlider } from "./dataSlider";
@@ -38,6 +40,8 @@ import { DataBlog } from "./dataBlog";
 import { DataMenu } from "./dataMenu";
 import { DataCard } from "./dataCard";
 import { DataPromo } from "./dataPromo";
+import { DataFlightVia } from "./dataFlightVia";
+import { DataKunjungan } from "./dataKunjungan";
 
 
 // Sample data for display on template
@@ -71,6 +75,7 @@ export {
     DataNotif,
     DataLoading,
     DataFlight,
+    DataFlightVia,
     DataTrip,
     DataHotelPackage,
     DataHotelLinx,
@@ -81,5 +86,8 @@ export {
     DataBlog,
     DataMenu,
     DataCard,
-    DataPromo
+    DataPromo,
+    DataTopFlight,
+    DataGetProvince,
+    DataKunjungan
 };

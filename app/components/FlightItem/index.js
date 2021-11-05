@@ -123,7 +123,7 @@ export default class FlightItem extends Component {
                             <View style={styles.contentLine}>
                                 <View style={styles.line} />
                                 <Icon
-                                    name="plane"
+                                    name="airplane-outline"
                                     color={BaseColor.dividerColor}
                                     size={24}
                                     solid
@@ -166,7 +166,7 @@ export default class FlightItem extends Component {
                                 <View style={styles.contentLine}>
                                     <View style={styles.line} />
                                     <Icon
-                                        name="plane"
+                                        name="airplane-outline"
                                         color={BaseColor.dividerColor}
                                         size={24}
                                         solid
@@ -229,7 +229,7 @@ export default class FlightItem extends Component {
                                 </Text>
                                 <View style={styles.contentLine}>
                                     <Icon
-                                        name="angle-down"
+                                        name="ios-arrow-down-circle-outline"
                                         color={BaseColor.primaryColor}
                                         size={24}
                                         solid

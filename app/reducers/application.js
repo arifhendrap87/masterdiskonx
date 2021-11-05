@@ -4,7 +4,7 @@ const initialState = {
   font: null,
   force_dark: null,
   language: null,
-  config:null
+  config:'xx'
 };
 
 export default (state = initialState, action = {}) => {

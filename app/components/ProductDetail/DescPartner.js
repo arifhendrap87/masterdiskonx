@@ -198,7 +198,7 @@ export default class DescPartner extends Component {
 
                             }}>
                             <Icon
-                                    name="phone"
+                                    name="call-outline"
                                     color={BaseColor.lightPrimaryColor}
                                     size={20}
                                     style={{marginBottom:10}}
@@ -207,7 +207,7 @@ export default class DescPartner extends Component {
                         </View>
 
 
-                        <View style={{
+                        {/* <View style={{
                             flex:1,
                             flexDirection:'column',
                             paddingHorizontal:20,
@@ -221,7 +221,7 @@ export default class DescPartner extends Component {
                                     style={{marginBottom:10}}
                             />
                             <Text caption1>Arahan</Text>
-                        </View>
+                        </View> */}
 
 
                         <View style={{
@@ -232,7 +232,7 @@ export default class DescPartner extends Component {
 
                             }}>
                             <Icon
-                                    name="share-alt"
+                                    name="share-social-outline"
                                     color={BaseColor.lightPrimaryColor}
                                     size={20}
                                     style={{marginBottom:10}}
@@ -249,7 +249,7 @@ export default class DescPartner extends Component {
 
                             }}>
                             <Icon
-                                    name="thumbs-up"
+                                    name="thumbs-up-outline"
                                     color={BaseColor.lightPrimaryColor}
                                     size={20}
                                     style={{marginBottom:10}}

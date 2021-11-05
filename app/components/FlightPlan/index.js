@@ -34,14 +34,14 @@ export default class FlightPlan extends Component {
                 </TouchableOpacity>
                 <View style={styles.centerView}>
                     <Icon
-                        name="plane"
+                        name="airplane-outline"
                         color={BaseColor.primaryColor}
                         size={14}
                         solid
                     />
                     {round && (
                         <Icon
-                            name="plane"
+                            name="airplane-outline"
                             color={BaseColor.primaryColor}
                             size={14}
                             solid

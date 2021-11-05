@@ -64,7 +64,7 @@ export default class Schedule extends Component {
                 <View style={{marginHorizontal:20,paddingVertical:10,}}>
                     <View style={{flexDirection:'row',alignItems: 'center',borderBottomColor:BaseColor.dividerColor,borderBottomWidth:1,paddingVertical:10}}>
                             <Icon
-                                    name="clock"
+                                    name="time-outline"
                                     color={BaseColor.whiteColor}
                                     size={14}
                                     style={{backgroundColor:BaseColor.thirdColor,padding:5,borderRadius:5,marginRight:15}}
@@ -75,7 +75,7 @@ export default class Schedule extends Component {
 
                     <View style={{flexDirection:'row',alignItems: 'center',borderBottomColor:BaseColor.dividerColor,borderBottomWidth:1,paddingVertical:10}}>
                             <Icon
-                                    name="clock"
+                                    name="time-outline"
                                     color={BaseColor.whiteColor}
                                     size={14}
                                     style={{backgroundColor:BaseColor.primaryColor,padding:5,borderRadius:5,marginRight:15}}
@@ -85,7 +85,7 @@ export default class Schedule extends Component {
 
                     <View style={{flexDirection:'row',alignItems: 'center',borderBottomColor:BaseColor.dividerColor,borderBottomWidth:1,paddingVertical:10}}>
                             <Icon
-                                    name="clock"
+                                    name="time-outline"
                                     color={BaseColor.whiteColor}
                                     size={14}
                                     style={{backgroundColor:BaseColor.primaryColor,padding:5,borderRadius:5,marginRight:15}}
@@ -95,7 +95,7 @@ export default class Schedule extends Component {
 
                     <View style={{flexDirection:'row',alignItems: 'center',paddingVertical:10}}>
                             <Icon
-                                    name="clock"
+                                    name="time-outline"
                                     color={BaseColor.whiteColor}
                                     size={14}
                                     style={{backgroundColor:BaseColor.primaryColor,padding:5,borderRadius:5,marginRight:15}}

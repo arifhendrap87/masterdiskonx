@@ -10,6 +10,8 @@ import {
   PlaceholderLine,
   Fade
 } from "rn-placeholder";
+import moment from 'moment';
+
 
 
 const styles = StyleSheet.create({
@@ -42,15 +44,15 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     left: {
-        flex: 7.5,
+        flex: 1.5,
         alignItems: "flex-start",
-        justifyContent: "center",
+        //justifyContent: "center",
         //marginLeft:30
     },
     right: {
-        flex: 2.5,
-        alignItems: "flex-end",
-        justifyContent: "center"
+        flex: 8.5,
+        //alignItems: "flex-end",
+        //justifyContent: "center"
     }
 });
 
@@ -93,25 +95,6 @@ export default class CardCustomNotif extends Component {
 
                 loading ?
                 <View style={styles.contain}>
-                                {/* <Icon
-                                    name={'spinner'}
-                                    color={BaseColor.primaryColor}
-                                    size={18}
-                                    solid
-                                    style={{ marginLeft: -10,marginTop:20,position:'absolute',width:40,height:40,
-                                    backgroundColor: "#fff",
-                                    borderRadius: 18,
-                                    shadowColor: "#000",
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 3.84,
-                                    elevation: 5,
-                                    padding:10,
-                                         }}
-                                /> */}
                     <View style={styles.content}>
                         <View style={styles.left}>
                             <PlaceholderLine width={50} />
@@ -125,51 +108,44 @@ export default class CardCustomNotif extends Component {
                 </View>
                 :
                 <View style={styles.contain}>
-                                {/* <Icon
-                                    name={'paper-plane'}
-                                    color={BaseColor.primaryColor}
-                                    size={18}
-                                    solid
-                                    style={{ marginLeft: -10,marginTop:20,position:'absolute',width:40,height:40,
-                                    backgroundColor: "#fff",
-                                    borderRadius: 18,
-                                    shadowColor: "#000",
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 3.84,
-                                    elevation: 5,
-                                    padding:10,
-                                         }}
-                                /> */}
                     <View style={styles.content}>
                         <View style={styles.left}>
-                            <Text headline semibold>
-                                {txtLeftTitle}
-                            </Text>
-                            <Text
-                                note
-                                numberOfLines={2}
-                                // footnote
-                                grayColor
-                                style={{
-                                    paddingTop: 5
-                                }}
-                            >
-                                {txtContent}
-                            </Text>
+                                    <Icon
+                                        name={'information-circle-outline'}
+                                        size={40}
+                                        color={BaseColor.primaryColor}
+                                        solid
+                                    />
                         </View>
                         <View style={styles.right}>
-                            <Text caption2 grayColor style={{fontSize:14,fontWeight: "bold"}}>
-                                {/* {this.convertDay(txtRight)} */}
-                                {txtRight}
+                            <Text body1 semibold style={{color:BaseColor.primaryColor}}>
+                                {txtLeftTitle}
                             </Text>
-                            <Text caption2 grayColor>
-                            {txtRight}
-                                {/* {this.convertDate(txtRight)} */}
-                            </Text>
+                            
+                            <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 0}}>
+                                                        
+                                                        <Text
+                                                            caption1
+                                                            style={{ marginLeft: 0,color:'grey' }}
+                                                            numberOfLines={5}
+                                                            
+                                                        >
+                                                            {txtContent}
+                                                        </Text>
+                                                    </View>
+
+                            <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 0}}>
+                                                        
+                                                        <Text
+                                                            caption1
+                                                            style={{ marginLeft: 0 }}
+                                                            numberOfLines={5}
+                                                        >
+                                                            {/* {txtRight} */}
+                                                            {moment(txtRight).fromNow()}
+                                                        </Text>
+                                                    </View>
+                            
                         </View>
                     </View>
                 </View>

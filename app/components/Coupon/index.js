@@ -21,7 +21,8 @@ export default class Coupon extends Component {
             claimed,
             usedKuota,
             claimable,
-            usedCoupon
+            usedCoupon,
+            backgroundHeader
             
         } = this.props;
 
@@ -46,7 +47,8 @@ export default class Coupon extends Component {
                 <Button
                 style={{height:20,
                     borderRadius:5,
-                    marginVertical:0
+                    marginVertical:0,
+                    width:'100%'
                 
                 }}
                 onPress={onPress}
@@ -68,12 +70,15 @@ export default class Coupon extends Component {
         
         return (
             <View
-                // style={[styles.contain,style]}
+                style={[style,{  
+                    borderWidth:1,
+                    borderColor:BaseColor.primaryColor,
+                    }]}
                 //onPress={onPress}
                 //activeOpacity={0.9}
             >
-                <View style={styles.nameContent}>
-                    <Text body1 semibold whiteColor>
+                <View style={[styles.nameContent,{backgroundColor:backgroundHeader}]}>
+                    <Text caption1 semibold whiteColor>
                         {name}
                     </Text>
                 </View>
@@ -105,9 +110,7 @@ export default class Coupon extends Component {
                                 backgroundColor: BaseColor.whiteColor,
                                 paddingHorizontal:12,
                                 paddingVertical:5, 
-                
-                                //borderBottomRightRadius: 8,
-                                //borderBottomLeftRadius: 8
+                              
                                 }}>
                     <View style={{flex:1,flexDirection:'row',justifyContent:'space-between'}}>
                         <Text caption2>
@@ -149,7 +152,8 @@ Coupon.propTypes = {
     usedKuota: PropTypes.number,
     claimable: PropTypes.bool,
     coupon:PropTypes.bool,
-    false:PropTypes.bool
+    false:PropTypes.bool,
+    backgroundHeader:PropTypes.string,
     
 };
 
@@ -167,5 +171,6 @@ Coupon.defaultProps = {
     usedKuota: 1,
     claimable: true,
     coupon:true,
-    usedCoupon:false
+    usedCoupon:false,
+    backgroundHeader:BaseColor.primaryColor
 };

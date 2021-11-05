@@ -298,8 +298,8 @@ export default class CardCustomBooking extends Component {
                                     size={10}
                                     until={expiredTime}
                                     style={{float:'left'}}
-                                    digitStyle={{backgroundColor: BaseColor.secondColor}}
-                                    digitTxtStyle={{color: BaseColor.blackColor}}
+                                    digitStyle={{backgroundColor: expiredTime < 300 ? BaseColor.thirdColor : BaseColor.secondColor}}
+                                    digitTxtStyle={{color: expiredTime < 300 ? BaseColor.whiteColor : BaseColor.blackColor}}
                                     timeLabelStyle={{color: BaseColor.primaryColor}}
                                     separatorStyle={{color: BaseColor.blackColor}}
                                     timeToShow={['H', 'M', 'S']}
@@ -435,11 +435,11 @@ export default class CardCustomBooking extends Component {
             
         var icon_name_type='';
             if(item.product=='Flight'){
-                icon_name_type='plane';
+                icon_name_type='airplane-outline';
             }else if(item.product=='Trip'){
                 icon_name_type='suitcase';
             }else if(item.product=='Hotel'){
-                icon_name_type='hotel';
+                icon_name_type='md-bed-outline';
             }else if(item.product=='Hotelpackage'){
                 icon_name_type='bed';
             }else if(item.product=='Voucher'){

@@ -321,7 +321,7 @@ export default class FlightFilter extends Component {
           const filters = filtersParam;
           console.log('filters',JSON.stringify(filters));
         this.props.navigation.state.params.filterProcess(filters);
-        navigation.goBack();
+        //navigation.goBack();
 
     }
 
@@ -349,13 +349,13 @@ export default class FlightFilter extends Component {
                 forceInset={{ top: "always" }}
             >
                 <Header
-                    title="Filtering"
+                    title="Filter"
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="times"
+                                name="chevron-back-outline"
                                 size={20}
-                                color={BaseColor.blackColor}
+                                color={BaseColor.whiteColor}
                             />
                         );
                     }}
@@ -399,8 +399,8 @@ export default class FlightFilter extends Component {
                                     <Icon
                                         name={
                                             item.selected
-                                                ? "check-circle"
-                                                : "circle"
+                                                ? "checkmark-circle-outline"
+                                                : "ellipse-outline"
                                         }
                                         size={24}
                                         color={BaseColor.primaryColor}
@@ -430,8 +430,8 @@ export default class FlightFilter extends Component {
                                     <Icon
                                         name={
                                             item.selected
-                                                ? "check-circle"
-                                                : "circle"
+                                                ? "checkmark-circle-outline"
+                                                : "ellipse-outline"
                                         }
                                         size={24}
                                         color={BaseColor.primaryColor}
@@ -460,8 +460,8 @@ export default class FlightFilter extends Component {
                                     <Icon
                                         name={
                                             item.selected
-                                                ? "check-circle"
-                                                : "circle"
+                                                ? "checkmark-circle-outline"
+                                                : "ellipse-outline"
                                         }
                                         size={24}
                                         color={BaseColor.primaryColor}
@@ -491,8 +491,8 @@ export default class FlightFilter extends Component {
                                     <Icon
                                         name={
                                             item.selected
-                                                ? "check-circle"
-                                                : "circle"
+                                                ? "checkmark-circle-outline"
+                                                : "ellipse-outline"
                                         }
                                         size={24}
                                         color={BaseColor.primaryColor}
@@ -522,8 +522,8 @@ export default class FlightFilter extends Component {
                                     <Icon
                                         name={
                                             item.selected
-                                                ? "check-circle"
-                                                : "circle"
+                                                ? "checkmark-circle-outline"
+                                                : "ellipse-outline"
                                         }
                                         size={24}
                                         color={BaseColor.primaryColor}

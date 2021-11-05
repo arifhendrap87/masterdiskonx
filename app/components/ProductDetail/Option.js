@@ -197,7 +197,7 @@ export default class Option extends Component {
                                                                 
                                                 
                                                                 <Icon
-                                                                    name="check-circle"
+                                                                    name="checkmark-circle-outline"
                                                                     size={30}
                                                                     color={'green'}
                                                                     />
@@ -206,7 +206,7 @@ export default class Option extends Component {
                                                                 :
                                                                 <View style={styles.iconRight}>
                                                                 <Icon
-                                                                    name="circle"
+                                                                    name="ellipse-outline"
                                                                     size={30}
                                                                     color={'grey'}
                                                                     />

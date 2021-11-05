@@ -241,11 +241,11 @@ export default class SetDateLong extends Component {
      
   
     render() {
-        const { style, label,onPress,round,tglAwal,tglAkhir,icon} = this.props;
+        const { style, label,onPress,round,tglAwal,tglAkhir,icon,minDate} = this.props;
         const { value,modalVisibleAwal,modalVisibleAkhir } = this.state;
-        var minDate = new Date(); // Today
-        minDate.setDate(minDate.getDate() + 0);
-        var maxDate = new Date(2020, 10, 10);
+        // var minDate = new Date(); // Today
+        // minDate.setDate(minDate.getDate() + 0);
+        // var maxDate = new Date(2020, 10, 10);
         return (
             <View style={{flexDirection:'row'}}>
                
@@ -351,7 +351,7 @@ export default class SetDateLong extends Component {
                             <CalendarPicker
                                             startFromMonday={true}
                                             allowRangeSelection={false}
-                                            minDate={this.getDate(0)}
+                                            minDate={this.getDate(minDate)}
                                             todayBackgroundColor={BaseColor.secondaryColor}
                                             selectedDayColor={BaseColor.primaryColor}
                                             selectedDayTextColor="#FFFFFF"
@@ -421,6 +421,7 @@ SetDateLong.propTypes = {
     setBookingTimeAkhir:PropTypes.func,
     round:PropTypes.bool,
     icon:PropTypes.string,
+    minDate:PropTypes.number
 
 };
 
@@ -435,4 +436,5 @@ SetDateLong.defaultProps = {
     setBookingTimeAkhir: () => {},
     round:false,
     icon:"check",
+    minDate:0
 };

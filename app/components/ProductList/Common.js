@@ -76,19 +76,64 @@ export default class Common extends Component {
             DataCard:DataCard
 
         }
+        this.getConfigApi();
+        this.getConfig();
+        this.getSession();
     }
 
+    //memanggil config
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
+    }
+
+    getConfig(){
+            AsyncStorage.getItem('config', (error, result) => {
+                if (result) {    
+                    let config = JSON.parse(result);
+                    this.setState({config:config});
+                }
+            });
+    }
+
+    //memanggil session
+    getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                console.log('userSessions',JSON.stringify(userSession));
+
+                var id_user=userSession.id_user;
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.setState({login:true});
+            }
+        });
+    }
+
+
     componentDidMount(){
-        this.getData();
+        setTimeout(() => {
+            this.getData();
+        }, 20);
+        
     }
 
     getData(){
-        var category="hotels";
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                var url=config.apiBaseUrl+"product?limit=4&tag=&category="+this.props.slug;
-                console.log(url);
+                let config=this.state.configApi;
+                let baseUrl=config.apiBaseUrl;
+                let url=baseUrl+"product?limit=4&tag=&category="+this.props.slug;
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+                // let config = JSON.parse(result);
+                // var url=config.apiBaseUrlDev+"product?limit=4&tag=&category="+this.props.slug;
+                // console.log('urlCommon',url);
+
                 var myHeaders = new Headers();
                 myHeaders.append("Authorization", "Bearer "+config.apiToken);
 
@@ -101,13 +146,40 @@ export default class Common extends Component {
                 fetch(url, requestOptions)
                  .then(response => response.json())
                  .then(result => {
-                    console.log('productList',JSON.stringify(result.data));
-                    this.setState({DataCard:result.data});
+                    //console.log('productList',JSON.stringify(result.data));
+                    const array = [
+                    'https://fave-production-main.myfave.gdn/attachments/b830f5d667f72a999671580eb58683af908d4486/store/fill/400/250/5b225df71f4f5fcd71a24bb5e7f7eb44026fa4b98005d45a979853b812c3/activity_image.jpg',
+                    'https://fave-production-main.myfave.gdn/attachments/240be21ccb5ad99e3afb0f591a4c65273b0f8c16/store/fill/800/500/bd1160e0f91e468af35f6186d6fd7374868f62b1534ee5db6432399b5f48/activity_image.jpg',
+                    'https://fave-production-main.myfave.gdn/attachments/ffd7160ebf8ff67cc63e22016f82803a85714754/store/fill/400/250/975eec09dd53b92faca441aa40b75a6843a0628d30a966375404f1730f0b/activity_image.jpg'
+                    ];
+
+                    
+
+                    const newProjects = result.data.map(p =>
+                        p.status === 1
+                        ? { ...p, 
+                            img_featured_url:  this.getRandomItem(array), 
+                            }
+                        : p
+                    );
+                    console.log('newProjects',JSON.stringify(newProjects));
+
+                    this.setState({DataCard:newProjects});
                     this.setState({loading:false});
                 })
-                .catch(error => {alert('Kegagalan Respon Server')});
-            }
-        });
+                .catch(error => {alert('Kegagalan Respon Server Common.js')});
+           
+    }
+
+    getRandomItem(arr) {
+
+        // get random index value
+        const randomIndex = Math.floor(Math.random() * arr.length);
+    
+        // get random item
+        const item = arr[randomIndex];
+    
+        return item;
     }
 
     render() {
@@ -166,7 +238,7 @@ export default class Common extends Component {
                                     }
                                     }
                                     loading={loading}
-                                    propOther={{inFrame:true,width:(width - 60) / 2.5,inCard:false}}
+                                    propOther={{inFrame:true,width:(width - 60) / 2,height:height/9,inCard:true}}
                                     propIsCampaign={item.product_is_campaign}
                                     propPoint={0}       
 

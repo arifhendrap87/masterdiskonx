@@ -43,8 +43,8 @@ import {
     // await GoogleSignin.signOut();
 
     let userInfo = await GoogleSignin.signIn();
-await GoogleSignin.clearCachedToken(userInfo.idToken);
-const tokens = await GoogleSignin.getTokens();
+    await GoogleSignin.clearCachedToken(userInfo.idToken);
+    const tokens = await GoogleSignin.getTokens();
  
 }
 
@@ -71,148 +71,139 @@ class SignIn extends Component {
         
 
         }
-        // this.getConfig();
-        // this.getSession();
+        this.getConfigApi();
+        this.getConfig();
+        this.getSession();
     }
-    
+
+
+    //memanggil config
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
+    }
+
     getConfig(){
-        this.setState({ loading_spinner: true }, () => {
-
-        let { navigation, auth } = this.props;
-        const {DataMasterDiskon} =this.state;
-        var url=DataMasterDiskon.baseUrl;
-        var dir='front/api/common/config';
-     
-        var params={"param":{"username":DataMasterDiskon.username,"password":DataMasterDiskon.password}};
-        console.log('getConfigsss',url+dir,JSON.stringify(params));
-        var param={
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(params),
-          }
-
-            fetch(url+dir,param)
-                .then(response => response.json())
-                .then(result => {
-                     
-                    var config=result;
+            AsyncStorage.getItem('config', (error, result) => {
+                if (result) {    
+                    let config = JSON.parse(result);
                     this.setState({config:config});
-                   
+                }
+            });
+    }
 
+    //memanggil session
+    getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                console.log('userSessions',JSON.stringify(userSession));
+
+                var id_user=userSession.id_user;
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.setState({login:true});
+            }
+        });
+    }
+
+
+    checkSession(){
+        this.setState({ loading_spinner: true }, () => {
+        let { navigation, auth } = this.props;
                     AsyncStorage.getItem('userSession', (error, result) => {
+                        console.log('result',JSON.stringify(result));
                         if (result) {    
-                            AsyncStorage.setItem('config', JSON.stringify(config));
+                            //AsyncStorage.setItem('config', JSON.stringify(config));
                             navigation.navigate('Home');
-
-                            
                         }else{
-                            AsyncStorage.setItem('config', JSON.stringify(config));
+                            //AsyncStorage.setItem('config', JSON.stringify(config));
                             this.setState({loading_spinner:false});
                         }
                     });
-                })
-                .catch(error => {
-                    console.log('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
-                    //this.dropdown.alertWithType('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
-                });
+               
 
-    });
+        });
     }
 
-    getDataDashboard(config){
-        var url=config.baseUrl;
-        var path=config.dashboard.dir;
-            var param={
-                method: 'POST',
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(),
-              }
-              console.log('getDataDashboard',url+path);
-            
 
-            fetch(url+path,param)
-                .then(response => response.json())
-                .then(result => {
-                    this.setState({loading_spinner:false});
-                    AsyncStorage.setItem('getDataDashboard', JSON.stringify(result));
 
-                })
-                .catch(error => {
-                    console.log('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
-
-                    //this.dropdown.alertWithType('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
-                });
-    }
 
     cekLoginForm(){    
-        const { email, password, success,redirect,config } = this.state;
-        const { navigation } = this.props;
-        this.setState({ loading: true });
-                var url=config.baseUrl;
-                var url=config.baseUrl+"front/api/AuthLogin/login_proses_app";
-                console.log('url',url);
-                var data={"email":email,"password":password}
-                const param={"param":data}
-                console.log('url',url);
-                console.log('param',JSON.stringify(param));
+        
+                const { email, password, success,redirect} = this.state;
+                const { navigation } = this.props;
+                this.setState({ loading: true });
+                        let config=this.state.configApi;
+                        let baseUrl=config.baseUrl;
+                        let url=baseUrl+"front/api/AuthLogin/login_proses_app";
+                        console.log('configApi',JSON.stringify(config));
+                        console.log('urlss',url);
 
 
-                var myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/json");
-                var raw = JSON.stringify(param);
-                var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-                };
-    
-                fetch(url, requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    console.log('login',JSON.stringify(result));
-                    this.setState({ loading: false });
-                    if(result.success==false){
-                        if(result.error=='not_verify'){
-                            var userSession=result.userSession;
-                            userSession.loginVia="form";
-                            this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
-                            navigation.navigate("Verify",{user:userSession,redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
-                        }else if(result.error=='wrong'){
-                            this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
-                        }   
+                        console.log('url',url);
+                        var data={"email":email,"password":password}
+                        const param={"param":data}
+                        console.log('url',url);
+                        console.log('param',JSON.stringify(param));
 
-                    }else if(result.success==true){
-                        var userSession=result.userSession;
-                        userSession.loginVia = "form";
-                        this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
-                      
-                        AsyncStorage.setItem('userSession', JSON.stringify(userSession));
-                        AsyncStorage.setItem('id_user', JSON.stringify(userSession.id_user));
 
-                        navigation.navigate("Loading",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+                        var myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        var raw = JSON.stringify(param);
+                        var requestOptions = {
+                        method: 'POST',
+                        headers: myHeaders,
+                        body: raw,
+                        redirect: 'follow'
+                        };
+            
+                        fetch(url, requestOptions)
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log('login',JSON.stringify(result));
+                            this.setState({ loading: false });
+                            if(result.success==false){
+                                if(result.error=='not_verify'){
+                                    var userSession=result.userSession;
+                                    userSession.loginVia="form";
+                                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+                                    navigation.navigate("Verify",{user:userSession,redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+                                }else if(result.error=='wrong'){
+                                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+                                }   
 
-                    
-                    }
-                })
-                .catch(error => {
-                    console.log('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
+                            }else if(result.success==true){
+                                var userSession=result.userSession;
+                                userSession.loginVia = "form";
+                                this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
+                            
+                                AsyncStorage.setItem('userSession', JSON.stringify(userSession));
+                                AsyncStorage.setItem('id_user', JSON.stringify(userSession.id_user));
 
-                    //this.dropdown.alertWithType('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
-                });
+                                navigation.navigate("Loading",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+
+                            
+                            }
+                        })
+                        .catch(error => {
+                            console.log('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
+
+                            //this.dropdown.alertWithType('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
+                        });
+
+                   
     }
 
   
 
-    componentWillMount() {
-        this.props.actions.authentication(false, response => {});
-    }
+    // componentWillMount() {
+    //     this.props.actions.authentication(false, response => {});
+    // }
 
     componentDidMount() {
         this._revokeApple();
@@ -220,22 +211,25 @@ class SignIn extends Component {
         SplashScreen.hide();
         let { navigation, auth } = this.props;
         let status = auth.login.success;
-        this.getConfig();
+        setTimeout(() => {
+            this.checkSession();
+
+        }, 20);
 
             
        
-  GoogleSignin.configure({
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-    webClientId: '280725445152-ulhq6j2enufgiedabbph68i2tg6clilm.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-    hostedDomain: '', // specifies a hosted domain restriction
-    loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
-    forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-    accountName: '', // [Android] specifies an account name on the device that should be used
-    iosClientId: '280725445152-7hlfamqfi77viahad7tirdgc15p51crc.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-    //iosClientId: '280725445152-tpro37vo520dhhc4ncbiplh4l8qc9ien.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+        GoogleSignin.configure({
+            scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+            webClientId: '399787116352-dn2atq6g9rilkq8img7f3qu22mr27a2t.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+            hostedDomain: '', // specifies a hosted domain restriction
+            loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
+            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+            accountName: '', // [Android] specifies an account name on the device that should be used
+            iosClientId: '399787116352-0djq47u48nrknq7mqquln95dngbspqgv.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+            //iosClientId: '280725445152-tpro37vo520dhhc4ncbiplh4l8qc9ien.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 
-});
+        });
 
 
        
@@ -271,6 +265,7 @@ class SignIn extends Component {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             var email = userInfo.user.email;
+            console.log('email_signIn',JSON.stringify(userInfo));
             var sp = email.split('@');
             var username=sp[0];
             
@@ -286,6 +281,7 @@ class SignIn extends Component {
 
             this.onLoginGoogle(dataUser);
           } catch (error) {
+              console.log('errorlogingoogle',JSON.stringify(error));
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
               // user cancelled the login flow
             } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -345,81 +341,96 @@ class SignIn extends Component {
 
 
     onLoginGoogle(dataUser) {
-        const { redirect,config } = this.state;
-        const { navigation } = this.props;
-        AsyncStorage.removeItem('userSession');
-        AsyncStorage.removeItem('id_user');
-        this._signOut();
+          
+                // let config = JSON.parse(result);
+                const { navigation } = this.props;
 
-        var url=config.baseUrl+"front/api/AuthLogin/login_app_google";
-        console.log('urlonLoginGoogle',url);
-        
-        this.setState({ loading: true }, () => {
-            const param={"param":dataUser};
-            console.log('dataParamLoginGoogle',JSON.stringify(param));
+                //const { redirect,config } = this.state;
 
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            var raw = JSON.stringify(param);
-            var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-            };
+                let config=this.state.configApi;
+                let baseUrl=config.baseUrl;
+                let url=baseUrl+"front/api/AuthLogin/login_app_google";
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+                AsyncStorage.removeItem('userSession');
+                AsyncStorage.removeItem('id_user');
+                this._signOut();
 
-            fetch(url, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log('onLoginGoogle',JSON.stringify(result));
-                var userSession=result.userSession;
-                userSession.loginVia = dataUser.loginVia;
-                this.setState({ loading: false });
-                if(result.success==false){
-                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
-                    if(result.error=='not_verify'){
-                        navigation.navigate("Verify",{user:userSession,redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
-                       // navigation.navigate("Loading",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+                this.setState({ loading: true }, () => {
+                    const param={"param":dataUser};
+                    console.log('dataParamLoginGoogle',JSON.stringify(param));
 
-                    }
-                }else if(result.success==true){
-                    this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
-                    AsyncStorage.setItem('userSession', JSON.stringify(userSession));
-                    AsyncStorage.setItem('id_user', JSON.stringify(userSession.id_user));
-                    navigation.navigate("Loading",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+                    var myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    var raw = JSON.stringify(param);
+                    var requestOptions = {
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: 'follow'
+                    };
 
-                    this.props.actions.authentication(true, response => {
-                        if (
-                            response.success &&
-                            id == "test" &&
-                            password == "123456"
-                        ) 
-                        {
-                            navigation.navigate("Loading");
-                        } else 
-                        {
-                            this.setState({
-                                loading: false
-                            });
+                    fetch(url, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log('onLoginGoogles',JSON.stringify(result));
+                        var userSession=result.userSession;
+                        userSession.loginVia = dataUser.loginVia;
+                        this.setState({ loading: false });
+                        if(result.success==false){
+                            this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+                            if(result.error=='not_verify'){
+                                navigation.navigate("Verify",{user:userSession,redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+                            // navigation.navigate("Loading",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+
+                            }
+                        }else if(result.success==true){
+                            this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
+                            AsyncStorage.setItem('userSession', JSON.stringify(userSession));
+                            AsyncStorage.setItem('id_user', JSON.stringify(userSession.id_user));
+                            navigation.navigate("Loading",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+
+                            // this.props.actions.authentication(true, response => {
+                            //     if (
+                            //         response.success &&
+                            //         id == "test" &&
+                            //         password == "123456"
+                            //     ) 
+                            //     {
+                            //         navigation.navigate("Loading");
+                            //     } else 
+                            //     {
+                            //         this.setState({
+                            //             loading: false
+                            //         });
+                            //     }
+                            // });
                         }
-                    });
-                }
 
-            })
-            .catch(error => {
-                console.log('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
-            });            
-        });
+                    })
+                    .catch(error => {
+                        console.log('error', 'Error','Internet connection problem ! make sure you have an internet connection.');
+                    });            
+                });
+           
     }
 
     onLoginApple(dataUser) {
-        const { redirect,config } = this.state;
+        const { redirect} = this.state;
         const { navigation } = this.props;
         AsyncStorage.removeItem('userSession');
         AsyncStorage.removeItem('id_user');
         //this._signOutApple();
 
-        var url=config.baseUrl+"front/api/AuthLogin/login_app_apple";
+        //var url=config.baseUrl+"front/api/AuthLogin/login_app_apple";
+
+        let config=this.state.configApi;
+                        let baseUrl=config.baseUrl;
+                        let url=baseUrl+"front/api/AuthLogin/login_app_apple";
+                        console.log('configApi',JSON.stringify(config));
+                        console.log('urlss',url);
+
+
         
         this.setState({ loading: true }, () => {
             const param={"param":dataUser};
@@ -665,7 +676,7 @@ class SignIn extends Component {
                     // renderLeft={() => {
                     //     return (
                     //         <Icon
-                    //             name="arrow-left"
+                    //             name="md-arrow-back"
                     //             size={20}
                     //             color={BaseColor.blackColor}
                     //         />
@@ -709,8 +720,10 @@ class SignIn extends Component {
                         <Image
                             source={Images.logo_masdis}
                             style={{
-                                height: 50,
-                                width: 50,
+                                // height: 50,
+                                // width: 50,
+                                height: 255/7,
+                                width: 600/7
                                 }}
                             />
                         <Text header bold>Welcome To</Text>
@@ -767,8 +780,8 @@ class SignIn extends Component {
                             } */}
                           
                             
-                            {/* {
-                                (Platform.OS === 'ios') ?  */}
+                            {
+                                (Platform.OS === 'ios') ? 
                             
                             <AppleButton
                                 buttonStyle={AppleButton.Style.BLACK}
@@ -786,9 +799,9 @@ class SignIn extends Component {
                                    
                                 }}
                             />
-                            {/* :
+                            :
                             <View />
-                            } */}
+                            }
 
                             <View style={{ width: "100%" }}>
                                 {/* <Button
@@ -812,9 +825,11 @@ class SignIn extends Component {
     
                                  <TouchableOpacity
                                      onPress={() => {
-                                         console.log('SignUp',this.props.navigation.state.params.redirect,this.props.navigation.state.params.param);
                                         navigation.navigate("SignUp",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param})
-                                     }}
+                                        //console.log('SignUp',this.props.navigation.state.params.redirect,this.props.navigation.state.params.param);
+                                        // navigation.navigate("SignUp",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param})
+                                        //navigation.navigate("Booking",{redirect:redirect,param:param});
+                                    }}
                                  >
                                      <Text caption1 primaryColor>
                                          Join Now
@@ -840,7 +855,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        actions: bindActionCreators({AuthActions,ApplicationActions}, dispatch)
+        actions: bindActionCreators(AuthActions, dispatch)
+        //actions: bindActionCreators({AuthActions,ApplicationActions}, dispatch)
     };
 };
 

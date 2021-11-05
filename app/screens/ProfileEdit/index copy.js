@@ -86,7 +86,7 @@ export default class ProfileEdit extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.primaryColor}
                             />

@@ -7,7 +7,8 @@ import {  Text,
     Icon,
     Tag,
     FormOption,
-    Button} from "@components";
+    Button
+} from "@components";
 import PropTypes from "prop-types";
 // import styles from "./styles";
 import { BaseStyle, BaseColor,Images} from "@config";
@@ -149,7 +150,7 @@ export default class BeautyHealth extends Component {
                                 propImage={{height:wp("20%"),url:item.img_featured_url}}
                                 propTitle={{text:item.product_name}}
                                 propDesc={{text:''}}
-                                propPrice={{price:0,startFrom:false}}
+                                propPrice={{price:20,startFrom:false}}
                                 propPriceCoret={{price:item.product_detail.length != 0 ? priceSplitter(item.product_detail[0].normal_price) : 0,priceDisc:item.product_detail.length != 0 ? priceSplitter(item.product_detail[0].price) : 0,discount:0,discountView:false}}
 
                                 propInframe={{top:item.product_discount,bottom:''}}

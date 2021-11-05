@@ -233,7 +233,7 @@ export default class HotelLinx extends Component {
                     param.ratingH="";
                     param.rHotel="";
                     param.srcdata="";
-                    param.minimbudget="40000";
+                    param.minimbudget="0";
                     param.maximbudget="15000000";
                     param.shortData="";
                     param.startkotak="0";
@@ -879,7 +879,7 @@ export default class HotelLinx extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />
@@ -904,7 +904,7 @@ export default class HotelLinx extends Component {
                                             style={{marginLeft:20}}
                                         >
                                     <Icon
-                                    name="arrow-left"
+                                    name="md-arrow-back"
                                     size={20}
                                     color={BaseColor.whiteColor}
                                     style={{}}
@@ -929,7 +929,7 @@ export default class HotelLinx extends Component {
                                                 }}
                                             >
                                         <Icon
-                                        name="edit"
+                                        name="md-pencil-sharp"
                                         size={14}
                                         color={BaseColor.whiteColor}
                                         style={{marginLeft:10}}

@@ -37,6 +37,8 @@ import SetDate from "../../components/SetDate";
 import SetPenumpang from "../../components/SetPenumpang";
 import FormOptionQty from "../../components/FormOptionQty";
 import PreviewImage from "../../components/PreviewImage";
+import PreviewHotel from "../../components/PreviewHotel";
+
 
 // Load sample data
 import HTML from "react-native-render-html";
@@ -48,7 +50,7 @@ import AnimatedLoader from "react-native-animated-loader";
 import FastImage from 'react-native-fast-image';
 import Modal from "react-native-modal";
 import { Touchable } from "react-native";
-
+import MapView from "react-native-maps";
 
 
 
@@ -876,74 +878,202 @@ export default class ProductDetail extends Component {
             
 
             content=<View>
-                        
+                        <View style={{backgroundColor:BaseColor.whiteColor,marginTop:10,flex:1}}>
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                        <View style={{
+                                                            flexDirection:'row',
+                                                            justifyContent:'space-between',
+                                                            }}>
+                                                            <Text body2 bold>{product.product_name}</Text>
+                                                            
+                                                        </View>
+                                                </View>
 
-                        
-                        <View
-                            style={[
-                                { paddingHorizontal: 20, marginTop: 20 },
-                            ]}
-                        >
-                            <Text
-                                body1
-                                style={{ marginBottom: 10 }}
-                            >
-                                {product.product_name}
-                            </Text>
+                                            
+                                                <View
+                                                    style={{
+                                                        borderBottomColor: BaseColor.dividerColor,
+                                                        borderBottomWidth: 0.5,
+                                                    }}
+                                                />
+                                            
+
+                                                
+                                            
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                    <View 
+                                                    style={{ flexDirection: "row", alignItems: "center" }}
+                                                    >
+                                                        <StarRating
+                                                                disabled={true}
+                                                                starSize={14}
+                                                                maxStars={5}
+                                                                rating={5}
+                                                                selectedStar={rating => {}}
+                                                                fullStarColor={BaseColor.yellowColor}
+                                                            />
+                                                    </View>
+
+                                                    <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 0}}>
+                                                        <Icon
+                                                            name="map-marker-alt"
+                                                            color={BaseColor.lightPrimaryColor}
+                                                            size={10}
+                                                        />
+                                                        <Text
+                                                            caption1
+                                                            style={{ marginLeft: 10 }}
+                                                            numberOfLines={5}
+                                                        >
+                                                            {product.product_place},{product.product_place_2},{product.product_address}
+                                                        </Text>
+                                                    </View>
+                                                    <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 0}}>
+                                                        <Icon
+                                                            name="map-marker-alt"
+                                                            color={BaseColor.whiteColor}
+                                                            size={10}
+                                                        />
+                                                        <Text
+                                                            caption1
+                                                            style={{ marginLeft: 10 }}
+                                                            numberOfLines={5}
+                                                        >
+                                                            {product.product_address}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            
+                        </View>
+
+                        <View style={{backgroundColor:BaseColor.whiteColor,marginTop:10,flex:1}}>
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                        <View style={{
+                                                            flexDirection:'row',
+                                                            justifyContent:'space-between',
+                                                            }}>
+                                                            <Text body2 bold>Description</Text>
+                                                            
+                                                        </View>
+                                                </View>
+
+                                            
+                                                <View
+                                                    style={{
+                                                        borderBottomColor: BaseColor.dividerColor,
+                                                        borderBottomWidth: 0.5,
+                                                    }}
+                                                />
+                                            
+
+                                                
+                                            
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                    <Text
+                                                            caption1
+                                                            numberOfLines={5}
+                                                        >
+                                                            {product.product_desc}
+                                                        </Text>
+                                                </View>
+                                            
+                        </View>
+
+                        <View style={{backgroundColor:BaseColor.whiteColor,marginTop:10,flex:1}}>
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                        <View style={{
+                                                            flexDirection:'row',
+                                                            justifyContent:'space-between',
+                                                            }}>
+                                                            <Text body2 bold>Fasilitas</Text>
+                                                            
+                                                        </View>
+                                                </View>
+
+                                            
+                                                <View
+                                                    style={{
+                                                        borderBottomColor: BaseColor.dividerColor,
+                                                        borderBottomWidth: 0.5,
+                                                    }}
+                                                />
+                                            
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                    {product.product_facilities.map((item, index) => (
+                                                    <View style={{ flexDirection: "row", alignItems: "center"}}>
+                                                        <Icon
+                                                            name="checkmark-outline"
+                                                            color={BaseColor.lightPrimaryColor}
+                                                            size={10}
+                                                        />
+                                                        <Text
+                                                            caption1
+                                                            style={{ marginLeft: 10 }}
+                                                        >
+                                                            {item.facilities_name}
+                                                        </Text>
+                                                    </View>
+                                                    ))}
+                                                </View>
+                        </View>
+
+                        <View style={{backgroundColor:BaseColor.whiteColor,marginTop:10,flex:1}}>
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                        <View style={{
+                                                            flexDirection:'row',
+                                                            justifyContent:'space-between',
+                                                            }}>
+                                                            <Text body2 bold>Kamar</Text>
+                                                            
+                                                        </View>
+                                                </View>
+
+                                            
+                                                <View
+                                                    style={{
+                                                        borderBottomColor: BaseColor.dividerColor,
+                                                        borderBottomWidth: 0.5,
+                                                    }}
+                                                />
+                                            
+                                                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                                                    <Paket
+                                                            product={this.state.product}
+                                                            setMinPerson={this.setMinPerson}
+                                                            setPrice={this.setPrice}
+                                                            setLoadingSpinner={this.setLoadingSpinner}
+                                                            param={this.state.param}
+                                                            product_type={this.state.product_type}
+                                                            product_option={this.state.product_option}
+                                                            loading_option={this.state.loading_option}
+                                                            loading_pilih={this.state.loading_pilih}
+                                                            option_empty={this.state.option_empty}
+                                                            config={this.state.config}
+                                                            navigation={this.props.navigation}
+                                                        />
+                                                </View>
                         </View>
                         
 
-                        <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20 }}>
-                            <StarRating
-                                    disabled={true}
-                                    starSize={14}
-                                    maxStars={5}
-                                    rating={5}
-                                    selectedStar={rating => {}}
-                                    fullStarColor={BaseColor.yellowColor}
-                                />
-                        </View>
+                        
+                        
+                        
 
-                        <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingBottom: 20 }}>
-                            <Icon
-                                name="map-marker-alt"
-                                color={BaseColor.lightPrimaryColor}
-                                size={10}
-                            />
-                            <Text
-                                caption1
-                                style={{ marginLeft: 10 }}
-                                numberOfLines={5}
-                            >
-                                {product.product_place},{product.product_place_2}
-                            </Text>
-                        </View>
+                        
+                        
 
-                        <Paket
-                            product={this.state.product}
-                            setMinPerson={this.setMinPerson}
-                            setPrice={this.setPrice}
-                            setLoadingSpinner={this.setLoadingSpinner}
-                            param={this.state.param}
-                            product_type={this.state.product_type}
-                            product_option={this.state.product_option}
-                            loading_option={this.state.loading_option}
-                            loading_pilih={this.state.loading_pilih}
-                            option_empty={this.state.option_empty}
-                            config={this.state.config}
-                            navigation={this.props.navigation}
-                        />
-                        {/* <Informasi
-                            data={'Biaya penambahan orang dalam kamar mungkin berlaku dan berbeda-beda menurut kebijakan properti.Tanda pengenal berfoto yang dikeluarkan oleh pemerintah dan kartu kredit, kartu debit, dan deposit uang tunai diperlukan saat check-in untuk biaya tidak terduga.Pemenuhan permintaan khusus bergantung pada ketersediaan sewaktu check-in dan mungkin menimbulkan biaya tambahan. Permintaan khusus tidak dijamin akan terpenuhi.'}
-                        />
 
-                        <Informasi
-                            data={this.state.product.product_detail.exclude}
-                        />
+                        
 
-                        <Informasi
-                            data={this.state.product.product_detail.term}
-                        /> */}
+
+
+                        
+                        
+                        
+                        
+
+                        
+                        
                     </View>
                 
                             
@@ -1136,7 +1266,7 @@ export default class ProductDetail extends Component {
                     </View>
                 </View>
             :
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1,backgroundColor:BaseColor.bgColor}}>
                 <Animated.View
                     style={[
                         styles.imgBanner,
@@ -1186,7 +1316,7 @@ export default class ProductDetail extends Component {
                     
                 </Animated.View>
                 <SafeAreaView
-                    style={BaseStyle.safeAreaView}
+                    //style={BaseStyle.safeAreaView}
                     forceInset={{ top: "always" }}
                 >
                     <Header
@@ -1195,7 +1325,7 @@ export default class ProductDetail extends Component {
                         renderLeft={() => {
                             return (
                                 <Icon
-                                    name="arrow-left"
+                                    name="md-arrow-back"
                                     size={20}
                                     color={BaseColor.whiteColor}
                                 />
@@ -1224,6 +1354,7 @@ export default class ProductDetail extends Component {
 
                     
                     <ScrollView
+                                       
                         onScroll={Animated.event([
                             {
                                 nativeEvent: {
@@ -1240,8 +1371,7 @@ export default class ProductDetail extends Component {
                     >
 
 
-
-
+                       
 
                         {
                             product.product_image.length != 0 ?
@@ -1258,7 +1388,7 @@ export default class ProductDetail extends Component {
                         }
                         {content}
 
-
+                        
                     </ScrollView>
                     {content_modal}
                    {this.content_button()}
@@ -1304,7 +1434,7 @@ class Paket extends Component {
         //console.log('product_option',JSON.stringify(product_option));
         if(this.props.product_type=='hotelLinx'){
             this.getOptionHotelLinx();
-            this.getOptionHotelLinx2();
+            //this.getOptionHotelLinx2();
         }else{
             this.setState({loading_option:false});
         }
@@ -1376,9 +1506,10 @@ class Paket extends Component {
                     var link='Summary';
 
                     var param=this.props.param;
-                    console.log('paramhotellinx',JSON.stringify(param));
+                    param.tokenApp=config.apiToken;
+                    console.log('≈',JSON.stringify(param));
                     var url=config.baseUrl;
-                    var path="front/api/product/getAvailability3";
+                    var path="front/api/product/getAvailability4";
 
                     var myHeaders = new Headers();
                     myHeaders.append("Content-Type", "application/json");
@@ -1396,7 +1527,7 @@ class Paket extends Component {
                     fetch(url+path, requestOptions)
                     .then(response => response.json())
                     .then(result => {
-                        console.log('resultgetAvailability3',JSON.stringify(result));
+                        console.log('resultgetAvailability4',JSON.stringify(result));
                         console.log('length',result.length);
                         console.log('loop:',this.state.loop);
                         if(result.length == 0){
@@ -1739,6 +1870,8 @@ class Paket extends Component {
     
     
          var dataParam={param:param};
+
+         
      
     
         var myHeaders = new Headers();
@@ -1767,6 +1900,7 @@ class Paket extends Component {
                 productPart:select,
                 productBooking:result,
             }
+            console.log('productBooking',JSON.stringify(paramz));
             this.props.navigation.navigate(link,
             {
                 param:paramz
@@ -1881,7 +2015,7 @@ class Paket extends Component {
         const { navigation} = this.props;
         const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
 
-        console.log('product_option',JSON.stringify(product_option));
+        //console.log('product_option',JSON.stringify(product_option));
 
         var content_modal=<Modal
                                 isVisible={this.state.modalVisible}
@@ -1946,7 +2080,7 @@ class Paket extends Component {
                             borderBottomWidth: 1,
                             borderColor: BaseColor.textSecondaryColor,
                             paddingVertical: 10,
-                            paddingHorizontal: 20,}}
+                            paddingHorizontal: 0}}
                     >
                         <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0,height:15}} />
                         <PlaceholderLine width={100} style={{marginTop: 2,marginBottom:0,height:50}} />
@@ -1958,7 +2092,9 @@ class Paket extends Component {
                             borderBottomWidth: 1,
                             borderColor: BaseColor.textSecondaryColor,
                             paddingVertical: 10,
-                            paddingHorizontal: 20,}}
+                            paddingHorizontal: 0
+                        
+                        }}
                     >
                         <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0,height:15}} />
                         <PlaceholderLine width={100} style={{marginTop: 2,marginBottom:0,height:50}} />
@@ -1970,7 +2106,8 @@ class Paket extends Component {
                             borderBottomWidth: 1,
                             borderColor: BaseColor.textSecondaryColor,
                             paddingVertical: 10,
-                            paddingHorizontal: 20,}}
+                            paddingHorizontal: 0
+                        }}
                     >
                         <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0,height:15}} />
                         <PlaceholderLine width={100} style={{marginTop: 2,marginBottom:0,height:50}} />
@@ -1982,7 +2119,8 @@ class Paket extends Component {
                             borderBottomWidth: 1,
                             borderColor: BaseColor.textSecondaryColor,
                             paddingVertical: 10,
-                            paddingHorizontal: 20,}}
+                            paddingHorizontal: 0
+                        }}
                     >
                         <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0,height:15}} />
                         <PlaceholderLine width={100} style={{marginTop: 2,marginBottom:0,height:50}} />
@@ -2266,7 +2404,7 @@ class Paket extends Component {
                         console.log('this.state.option_empty',this.state.option_empty);
 
                         if(this.state.option_empty==false){
-                            content=<FlatList
+                            content=<View style={{marginBottom:40}}><FlatList
                             data={this.state.product_option}
                             keyExtractor={(item, index) => item.id_product_option}
                             renderItem={({ item,index }) => (
@@ -2300,76 +2438,44 @@ class Paket extends Component {
                                                         </Text>
                                                 
                                                         <View style={{marginBottom:5}}>
-
                                                             <Text body2  bold style={{color:BaseColor.primaryColor}}>
+                                                            {item.MealName}
+                                                            </Text>
+                                                            <Text body2  bold >
                                                                 Fasilitas
                                                             </Text>
-                                                            <View style={[{flexDirection: "row",marginTop:5}]}>
-                                                            {/* <Text body2 bold style={{borderRadius:5,paddingVertical:3,color:BaseColor.primaryColor}}>
-                                                                        {item.MealName}
-                                                             </Text> */}
-                                                             <Tag
+                                                            <View style={[{flexDirection: "column",marginTop:5}]}>
+                                                                
+                                                            <FlatList
+                                                            
+                                                            horizontal={true}
+                                                            data={item.fasility}
+                                                            renderItem={({ item, index, separators }) => ( <Tag
                                                                 primary
-                                                                style={{ marginRight: 15 }}
+                                                                style={{ marginRight: 15}}
                                                             >
-                                                                {item.MealName}
+                                                                {item.label}
                                                             </Tag>
+                                                       )}
+                                                            />
 
                                                             
-                                                                {item.fasility.map((item, index) => (
+                                                                {/* {item.fasility.map((item, index) => (
                                                                 
                                                                     <View
                                                                         style={{ alignItems: "center",}}
                                                                         key={"service" + index}
                                                                     >
-                                                                        {
-                                                                            item.red==false ? 
-                                                                            // <View style={{flexDirection:'row',paddingHorizontal:5,paddingVertical:3,justifyContent: 'center'}}>
-                                                                            //     <Icon
-                                                                            //         name={item.name}
-                                                                            //         size={12}
-                                                                            //         color={BaseColor.primaryColor}
-                                                                            //     />
-                                                                            //     <Text
-                                                                            //         overline
-                                                                            //         style={{marginLeft:3,color:BaseColor.primaryColor}}
-                                                                                    
-                                                                            //     >
-                                                                            //         {item.label}
-                                                                            //     </Text>
-                                                                            // </View>
-                                                                            <Tag
+                                                                        <Tag
                                                                                 primary
                                                                                 style={{ marginRight: 15 }}
                                                                             >
                                                                                 {item.label}
                                                                             </Tag>
-
-                                                                            
-                                                                            :
-                                                                            // <View style={{flexDirection:'row',paddingHorizontal:5,paddingVertical:3}}>
-                                                                            //     <Icon
-                                                                            //         name={item.name}
-                                                                            //         size={12}
-                                                                            //         color={BaseColor.thirdColor}
-                                                                            //     />
-                                                                            //     <Text
-                                                                            //         overline
-                                                                            //         style={{marginLeft:3}}
-                                                                            //     >
-                                                                            //         {item.label}
-                                                                            //     </Text>
-                                                                            // </View>
-                                                                            <Tag
-                                                                                primary
-                                                                                style={{ marginRight: 15 }}
-                                                                            >
-                                                                                {item.label}
-                                                                            </Tag>
-                                                                        }
+                                                                      
                                                                     
                                                                     </View>
-                                                                ))}
+                                                                ))} */}
                                                                 
                                                             </View>
                                                         </View>
@@ -2439,6 +2545,7 @@ class Paket extends Component {
                                         </View>
                                     )}
                                 />
+                                </View>
                         }else{
 
                             content=<View
@@ -2497,16 +2604,56 @@ class Informasi extends Component {
         // var informasi='Biaya penambahan orang dalam kamar mungkin berlaku dan berbeda-beda menurut kebijakan properti.Tanda pengenal berfoto yang dikeluarkan oleh pemerintah dan kartu kredit, kartu debit, dan deposit uang tunai diperlukan saat check-in untuk biaya tidak terduga.Pemenuhan permintaan khusus bergantung pada ketersediaan sewaktu check-in dan mungkin menimbulkan biaya tambahan. Permintaan khusus tidak dijamin akan terpenuhi.';
         
         return (
-            <View style={{marginHorizontal:20}}>
-                <View style={styles.linePrice}>
-                                    <Text body1 bold>
-                                        {title}
-                                    </Text>
-                                </View>
-                <HTML
-                  html={'<div style="font-size:10">'+data+'</div>'}
-                  imagesMaxWidth={Dimensions.get("window").width}
+            // <View style={{marginHorizontal:20}}>
+            //     <View style={styles.linePrice}>
+            //                         <Text body1 bold>
+            //                             {title}
+            //                         </Text>
+            //                     </View>
+            //     <HTML
+            //       html={'<div style="font-size:10">'+data+'</div>'}
+            //       imagesMaxWidth={Dimensions.get("window").width}
+            //     />
+            // </View>
+
+            <View style={{backgroundColor:BaseColor.whiteColor,marginTop:10,flex:1}}>
+            <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                <TouchableOpacity
+                        // onPress={() => 
+                        // {
+                        //     this.toggleExpand()
+                        // }}
+                    >
+                    <View style={{
+                        flexDirection:'row',
+                        justifyContent:'space-between',
+                        }}>
+                        <Text body2 bold>{title}</Text>
+                        
+                    </View>
+                </TouchableOpacity>
+                
+                
+            </View>
+
+
+                <View
+                style={{
+                    borderBottomColor: BaseColor.dividerColor,
+                    borderBottomWidth: 0.5,
+                }}
                 />
+
+
+
+
+                <View style={{marginHorizontal:20,paddingVertical:10,flex:1}}>
+                    <HTML
+                         html={'<div style="font-size:10">'+data+'</div>'}
+                        imagesMaxWidth={Dimensions.get("window").width}
+                    />
+                </View>
+
             </View>
         );
     }
@@ -2575,7 +2722,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: BaseColor.textSecondaryColor,
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        //paddingHorizontal: 20,
     },
     linePrice: {
         flexDirection: "row",

@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
 import { Text } from "@components";
 import styles from "./styles";
-import { Calendar } from "react-native-calendars";
+//import { Calendar } from "react-native-calendars";
 import Modal from "react-native-modal";
 import { BaseColor, FontFamily } from "@config";
 
@@ -47,7 +47,7 @@ export default class BookingTime extends Component {
                 >
                     <View style={styles.contentModal}>
                         <View style={styles.contentCalendar}>
-                            <Calendar
+                            {/* <Calendar
                                 style={{
                                     borderRadius: 8
                                 }}
@@ -86,7 +86,7 @@ export default class BookingTime extends Component {
                                     textMonthFontSize: 16,
                                     textDayHeaderFontSize: 14
                                 }}
-                            />
+                            /> */}
                             <View style={styles.contentActionCalendar}>
                                 <TouchableOpacity
                                     onPress={() => {

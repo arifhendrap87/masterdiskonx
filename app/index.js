@@ -13,6 +13,8 @@ import {DataMasterDiskon} from "@data";
 import NetInfo from '@react-native-community/netinfo';
 import RNExitApp from 'react-native-exit-app';
 import Modal from "react-native-modal";
+import DropdownAlert from 'react-native-dropdownalert';
+
 
 
 export default function index(props) {
@@ -35,6 +37,18 @@ export default function index(props) {
             vi: require("./lang/vi.json")
     };
     StatusBar.setBackgroundColor(BaseColor.primaryColor, true);
+
+    NetInfo.fetch().then(state => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+      if(state.isConnected==false){
+        this.dropdown.alertWithType('error', 'Sedang tidak ada jaringan');
+
+      }
+
+    });
+
+
     // StatusBar.setBackgroundColor("rgba(0,0,0,0)");
     
     // StatusBar.setBackgroundColor("rgba(0,0,0,0)");
@@ -175,6 +189,8 @@ export default function index(props) {
                   <Provider store={store}>
                       <PersistGate loading={null} persistor={persistor}>
                           <App />
+                          <DropdownAlert ref={ref => this.dropdown = ref} messageNumOfLines={10} closeInterval={1000} />
+
                      </PersistGate>
                   </Provider>
   )

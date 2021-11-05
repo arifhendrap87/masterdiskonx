@@ -34,29 +34,18 @@ import { BaseStyle, BaseColor} from "@config";
 import * as Utils from "@utils";
 import styles from "./styles";
 
-import FlightPlanCustom from "../../components/FlightPlanCustom";
 import HeaderHome from "../../components/HeaderHome";
 import CardCustom from "../../components/CardCustom";
 import CardCustomTitle from "../../components/CardCustomTitle";
-import SetDateLong from "../../components/SetDateLong";
-import SetPenumpangLong from "../../components/SetPenumpangLong";
-import FormOptionScreen from "../../components/FormOptionScreen";
-import FormOptionQtyLong from "../../components/FormOptionQtyLong";
-
-import ProductListHotel from "../../components/ProductList/Hotels.js";
 import ProductListCommon from "../../components/ProductList/Common.js";
-import ProductListTravelDeals from "../../components/ProductList/TravelDeals.js";
 import ProductListBeauthHealth from "../../components/ProductList/BeautyHealth.js";
 
 
 import DropdownAlert from 'react-native-dropdownalert';
-import {PropTypes} from "prop-types";
 import {DataMasterDiskon} from "@data";
-import RNExitApp from 'react-native-exit-app';
 
 import ListProductMenu from "../../components/ListProductMenu";
 import ListProductTag from "../../components/ListProductTag";
-import Carousel from "../../components/Carousel";
 
 const {height, width} = Dimensions.get('window');
 const itemWidth = (width - 30) / 2;
@@ -71,7 +60,10 @@ import {
     DataActivities,
     DataDashboard,
     DataSlider,
-    DataBlog,DataMenu,DataCard,DataPromo
+    DataBlog,
+    DataMenu,
+    DataCard,
+    DataPromo
 } from "@data";
 
 import {
@@ -185,7 +177,6 @@ export default class Other extends Component {
         StatusBar.setBackgroundColor(this.props.color, true)
         const {navigation} = this.props;
             this.checkVersion();
-            this.getCategory();
      }
      
     
@@ -224,58 +215,58 @@ export default class Other extends Component {
         
     }
 
-    getCategory(){
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                var url=config.apiBaseUrl+"product/category";
+    // getCategory(){
+    //     AsyncStorage.getItem('config', (error, result) => {
+    //         if (result) {    
+    //             let config = JSON.parse(result);
+    //             var url=config.apiBaseUrlDev+"product/category";
 
-                var myHeaders = new Headers();
-                myHeaders.append("Authorization", "Bearer "+config.apiToken);
+    //             var myHeaders = new Headers();
+    //             myHeaders.append("Authorization", "Bearer "+config.apiToken);
 
-                var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-                };
+    //             var requestOptions = {
+    //             method: 'GET',
+    //             headers: myHeaders,
+    //             redirect: 'follow'
+    //             };
 
-                fetch(url, requestOptions)
-                 .then(response => response.json())
-                .then(result => {
-                    console.log('iconsss',JSON.stringify(result.data));
-                    //this.setState({icons:result.data});
+    //             fetch(url, requestOptions)
+    //              .then(response => response.json())
+    //             .then(result => {
+    //                 console.log('iconsss',JSON.stringify(result.data));
+    //                 //this.setState({icons:result.data});
 
-                    var category=this.rebuild(result.data);
-                    console.log('category',JSON.stringify(category));
-                    this.setState({icons:category});
-                    this.setState({loading:false});
-                })
-                .catch(error => {alert('Kegagalan Respon Server')});
-            }
-        });
-    }
+    //                 var category=this.rebuild(result.data);
+    //                 console.log('category',JSON.stringify(category));
+    //                 this.setState({icons:category});
+    //                 this.setState({loading:false});
+    //             })
+    //             .catch(error => {alert('Kegagalan Respon Server')});
+    //         }
+    //     });
+    // }
    
 
-    rebuild(listdata){
-        var listdata_new = [];
-        var a=1;
-        listdata.map(item => {
-            var obj = {};
+    // rebuild(listdata){
+    //     var listdata_new = [];
+    //     var a=1;
+    //     listdata.map(item => {
+    //         var obj = {};
             
-            obj['id_product_category'] = item.id_product_category;
-            obj['icon_product_category'] = item.icon_product_category;
-            obj['code_product_category'] = item.code_product_category;
-            obj['name_product_category'] = item.name_product_category;
-            obj['slug_product_category'] = item.slug_product_category;
-            obj['status'] = item.status;
-            obj['img'] = 'https://masterdiskon.com/assets/icon/original/prdt/icon-apss-0'+item.id_product_category+'.png';
+    //         obj['id_product_category'] = item.id_product_category;
+    //         obj['icon_product_category'] = item.icon_product_category;
+    //         obj['code_product_category'] = item.code_product_category;
+    //         obj['name_product_category'] = item.name_product_category;
+    //         obj['slug_product_category'] = item.slug_product_category;
+    //         obj['status'] = item.status;
+    //         obj['img'] = 'https://masterdiskon.com/assets/icon/original/prdt/icon-apss-0'+item.id_product_category+'.png';
             
-            listdata_new.push(obj);
-            a++;
-        });
+    //         listdata_new.push(obj);
+    //         a++;
+    //     });
 
-       return listdata_new;
-    }
+    //    return listdata_new;
+    // }
 
 
     render() {
@@ -304,19 +295,19 @@ export default class Other extends Component {
                             this.state.userSession==null ?
                             'Hey, Mau Kemana ?' : this.state.userSession.fullname
                         }
-                        renderRight={() => {
-                            return (
-                                this.state.login ?
-                                <Icon
-                                    name="bell"
-                                    size={20}
-                                    color={BaseColor.whiteColor}
-                                />
-                                :
-                                <View />
+                        // renderRight={() => {
+                        //     return (
+                        //         this.state.login ?
+                        //         <Icon
+                        //             name="bell"
+                        //             size={20}
+                        //             color={BaseColor.whiteColor}
+                        //         />
+                        //         :
+                        //         <View />
                                 
-                            );
-                        }}
+                        //     );
+                        // }}
 
                         onPressRight={() => {
                             var redirect='Notification';
@@ -404,7 +395,8 @@ export default class Other extends Component {
                                 <ListProductTag navigation={navigation}/>
                             </View>
                            
-                            <ProductListCommon navigation={navigation} slug={'hotels'} title={'Hotels'}/>
+                            <ProductListCommon navigation={navigation} slug={'hotels'} title={'Sepuluh kota terbaik'}/>
+                            <ProductListCommon navigation={navigation} slug={'flights'} title={'Penerbangan terpopular'}/>
                             <ProductListCommon navigation={navigation} slug={'travel-deals'} title={'Travel Deals'}/>
                             <ProductListCommon navigation={navigation} slug={'tours'} title={'Tours'}/>
                             <ProductListCommon navigation={navigation} slug={'beauty-health'} title={'Beauty & health'}/>

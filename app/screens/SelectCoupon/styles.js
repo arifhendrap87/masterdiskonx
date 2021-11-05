@@ -12,7 +12,8 @@ export default StyleSheet.create({
     },
     contain: {
         alignItems: "center",
-        padding: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
         width: "100%"
     },
     item: {

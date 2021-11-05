@@ -210,7 +210,7 @@ export default class FilterSortProduct extends Component {
                         style={styles.contentFilter}
                     >
                         <Icon
-                            name="sync-alt"
+                            name="reload-outline"
                             size={16}
                             color={BaseColor.grayColor}
                             solid

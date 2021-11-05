@@ -50,13 +50,60 @@ export default class ListProductMenu extends Component {
             icons: DataMenu,
             loading:true
         }
+
+        this.getConfigApi();
+        this.getConfig();
+        this.getSession();
+
       }
 
-      componentDidMount(){
-        AsyncStorage.getItem('config', (error, result) => {
+
+    //memanggil config
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
             if (result) {    
                 let config = JSON.parse(result);
-                var url=config.apiBaseUrl+"product/category";
+                this.setState({configApi:config});
+            }
+        });
+    }
+
+    getConfig(){
+            AsyncStorage.getItem('config', (error, result) => {
+                if (result) {    
+                    let config = JSON.parse(result);
+                    this.setState({config:config});
+                }
+            });
+    }
+
+    //memanggil session
+    getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                console.log('userSessions',JSON.stringify(userSession));
+
+                var id_user=userSession.id_user;
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.setState({login:true});
+            }
+        });
+    }
+    
+    getData()
+    {
+                let config=this.state.configApi;
+                let baseUrl=config.apiBaseUrl;
+                let url=baseUrl+"product/category";
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+
+
+                // let config = JSON.parse(result);
+                // var url=config.apiBaseUrlDev+"product/category";
 
                 var myHeaders = new Headers();
                 myHeaders.append("Authorization", "Bearer "+config.apiToken);
@@ -78,15 +125,40 @@ export default class ListProductMenu extends Component {
                     this.setState({icons:category});
                     this.setState({loading:false});
                 })
-                .catch(error => {alert('Kegagalan Respon Server')});
-            }
-        });
+                .catch(error => {alert('Kegagalan Respon Server Comp List Product Menu')});
+
+    }
+
+      componentDidMount(){
+          setTimeout(() => {
+              this.getData();
+          }, 20);
+          
+
+                
+            
+    }
+
+    filterValue(obj, key, value) {
+        return obj.find(function(v){ return v[key] === value});
     }
 
     rebuild(listdata){
+        var listdata_sort = [];
+        this.filterValue(listdata, "slug_product_category", "hotels");
+
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "hotels"));
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "flight"));
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "tours"));
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "travel-deals"));
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "health-beauty"));
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "fandb"));
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "gift-vouchers"));
+        listdata_sort.push(this.filterValue(listdata, "slug_product_category", "entertainment"));
+
         var listdata_new = [];
         var a=1;
-        listdata.map(item => {
+        listdata_sort.map(item => {
             var obj = {};
             
             obj['id_product_category'] = item.id_product_category;
@@ -130,8 +202,13 @@ export default class ListProductMenu extends Component {
                             onPress={() => {    
                                 var paramCategory='&category='+item.slug_product_category;
                                 var title=item.name_product_category;
-
-                                this.props.navigation.navigate('ProductList',{
+                                console.log('slugCategory',item.slug_product_category);
+                                if(item.slug_product_category=='hotels'){
+                                    this.props.navigation.navigate('Hotel');
+                                }else if(item.slug_product_category=='flight'){
+                                    this.props.navigation.navigate('Flight');
+                                }else{
+                                    this.props.navigation.navigate('ProductList',{
                                     title:title,
                                     type:'category',
 
@@ -142,6 +219,10 @@ export default class ListProductMenu extends Component {
                                     paramOrder:'',
 
                                 });
+
+                                }
+
+                                
 
                             }}
                         >   

@@ -83,7 +83,7 @@ export default class PreviewImage extends Component {
                     renderRight={() => {
                         return (
                             <Icon
-                                name="times"
+                                name="close-outline"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />

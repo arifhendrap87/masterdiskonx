@@ -284,68 +284,68 @@ export default function PembayaranDetail(props) {
         //tokenMidtransNew();
     }
 
-    function tokenMidtransNew(){
-        var authBasicHeader=config.midtransKey.authBasicHeader;
+    // function tokenMidtransNew(){
+    //     var authBasicHeader=config.midtransKey.authBasicHeader;
 
-        var payment_type=dataPayment.payment_type;
-        var payment_sub=dataPayment.payment_sub;
+    //     var payment_type=dataPayment.payment_type;
+    //     var payment_sub=dataPayment.payment_sub;
         
-        var transaction_details={
-            gross_amount: totalPembayaran,
-            order_id: dataBooking[0].order_payment_recent.id_invoice
-        }
-        var customer_details={
-            email: dataBooking[0].contact.contact_email,
-            first_name: dataBooking[0].contact.contact_first,
-            last_name: dataBooking[0].contact.contact_last,
-            phone: dataBooking[0].contact.contact_phone,
-        }
+    //     var transaction_details={
+    //         gross_amount: totalPembayaran,
+    //         order_id: dataBooking[0].order_payment_recent.id_invoice
+    //     }
+    //     var customer_details={
+    //         email: dataBooking[0].contact.contact_email,
+    //         first_name: dataBooking[0].contact.contact_first,
+    //         last_name: dataBooking[0].contact.contact_last,
+    //         phone: dataBooking[0].contact.contact_phone,
+    //     }
 
-        var enabled_payments=[payment_sub];
+    //     var enabled_payments=[payment_sub];
         
-        var paramPay={
-            transaction_details: transaction_details,
-            customer_details: customer_details,
-            enabled_payments
-        }
+    //     var paramPay={
+    //         transaction_details: transaction_details,
+    //         customer_details: customer_details,
+    //         enabled_payments
+    //     }
         
-        var param={
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Authorization': 'Basic '+authBasicHeader,
-            },
-            body: JSON.stringify(paramPay),
-          }
-          console.log('param',JSON.stringify(param));
-          console.log('paramPay',JSON.stringify(paramPay));
+    //     var param={
+    //         method: 'POST',
+    //         headers: {
+    //           'Accept': 'application/json',
+    //           'Content-Type': 'application/json',
+    //           'Authorization': 'Basic '+authBasicHeader,
+    //         },
+    //         body: JSON.stringify(paramPay),
+    //       }
+    //       console.log('param',JSON.stringify(param));
+    //       console.log('paramPay',JSON.stringify(paramPay));
        
-         var url=config.midtransUrlToken;
-         console.log('url',url);
+    //      var url=config.midtransUrlToken;
+    //      console.log('url',url);
          
-         return PostDataNew(url,'',param)
-             .then((result) => {
-                console.log('change_payment',JSON.stringify(result));
-                var paramPayMD={
-                    "total_pembayaran":totalPembayaran,
-                    "fee":fee,
-                    "id_invoice":dataBooking[0].order_payment_recent.id_invoice,
-                    "dataPayment":dataPayment,
-                    "token":result.token,
-                    "order_code":dataBooking[0].order_code,
-                    "id_order":idOrder
-                    }
+    //      return PostDataNew(url,'',param)
+    //          .then((result) => {
+    //             console.log('change_payment',JSON.stringify(result));
+    //             var paramPayMD={
+    //                 "total_pembayaran":totalPembayaran,
+    //                 "fee":fee,
+    //                 "id_invoice":dataBooking[0].order_payment_recent.id_invoice,
+    //                 "dataPayment":dataPayment,
+    //                 "token":result.token,
+    //                 "order_code":dataBooking[0].order_code,
+    //                 "id_order":idOrder
+    //                 }
                 
-                snapTokenNew(paramPayMD);
-                },
-             (error) => {
-                console.log(JSON.stringify(error));
-                alert('Kegagalan Respon Server');
-             }
-            ); 
+    //             snapTokenNew(paramPayMD);
+    //             },
+    //          (error) => {
+    //             console.log(JSON.stringify(error));
+    //             alert('Kegagalan Respon Server');
+    //          }
+    //         ); 
             
-    }
+    // }
 
     function new_invoice(){
         setLoading(true);
@@ -498,13 +498,12 @@ export default function PembayaranDetail(props) {
                             },
                             body: JSON.stringify(body),
                           }
-                          
-                          
+                          console.log('url,path,param',url,path,JSON.stringify(param))  
                         return PostDataNew(url,path,param)
                             .then((result) => {
                                 var dataBooking=result;
-                                // console.log("---------------get_booking_historyssss ------------");
-                                // console.log(JSON.stringify(result));
+                                console.log("---------------get_booking_detail ------------");
+                                console.log(JSON.stringify(result));
                                 setLoading(false);
                                 setDataBooking(dataBooking);
                                     var order_payment_recent=dataBooking[0].order_payment_recent;
@@ -1105,23 +1104,30 @@ export default function PembayaranDetail(props) {
         title=dataPayment.payment_type_label;
     }
     
-    //const jsCode = "var els = document.getElementsByClassName('button-main show'); while (els[0]) { els[0].classList.remove('show')}";
-    const jsCode = "document.querySelector('.form-signin').style.display = 'none'";
+    const jsCode = "var els = document.getElementsByClassName('button-main show'); while (els[0]) { els[0].classList.remove('show')}";
+    //const jsCode = "document.querySelector('.form-signin').style.display = 'none'";
     var item=dataBooking[0];
     var order_payment_recent=item.order_payment_recent;
     
     var content=<View></View>
-    if(order_payment_recent.snaptoken=='' || order_payment_recent.snaptoken==null || order_payment_recent.payment_type==''){
-    content=<ScrollView>
-            <View  style={{ padding: 20 }}>
-                {content_countdown()}
-                {content_payment()}
-                {/* {content_payment_form()} */}
-                {content_button()}
-            </View>
-            </ScrollView>
-    }else{
-        var urlSnap=config.midtransUrlSnap+order_payment_recent.snaptoken;
+    // if(order_payment_recent.snaptoken=='' || order_payment_recent.snaptoken==null || order_payment_recent.payment_type==''){
+    // content=<ScrollView>
+    //         <View  style={{ padding: 20 }}>
+    //             {content_countdown()}
+    //             {content_payment()}
+    //             {/* {content_payment_form()} */}
+    //             {content_button()}
+    //         </View>
+    //         </ScrollView>
+    // }else{
+        // if(order_payment_recent.payment_type=="gojek"){
+        //     var urlSnap=config.midtransUrlSnap+order_payment_recent.snaptoken;
+        // }else{
+            var urlSnap=order_payment_recent.payment_va_or_code_or_link;
+
+        //}
+
+        
         console.log('urlSnap',urlSnap);
         contentModalIcon=<View></View>
         contentModalButton=<View />
@@ -1247,14 +1253,15 @@ export default function PembayaranDetail(props) {
         }
         content=<View style={{flex:1}}>
                             <WebView 
-                            style={{height:'80%'}} 
+                            style={{height:'70%'}} 
                             source={{uri: urlSnap}} 
                             ref={ref => {
                                 this.webview = ref;
                             }}
                             originWhitelist={['*']}
                             javaScriptEnabledAndroid={true}
-                            injectedJavaScript={jsCode}
+                            automaticallyAdjustContentInsets={false}
+                            //injectedJavaScript={'alert("hello")'}
                             onNavigationStateChange={onNavigationStateChange.bind(this)}
                             />
                             <View style={{flexDirection: "row"}}>
@@ -1265,7 +1272,7 @@ export default function PembayaranDetail(props) {
                                         loading={loading}
                                         onPress={() => { 
                                             Alert.alert(
-                                                'Confirm',
+                                                'Konfirmasi',
                                                 'Ingin mengganti metode pembayaran ?',
                                                 [
                                                   {text: 'NO', onPress: () => console.warn('NO Pressed'), style: 'cancel'},
@@ -1362,7 +1369,7 @@ export default function PembayaranDetail(props) {
                           </Modal>
                             
             </View>
-    }
+    //}
 
     
 
@@ -1377,7 +1384,7 @@ export default function PembayaranDetail(props) {
             renderLeft={() => {
                 return (
                     <Icon
-                        name="arrow-left"
+                        name="md-arrow-back"
                         size={20}
                         color={BaseColor.whiteColor}
                     />

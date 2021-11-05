@@ -240,7 +240,8 @@ export default class FilterSortHotelLinxBottom extends Component {
                     onPress={() => this.onOpenSort()}
                 >
                     <Icon
-                        name={sortSelected.icon}
+                        //name={sortSelected.icon}
+                        name={'ios-funnel-outline'}
                         size={20}
                         color={BaseColor.primaryColor}
                         solid
@@ -256,7 +257,7 @@ export default class FilterSortHotelLinxBottom extends Component {
                         onPress={() => this.onChange("down")}
                     >
                         <Icon
-                            name={'caret-left'}
+                            name={'ios-caret-back-outline'}
                             size={24}
                             color={BaseColor.primaryColor}
                             solid
@@ -271,7 +272,7 @@ export default class FilterSortHotelLinxBottom extends Component {
                         onPress={() => this.onChange("up")}
                     >
                         <Icon
-                            name={'caret-right'}
+                            name={'ios-caret-forward-outline'}
                             size={24}
                             color={BaseColor.primaryColor}
                             solid
@@ -301,7 +302,7 @@ export default class FilterSortHotelLinxBottom extends Component {
                         style={styles.contentFilter}
                     >
                         <Icon
-                            name="sync-alt"
+                            name="reload-outline"
                             size={16}
                             color={BaseColor.primaryColor}
                             solid

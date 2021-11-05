@@ -129,7 +129,9 @@ isEmpty(obj) {
       
         //--------contentCampaign---------//
         if(propIsCampaign.active=="1"){
-          contentCampaingn=<View style={{backgroundColor:BaseColor.primaryColor,paddingHorizontal:5,borderRadius:5,marginRight:10,width:'auto'}}>
+          contentCampaingn=<View style={{
+            backgroundColor:BaseColor.primaryColor,
+          paddingHorizontal:5,borderRadius:5,marginRight:10,width:'auto'}}>
           <Text caption2 style={[{color:BaseColor.whiteColor}]}>
              {propIsCampaign.name_campaign}
           </Text>
@@ -155,7 +157,17 @@ isEmpty(obj) {
           
       //---------content untuk inframe---------//
       if(propInframe.top != ""){
-        contenInframeTop=<View style={{margin:10,position: "absolute",top: 0,padding: 2,backgroundColor:BaseColor.primaryColor,width:'auto',borderRadius:5,flexDirection: 'row', justifyContent: 'flex-end'}}
+        contenInframeTop=<View style={{
+          margin:10,
+          position: "absolute",
+          top: 0,
+          padding: 2,
+          zIndex:2,
+          // backgroundColor:BaseColor.primaryColor,
+          width:'auto',
+          borderRadius:5,
+          flexDirection: 'row', 
+          justifyContent: 'flex-end'}}
                                       
                                 >
                                 <Text
@@ -170,12 +182,23 @@ isEmpty(obj) {
         
         
         if(propInframe.bottom != ""){
-          contenInframeBottom=<View style={{margin:10,position: "absolute",bottom: 0,padding: 2,backgroundColor:'yellow',width:'auto',borderRadius:5}}>
+          contenInframeBottom=<View style={{
+            margin:10,
+            position: "absolute",
+            bottom: 0,
+            padding: 2,
+            zIndex:2,
+            //backgroundColor:'yellow',
+            width:'auto',
+            borderRadius:5
+            }}>
                                   <Text
                                       caption2
                                       bold
+                                      style={{color:BaseColor.whiteColor}}
                                   >
-                                {(this.capitalize(propInframe.bottom.replace(/_/gi, ' ')))}
+                                {propInframe.bottom}
+                                {/* {(this.capitalize(propInframe.bottom.replace(/_/gi, ' ')))} */}
                             </Text>
                           </View>
           }
@@ -189,15 +212,52 @@ isEmpty(obj) {
                   Animation={Fade}
                   style={{marginTop: 5}}
                 >
-                    <PlaceholderLine width={100} height={Utils.scaleWithPixel(propImage.height)} style={{marginTop: 2,marginBottom:0,borderRadius: 5}} />
+                    <PlaceholderLine width={100} height={propOther.hasOwnProperty('height') ? propOther.height : height/7} style={{marginTop: 2,marginBottom:0,borderRadius: 5}} />
                 </Placeholder>
         }else{
-          var styleCustomImage={
-                              borderRadius: 0,
-                              height: Utils.scaleWithPixel(propImage.height),
-                              width: "100%",
-                              backgroundColor:BaseColor.lightPrimaryColor
+          if(propOther.inCard==false){
+            var styleCustomImage={
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0,
+              borderBottomLeftRadius:0,
+              borderBottomRightRadius:0,
+         
+              }
+            
+          }else{
+            if(propOther.horizontal==false){
+              var styleCustomImage={
+                // borderTopLeftRadius: 10,
+                // borderTopRightRadius: 0,
+                // borderBottomLeftRadius:10,
+                // borderBottomRightRadius:0,
+
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                borderBottomLeftRadius:0,
+                borderBottomRightRadius:0,
+           
+                }
+            }else{
+              var styleCustomImage={
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                // borderTopLeftRadius: 10,
+                // borderTopRightRadius: 10,
+
+                borderBottomLeftRadius:propOther.inFrame==true ? 0 : 0,
+                borderBottomRightRadius:propOther.inFrame==true ? 0 : 0,
+
+                // borderBottomLeftRadius:propOther.inFrame==true ? 0 : 10,
+                // borderBottomRightRadius:propOther.inFrame==true ? 0 : 10,
+               
+              }
+            }
           }
+         
+
+
+          
        
           if(sideway==true){
           styleCustomImage.width=(width - 30) / 3;
@@ -205,16 +265,23 @@ isEmpty(obj) {
           
          
         
-          contentImage=<View style={{}}>
-              <FastImage
-              style={styleCustomImage}
+          contentImage=<FastImage
+              style={[
+                styleCustomImage,
+                {
+                  height:propOther.hasOwnProperty('height') ? propOther.height : height/7,
+                  //height: Utils.scaleWithPixel(propImage.height),
+                  //width: "100%",
+                  backgroundColor:BaseColor.lightPrimaryColor,
+                }
+              ]}
               source={this.state.img}
               // source={{
               //   uri:propImage.url,
               //   headers:{ Authorization: 'someAuthToken' },
               //   priority: FastImage.priority.normal,
               // }}
-              resizeMode={FastImage.resizeMode.stretch}
+              resizeMode={FastImage.resizeMode.cover}
               cacheControl={FastImage.cacheControl.cacheOnly}
               resizeMethod={'scale'}
               onLoad={evt =>{
@@ -223,17 +290,27 @@ isEmpty(obj) {
                   headers:{ Authorization: 'someAuthToken' },
                   priority: FastImage.priority.normal,
                 }
-              
-
                 })
               }
             }
             >
-            </FastImage>
+               {contenInframeTop}
               
-              {contenInframeTop}
+              <View style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                backgroundColor: 'black',
+                opacity: 0.4,
+                zIndex:0
+              }}/>
               {contenInframeBottom}
-              </View>
+             
+            </FastImage>
+             
+           
         }
         
         
@@ -247,9 +324,9 @@ isEmpty(obj) {
                         Animation={Fade}
                         style={{marginTop: 5}}
                       >
-                          <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0,borderRadius: 0}} />
+                          {/* <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0,borderRadius: 10}} />
                           <PlaceholderLine width={100} style={{marginTop: 2,marginBottom:0}} />
-                          <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0}} />
+                          <PlaceholderLine width={50} style={{marginTop: 2,marginBottom:0}} /> */}
                       </Placeholder>
         }else{
           
@@ -258,7 +335,7 @@ isEmpty(obj) {
                             <Text
                                 caption1
                                 bold
-                                numberOfLines={1}
+                                numberOfLines={2}
                                 style={colorText}
                             >
                                 {propTitle.text}
@@ -454,7 +531,11 @@ isEmpty(obj) {
                                 >
 
                                                     <TouchableOpacity 
-                                                    style={{flexDirection:'row',backgroundColor:BaseColor.thirdColor,width:'100%',alignItems:'center',justifyContent: "center",paddingVertical:3,borderRadius:5}}
+                                                    style={{flexDirection:'row',
+                                                    backgroundColor:BaseColor.thirdColor,
+                                                    width:'100%',alignItems:'center',justifyContent: "center",
+                                                    paddingVertical:0,
+                                                    borderRadius:5}}
                                                     onPress={() => 
                                                         {
 
@@ -498,13 +579,39 @@ isEmpty(obj) {
                   </View>
         }
         
-        var styleCustomText={flex:1,marginTop:-5}
+        var styleCustomText={flex:1,marginTop:propOther.horizontal==false ? 0 : -5}
         if(propOther.inFrame==true){
-          styleCustomText.paddingHorizontal=10;
+          
+          if(propOther.horizontal==false){
+            styleCustomText.paddingHorizontal=10;
           styleCustomText.borderTopWidth=0;
           styleCustomText.paddingBottom=20;
           styleCustomText.backgroundColor=BaseColor.whiteColor;
+          // styleCustomText.borderBottomRightRadius=10;
+          // styleCustomText.borderBottomLeftRadius=0;
+          // styleCustomText.borderTopRightRadius=10;
+          // styleCustomText.borderTopLeftRadius=0;
+
+          styleCustomText.borderBottomRightRadius=0;
+          styleCustomText.borderBottomLeftRadius=0;
+          styleCustomText.borderTopRightRadius=0;
+          styleCustomText.borderTopLeftRadius=0;
+          
+          }else{
+            styleCustomText.paddingHorizontal=10;
+          styleCustomText.borderTopWidth=0;
+          styleCustomText.paddingBottom=20;
+          styleCustomText.backgroundColor=BaseColor.whiteColor;
+          // styleCustomText.borderBottomRightRadius=10;
+          // styleCustomText.borderBottomLeftRadius=10;
+
+          styleCustomText.borderBottomRightRadius=0;
+          styleCustomText.borderBottomLeftRadius=0;
+            
+          }
         }
+
+       
 
         if(propOther.inCard==false){
           styleCustomText.paddingHorizontal=0;
@@ -543,9 +650,26 @@ isEmpty(obj) {
           flex='row';
         }
         return (
-                <TouchableOpacity activeOpacity={0.7} style={[styleCustom,{flex:1,flexDirection:flex},style]} onPress={onPress}>
+                <TouchableOpacity 
+                //activeOpacity={0.7} 
+                style={[styleCustom,{
+                  flex:1,
+                  flexDirection:flex,
+                  borderRadius: 0,
+                  // shadowColor: "#000",
+                  // shadowOffset: {
+                  //   width: 0,
+                  //   height: 2
+                  // },
+                  // shadowOpacity: 0.25,
+                  // shadowRadius: 4,
+                  // elevation: 5,
+                  borderWidth:1,
+                  borderColor:BaseColor.greyColor
+                  },style]} onPress={onPress}>
                     
                       {contentImage}
+                  
                       {
                       propOther.inFrame==true ?
                       contentText

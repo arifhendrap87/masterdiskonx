@@ -91,8 +91,6 @@ export default class Hotel extends Component {
         }
 
         
-
-        
         var tglAwal=this.getDate(0);
         var tglAkhir=this.getDate(1);
 
@@ -167,13 +165,13 @@ export default class Hotel extends Component {
                 type:'hotel',
                 checked: true
             },
-            {
-                icon: "ellipsis-v",
-                name: "Buy Now Stay Later",
-                route: "Other",
-                iconAnimation:"tour.json",
-                type:'deal',
-            },
+            // {
+            //     icon: "ellipsis-v",
+            //     name: "Buy Now Stay Later",
+            //     route: "Other",
+            //     iconAnimation:"tour.json",
+            //     type:'deal',
+            // },
             ],
         };
 
@@ -184,8 +182,21 @@ export default class Hotel extends Component {
         this.setRoom(1);
         this.setRoomMulti = this.setRoomMulti.bind(this); 
         this.onSubmit = this.onSubmit.bind(this);
+        this.getConfigApi();
         this.getConfig();
 
+
+
+    }
+
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                console.log('configApi',JSON.stringify(config));
+                this.setState({configApi:config});
+            }
+        });
     }
 
     onSelectProduct(select) {
@@ -282,19 +293,6 @@ export default class Hotel extends Component {
     }
 
 
-    
-    // getDate(num){
-    //     var MyDate = new Date();
-    //     var MyDateString = '';
-    //     MyDate.setDate(MyDate.getDate());
-    //     var tempoMonth = (MyDate.getMonth()+1);
-    //     var tempoDate = (MyDate.getDate()+num);
-    //     if (tempoMonth < 10) tempoMonth = '0' + tempoMonth;
-    //     if (tempoDate < 10) tempoDate = '0' + tempoDate;
-
-    //     return MyDate.getFullYear()  + '-' +  tempoMonth  + '-' +  tempoDate;
-    // }
-
     getConfig(){
         AsyncStorage.getItem('config', (error, result) => {
             if (result) {    
@@ -305,84 +303,8 @@ export default class Hotel extends Component {
         });
     }
 
-    getProductHotelPackageCity(){
-        const {config} =this.state;
-        
-        this.setState({loading_hotel_package_city: true }, () => {
-            var url=config.baseUrl;
-            var path=config.common_city_hotel_package.dir;
-            var paramUrl={}
-                    
-            
-                    
-            console.log('getProductHotelPackageCity',url,path,paramUrl);
-            var param={
-                method: 'POST',
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(),
-              }
-         
-            fetch(url+path, param)
-            .then(response => response.json())
-            .then(result => {
-                this.setState({loading_hotel_package_city: false });
-                this.setState({list_hotel_package_city: result});
-            })
-            .catch(error => {
-                console.log(JSON.stringify(error));
-                alert('Kegagalan Respon Server');
-            });
 
-
-
-        });
-    }
     
-    
-    getProductHotelPackage(){
-        const {config} =this.state;
-        
-        this.setState({ loading_product_hotel_package: true }, () => {
-            var url=config.baseUrl;
-            var path=config.product_hotel_package.dir;
-            var paramUrl={"param":{
-                        "id_country":this.state.id_country,
-                        "id_city":this.state.id_city,
-                        "id_hotelpackage":"",
-                        "detail_category":'buy_now_stay_later',
-                        //"detail_category":this.state.detail_category,
-                        "search":"",
-                        "limit":""
-                        }}
-                    
-                    
-            console.log('getProductHotelPackage',url,path,paramUrl);
-            var param={
-                method: 'POST',
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(paramUrl),
-              }
-          
-
-                fetch(url+path, param)
-                .then(response => response.json())
-                .then(result => {
-                    console.log('getProductHotelPackage',JSON.stringify(result));
-                    this.setState({loading_product_hotel_package: false });
-                    this.setState({listdata_product_hotel_package: result});
-                    this.setState({listdata_product_hotel_package_original: result});
-                })
-                .catch(error => {alert('Kegagalan Respon Server')});
-                
-
-        });
-    }
 
     onSelectCity(select) {
         this.setState({listdata_product_hotel_package:this.state.listdata_product_hotel_package_original});
@@ -424,26 +346,24 @@ export default class Hotel extends Component {
         });
     }
 
-
-
-  
-
     
 
     componentDidMount() {
        
 
         
-
+        var defaultCity={"total":"8185","cityid":"15533","cityname":"Bali","countryname":"Indonesia","searchType":"best","searchCity":"15533","searchHotel":"","searchTitle":"Bali, Indonesia","searchArea":"","searchCountry":"Indonesia","searchProvince":"51"}
+        this.setHotelLinxDestination(defaultCity);
         this.setRoomMulti(this.state.roomMultiParam);
-        setTimeout(() => {
-            this.getProductHotelPackage();
-            this.getProductHotelPackageCity();
-        }, 50);
+
     }
 
     getProductHotelLinxDetail(param){
-        const {config} =this.state;
+        let config=this.state.configApi;
+        let baseUrl=config.baseUrl;
+
+        let url=baseUrl+'front/api/product/product_hotel_linx_detail';
+        console.log('urlgetProvince',url);
         const {navigation}=this.props;
         const data={  
             "hotelid":param.hotelid,
@@ -451,10 +371,8 @@ export default class Hotel extends Component {
         console.log('param',JSON.stringify(param));
         const paramSearch={"param":data};
         this.setState({ loading: true }, () => {
-            var url='https://masterdiskon.com/';
-            var path="front/api/product/product_hotel_linx_detail";
+           
 
-            console.log('paramgetProductHotelLinx',url+path,JSON.stringify(paramSearch));
 
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
@@ -468,16 +386,13 @@ export default class Hotel extends Component {
             redirect: 'follow'
             };
             
-            fetch(url+path, requestOptions)
+            fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
+                console.log('detailhotal',JSON.stringify(result));
                 this.setState({ loading: false });
                 console.log(JSON.stringify(result[0]));
-                navigation.navigate("ProductDetail",{param:param,product:result[0],product_type:'hotelLinx'})
-                // this.setState({loading_product_hotel_linx: false });
-                // this.setState({listdata_product_hotel_linx: result});
-                // this.setState({listdata_product_hotel_linx_original: result});
-
+                //navigation.navigate("ProductDetail",{param:param,product:result[0],product_type:'hotelLinx'})
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
@@ -544,6 +459,7 @@ export default class Hotel extends Component {
             param.adultnchildparam=this.state.adultnchildparam;
             param.checkin=this.convertDateText(param.DepartureDate);
             param.checkout=this.convertDateText(param.ReturnDate);
+            param.srcdata="";
 
             param.adults=param.Adults;
             param.child=param.Children;
@@ -559,16 +475,14 @@ export default class Hotel extends Component {
             param.tglAkhir=param.ReturnDate;
             param.hotelLinxDestination=this.state.hotelLinxDestination;
 
-            console.log('paramHotelLinx',JSON.stringify(param));
+            console.log('paramHotelLinxs',JSON.stringify(param));
 
-            //this.setState({param:param});
             
 
             if (this.state.hotelLinxDestinationSearch=='') {
                 this.dropdown.alertWithType('error', 'Error', 'Tujuan / nama hotel belum dipilih');
                 
             }else{
-                //alert(this.state.hotelLinxDestinationType);
 
                 if(this.state.hotelLinxDestinationType=='hotel'){
                     this.getProductHotelLinxDetail(param);
@@ -579,17 +493,17 @@ export default class Hotel extends Component {
                     param.ratingH="";
                     param.rHotel="";
                     param.srcdata="";
-                    param.minimbudget="40000";
+                    param.minimbudget="0";
                     param.maximbudget="15000000";
                     param.shortData="";
                     param.startkotak="0";
                     param.searchTitle=this.state.hotelLinxDestinationLabel;
                     param.jmlTamu=this.state.roomMultiGuest;
 
-                    if(this.state.hotelLinxDestinationType=='area'){
+                    if(this.state.hotelLinxDestinationType != 'hotel'){
                         param.hotelid="";
                     }
-                    console.log('paramHotellinx',JSON.stringify(param));
+                    console.log('paramHotellinxx',JSON.stringify(param));
                     this.setState({ loading: true }, () => {
                         link='HotelLinx';
                         this.props.navigation.navigate(link,
@@ -634,9 +548,6 @@ export default class Hotel extends Component {
                 });
         }
 }
-
-
-
     //-----function untuk hotelLinx-----//
 
     getNight(startDate,endDate){
@@ -644,7 +555,6 @@ export default class Hotel extends Component {
         const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
         return diffInDays;
     }
-
 
     convertDateText(date){
         var d = new Date(date);
@@ -654,7 +564,6 @@ export default class Hotel extends Component {
 
         return d.getDate()+" "+months[d.getMonth()]+" "+d.getFullYear();
     }
-
 
     setHotelLinxDestination(select) {
         console.log('setHotelLinxDestination',JSON.stringify(select));
@@ -669,6 +578,7 @@ export default class Hotel extends Component {
         this.setState({hotelLinxDestinationSearch:select.searchTitle});
         this.setState({hotelLinxDestinationProvince:select.searchProvince});
     }
+
     arradultnchildparam(dataArray,num){
         var arradultnchildparam=[]
         
@@ -686,7 +596,6 @@ export default class Hotel extends Component {
         
         return arradultnchildparam;
     }   
-    
     
     setRoomMulti(dataArray){
         console.log('dataArray',JSON.stringify(dataArray));
@@ -773,6 +682,7 @@ export default class Hotel extends Component {
         this.setState({anak:jmlAnak.toString()});
         this.setState({bayi:jmlBayi.toString()});
     }
+
     setRoom(jml){
         //alert(jml);
         this.setState({dewasa:"2"});
@@ -917,9 +827,6 @@ export default class Hotel extends Component {
         return [year,month,day].join('-');
     }
 
-
-
-
     getDate2(num,date){
         var MyDate = new Date(date);
         var MyDateString = '';
@@ -939,7 +846,8 @@ export default class Hotel extends Component {
         var title='';
         var content=<View></View>
         var contentTitle=<View></View>
-        var contentButton=<View style={{flexDirection:'column'}}><Button
+        var contentButton=<View style={{flexDirection:'column'}}>
+                        <Button
                             full
                             loading={loading}
                             style={{height:40}}
@@ -949,7 +857,8 @@ export default class Hotel extends Component {
                             }}
                         >
                             Search
-                        </Button></View>
+                        </Button>
+                        </View>
         if(type=="hotel"){
             content=this.renderContentSearchHotel();
             title='Pencarian Hotel';
@@ -1003,9 +912,6 @@ export default class Hotel extends Component {
         
     }
 
-
-    
-
     renderContentSearchHotel(){
         const { round, from, to, loading,login  } = this.state;
         const { navigation } = this.props;
@@ -1014,7 +920,7 @@ export default class Hotel extends Component {
             <FormOptionScreen
                 label={'Tujuan'}
                 title={this.state.hotelLinxDestinationLabel}
-                icon={'hotel'}
+                icon={'navigate-outline'}
                 onPress={() =>{
                     navigation.navigate("SelectHotelLinx",{
                         setHotelLinxDestination: this.setHotelLinxDestination,
@@ -1030,13 +936,13 @@ export default class Hotel extends Component {
                     tglAwal={this.state.tglAwal}
                     tglAkhir={this.state.tglAkhir}
                     round={this.state.round}
-                    icon={'calendar'}
+                    icon={'calendar-outline'}
             />
 
             <FormOptionScreen
                 label={'Tamu Hotel'}
                 title={this.state.roomMultiCountRoom+' kamar, '+this.state.roomMultiGuest+' tamu'}
-                icon={'hotel'}
+                icon={'md-person-outline'}
                 onPress={() =>{
                     navigation.navigate("HotelLinxGuest",{
                         roomMultiCountRoom:this.state.roomMultiCountRoom,
@@ -1193,16 +1099,16 @@ export default class Hotel extends Component {
         }
         return (
             <SafeAreaView
-                style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.bgColor}]}
+                style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.primaryColor}]}
                 forceInset={{ top: "always" }}
             >
                 <Header
-                    title="Hotels"
+                    title="Hotel"
                     subTitle={filterTitle}
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />
@@ -1222,13 +1128,6 @@ export default class Hotel extends Component {
                                 alignSelf: 'center',
                                 }}
                                 >
-                                
-
-
-                                <View>
-                                
-                                    {this.renderIconService()}
-                                </View>
                             </View>
                             <View 
                                 style={{ 
@@ -1236,7 +1135,7 @@ export default class Hotel extends Component {
                                 marginTop:10,
                                 backgroundColor:'#fff',
                                 width:'90%',
-                                //height:400,
+                                //height:hp,
                                 alignSelf: 'center',
                                 borderRadius: 5,
                                 elevation: 3,
@@ -1247,57 +1146,12 @@ export default class Hotel extends Component {
                                 {this.renderContentSearch()}
                                
                             </View> 
-                            {/* <View 
+                            <View 
                                 style={{ 
-                                flexDirection:'row',
-                                marginTop:10,
-                                backgroundColor:'#fff',
-                                width:'90%',
-                                alignSelf: 'center',
-                                borderRadius: 5,
-                                elevation: 3,
-                                padding:10
-                                }}
-                                >
-                             {this.renderContentSearchDeal()}
-                               
-                            </View>  */}
-                            
-                {/* {filterCity} */}
-
+                                flex:2,
+                            }} >
                 
-                
-                {/* <ScrollView
-                        onScroll={Animated.event([
-                            {
-                                nativeEvent: {
-                                    contentOffset: { y: this._deltaY }
-                                }
-                            }
-                        ])}
-                        onContentSizeChange={() =>
-                            this.setState({
-                                heightHeader: 200
-                            })
-                        }
-                        scrollEventThrottle={8}
-                    >
-                {this.renderContent()}
-                </ScrollView> */}
-                                <View 
-                                style={{ 
-                                flex:this.state.type == 'hotel' ? 2 :10,
-                                }} >
-                <CardCustomTitle style={{marginLeft:20}} title={'Buy Now Stay Later'} />
-
-                {
-                    this.state.loading_product_hotel_package==true ? 
-                    <ActivityIndicator size="large" color={BaseColor.primaryColor} /> :this.renderContent()
-                }
-                {/* {this.renderContent()}
-                 */}
-                
-                </View>
+                            </View>
                 <DropdownAlert ref={ref => this.dropdown = ref} messageNumOfLines={10} closeInterval={10000} />
 
             </SafeAreaView>

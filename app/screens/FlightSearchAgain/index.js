@@ -581,7 +581,7 @@ export default class FlightSearchAgain extends Component {
                     tglAwal={this.state.tglAwal}
                     tglAkhir={this.state.tglAkhir}
                     round={this.state.round}
-                    icon={'calendar'}
+                    icon={'calendar-outline'}
             />
 
             <FormOption
@@ -591,7 +591,7 @@ export default class FlightSearchAgain extends Component {
                 optionSet={this.setKelasPesawat}
                 optionSelectText={this.state.kelas}
                 optionSelectValue={this.state.kelasId}
-                icon={'crown'}
+                icon={'pricetag-outline'}
             />
             
             <SetPenumpangLong
@@ -640,7 +640,7 @@ export default class FlightSearchAgain extends Component {
 
                 
                 <SafeAreaView
-                style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.bgColor}]}
+                style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.primaryColor}]}
                 forceInset={{ top: "always" }}
                 >
                 <Header
@@ -648,7 +648,7 @@ export default class FlightSearchAgain extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />

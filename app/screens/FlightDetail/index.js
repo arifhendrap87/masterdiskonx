@@ -281,7 +281,7 @@ export default class FlightDetail extends Component {
                           style={[styles.contentFilter,{marginLeft:0}]}
                       >
                           <Icon
-                              name="suitcase"
+                              name="briefcase-outline"
                               size={16}
                               color={BaseColor.thirdColor}
                               solid
@@ -298,7 +298,7 @@ export default class FlightDetail extends Component {
                           style={styles.contentFilter}
                       >
                           <Icon
-                              name="hamburger"
+                              name="md-fast-food-outline"
                               size={16}
                               color={BaseColor.thirdColor}
                               solid
@@ -373,7 +373,7 @@ export default class FlightDetail extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />

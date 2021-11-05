@@ -184,7 +184,45 @@ export default class FlightResult extends Component {
         this.sortProcess = this.sortProcess.bind(this);
         this.searchAgain=this.searchAgain.bind(this);
 
+        this.getConfigApi();
+        this.getConfig();
+        this.getSession();
 
+
+    }
+
+    //memanggil config
+    getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
+    }
+
+    getConfig(){
+            AsyncStorage.getItem('config', (error, result) => {
+                if (result) {    
+                    let config = JSON.parse(result);
+                    this.setState({config:config});
+                }
+            });
+    }
+
+    //memanggil session
+    getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                console.log('userSessions',JSON.stringify(userSession));
+
+                var id_user=userSession.id_user;
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.setState({login:true});
+            }
+        });
     }
 
     filter_destination(data){
@@ -378,12 +416,12 @@ export default class FlightResult extends Component {
                             };
                             
                             var urlReq=url+"flight/search?"+paramUrl;
-                            console.log('urlReq',urlReq);
+                            console.log('urlReqs',urlReq,'token:'+token);
                             fetch(urlReq, requestOptions)
                               .then(response => response.json())
                               .then(result => {
                                                             var length=result.data.departure.length;
-                                                            //console.log('getProduct',JSON.stringify(result.data.departure));
+                                                            console.log('getProductFlight',JSON.stringify(result.data.departure));
                                                             // console.log('flight_result',length);   
                                                             var listdata_departure=[];
                                                             var listdata_return=[];
@@ -391,7 +429,7 @@ export default class FlightResult extends Component {
                                                                 this.setState({ loading_data: false });
                                                                 listdata_departure=this.rebuild(result.data.departure);
                                                                 listdata_return=this.rebuild(result.data.return);  
-                                                                //console.log('flight_results',JSON.stringify(this.rebuild(result.data.departure)));                            
+                                                                console.log('flight_results',JSON.stringify(this.rebuild(result.data.departure)));                            
                                                                 listdata_departure=this.filter_destination(listdata_departure);
                                                                 //listdata_return=this.filter_origin(listdata_return);
 
@@ -849,7 +887,7 @@ export default class FlightResult extends Component {
                                     "departure":departurePost,
                                     "return":returnPost
                                 };
-                        
+                                console.log('paramGetPrice',JSON.stringify(paramGetPrice));
                         
                                                     this.setState({ loading_spinner: true }, () => {
                                                         AsyncStorage.getItem('config', (error, result) => {
@@ -879,7 +917,7 @@ export default class FlightResult extends Component {
                                                                         fetch(url+'flight/Price/v3',requestOptions)
                                                                         .then(response => response.json())
                                                                         .then(result => {
-                                                                            //console.log('select',JSON.stringify(result));
+                                                                            console.log('select',JSON.stringify(result));
                                                                             this.setState({loading_spinner:false});
                                                                             if(result.errors){
                                                                                 this.dropdown.alertWithType('error', 'Error',JSON.stringify(result.errors));
@@ -1026,7 +1064,7 @@ export default class FlightResult extends Component {
        const {navigation} = this.props;
         setTimeout(() => {
             this.getProduct();
-        }, 50);
+        }, 20);
  
     }
     
@@ -1074,7 +1112,7 @@ export default class FlightResult extends Component {
             >
                 
                     <View style={{flex:1,flexDirection:'column'}}>
-                        <View style={{flexDirection:'row',flex:0.05,backgroundColor:BaseColor.primaryColor,}}>
+                        <View style={{flexDirection:'row',flex:0.05,backgroundColor:BaseColor.primaryColor,paddingVertical:5}}>
                             <View style={{flex:2,justifyContent: 'center'}}>
                                 <TouchableOpacity 
                                         onPress={() => 
@@ -1084,7 +1122,7 @@ export default class FlightResult extends Component {
                                             style={{marginLeft:20}}
                                         >
                                     <Icon
-                                    name="arrow-left"
+                                    name="md-arrow-back"
                                     size={20}
                                     color={BaseColor.whiteColor}
                                     style={{}}
@@ -1109,7 +1147,7 @@ export default class FlightResult extends Component {
                                                 }}
                                             >
                                         <Icon
-                                        name="edit"
+                                        name="md-pencil-sharp"
                                         size={14}
                                         color={BaseColor.secondColor}
                                         style={{marginLeft:10}}
@@ -1121,10 +1159,10 @@ export default class FlightResult extends Component {
                             </View>
                             <View style={{flex:2}} />
                         </View>
-                        <View style={{flex:0.9}}>
+                        <View style={{flex:0.9,marginTop:20}}>
                         {
                             loading_spinner ? 
-                            <View style={{flex: 1,backgroundColor:  "#FFFFFF",justifyContent: "center",alignItems: "center"}}>
+                            <View style={{flex: 1,justifyContent: "center",alignItems: "center"}}>
                                 <View
                                     style={{
                                         position: "absolute",
@@ -1163,16 +1201,23 @@ export default class FlightResult extends Component {
                 }
                 </View>
                        
+                {
+                    loading_load_more || loading_spinner ?
+                    <View></View>
+                    
+                :
+                    <FilterSort
+                    onFilter={this.onFilter}
+                    onClear={this.onClear}
+                    sortProcess={this.sortProcess}
+                    style={
+                        [{marginHorizontal:15,flex:0.05}]
+                    }
+            />
+                }
 
-                <FilterSort
-                        onFilter={this.onFilter}
-                        onClear={this.onClear}
-                        sortProcess={this.sortProcess}
-                        style={
-                            [{marginHorizontal:15,flex:0.05}]
-                        }
-                    />
-                    </View>
+
+                </View>
 
             </SafeAreaView>
         );

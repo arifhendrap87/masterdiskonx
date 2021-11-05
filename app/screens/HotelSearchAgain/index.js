@@ -571,7 +571,7 @@ export default class HotelSearchAgain extends Component {
                     param.ratingH="";
                     param.rHotel="";
                     param.srcdata="";
-                    param.minimbudget="40000";
+                    param.minimbudget="0";
                     param.maximbudget="15000000";
                     param.shortData="";
                     param.startkotak="0";
@@ -1008,7 +1008,7 @@ export default class HotelSearchAgain extends Component {
             <FormOptionScreen
                 label={'Tujuan'}
                 title={this.state.hotelLinxDestinationLabel}
-                icon={'hotel'}
+                icon={'navigate-outline'}
                 onPress={() =>{
                     navigation.navigate("SelectHotelLinx",{
                         setHotelLinxDestination: this.setHotelLinxDestination,
@@ -1016,6 +1016,7 @@ export default class HotelSearchAgain extends Component {
                 }}
             />
            
+
             <SetDateLong
                     labelTglAwal={'Check In'}
                     labelTglAkhir={'Check Out'}
@@ -1024,13 +1025,13 @@ export default class HotelSearchAgain extends Component {
                     tglAwal={this.state.tglAwal}
                     tglAkhir={this.state.tglAkhir}
                     round={this.state.round}
-                    icon={'calendar'}
+                    icon={'ios-calendar-outline'}
             />
 
             <FormOptionScreen
                 label={'Tamu Hotel'}
                 title={this.state.roomMultiCountRoom+' kamar, '+this.state.roomMultiGuest+' tamu'}
-                icon={'hotel'}
+                icon={'md-person-outline'}
                 onPress={() =>{
                     navigation.navigate("HotelLinxGuest",{
                         roomMultiCountRoom:this.state.roomMultiCountRoom,
@@ -1187,7 +1188,7 @@ export default class HotelSearchAgain extends Component {
         }
         return (
             <SafeAreaView
-                style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.bgColor}]}
+                style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.primaryColor}]}
                 forceInset={{ top: "always" }}
             >
                 <Header
@@ -1196,7 +1197,7 @@ export default class HotelSearchAgain extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />
@@ -1221,7 +1222,7 @@ export default class HotelSearchAgain extends Component {
                             </View>
                             <View 
                                 style={{ 
-                                flex:4,
+                                flex:1,
                                 marginTop:10,
                                 backgroundColor:'#fff',
                                 width:'90%',
@@ -1236,9 +1237,13 @@ export default class HotelSearchAgain extends Component {
                                 {this.renderContentSearch()}
                                
                             </View> 
-                            <View style={{flex:6}}>
-
+                            <View 
+                                style={{ 
+                                flex:2,
+                            }} >
+                
                             </View>
+                          
                            
                 <DropdownAlert ref={ref => this.dropdown = ref} messageNumOfLines={10} closeInterval={10000} />
 

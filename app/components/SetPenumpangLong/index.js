@@ -214,7 +214,7 @@ export default class SetPenumpang extends Component {
                                                     
                                               >
                                         <Icon
-                                                    name={'user'}
+                                                    name={'person-outline'}
                                                     size={14}
                                                     color={BaseColor.primaryColor}
                                         />

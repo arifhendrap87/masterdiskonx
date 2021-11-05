@@ -302,6 +302,7 @@ export default class FlightResultArrival extends Component {
             "departure":departurePost,
             "return":returnPost
         };
+        console.log('paramGetPrice',JSON.stringify(paramGetPrice));
 
 
                             this.setState({ loading_spinner: true }, () => {
@@ -484,11 +485,12 @@ export default class FlightResultArrival extends Component {
         return (
             <SafeAreaView
                 style={[BaseStyle.safeAreaView,{backgroundColor:BaseColor.bgColor}]}
-                forceInset={{ top: "always" }}
+                //forceInset={{ top: "always" }}
             >
-                
+
                     <View style={{flex:1,flexDirection:'column'}}>
-                        <View style={{flexDirection:'row',flex:0.05,backgroundColor:BaseColor.primaryColor,}}>
+
+                        <View style={{flexDirection:'row',flex:0.05,backgroundColor:BaseColor.primaryColor,paddingVertical:5}}>
                             <View style={{flex:2,justifyContent: 'center'}}>
                                 <TouchableOpacity 
                                         onPress={() => 
@@ -498,7 +500,7 @@ export default class FlightResultArrival extends Component {
                                             style={{marginLeft:20}}
                                         >
                                     <Icon
-                                    name="arrow-left"
+                                    name="md-arrow-back"
                                     size={20}
                                     color={BaseColor.whiteColor}
                                     style={{}}
@@ -523,7 +525,7 @@ export default class FlightResultArrival extends Component {
                                                 }}
                                             >
                                         <Icon
-                                        name="edit"
+                                        name="md-pencil-sharp"
                                         size={14}
                                         color={BaseColor.whiteColor}
                                         style={{marginLeft:10}}
@@ -535,10 +537,10 @@ export default class FlightResultArrival extends Component {
                             </View>
                             <View style={{flex:2}} />
                         </View>
-                        <View style={{flex:0.9}}>
+                        <View style={{flex:0.9,marginTop:20}}>
                         {
                             loading_spinner ? 
-                            <View style={{flex: 1,backgroundColor:  "#FFFFFF",justifyContent: "center",alignItems: "center"}}>
+                            <View style={{flex: 1,justifyContent: "center",alignItems: "center"}}>
                                 <View
                                     style={{
                                         position: "absolute",
@@ -569,12 +571,15 @@ export default class FlightResultArrival extends Component {
                         
                             
                
-                        <DropdownAlert ref={ref => this.dropdown = ref} messageNumOfLines={10} closeInterval={10000} />
 
                 </View>
                        
 
-                
+                {
+                    loading_spinner ?
+                    <View></View>
+                    
+                :
                     <FilterSort
                         labelCustom={this.state.listdata_return.length+' result'}
                         listdata={this.state.listdata_return_original}
@@ -586,7 +591,9 @@ export default class FlightResultArrival extends Component {
                             [{marginHorizontal:15,flex:0.05}]
                         }
                     />
+                }
                     </View>
+                    <DropdownAlert ref={ref => this.dropdown = ref} messageNumOfLines={10} closeInterval={10000} />
 
             </SafeAreaView>
         );

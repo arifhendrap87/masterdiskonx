@@ -77,6 +77,16 @@ export default class ProductDetailNew extends Component {
             slug='';
         }
 
+
+        var productId={};
+        if(this.props.navigation.state.params && this.props.navigation.state.params.productId){
+            productId=this.props.navigation.state.params.productId;
+            //console.log('productss',JSON.stringify(product));
+        }else{
+            productId='';
+        }
+
+
         var product={};
         if(this.props.navigation.state.params && this.props.navigation.state.params.product){
             product=this.props.navigation.state.params.product;
@@ -108,6 +118,13 @@ export default class ProductDetailNew extends Component {
             param={};
         }
 
+        var paramProduct={};
+        if(this.props.navigation.state.params && this.props.navigation.state.params.paramProduct){
+            paramProduct=this.props.navigation.state.params.paramProduct;
+        }else{
+            paramProduct={};
+        }
+
       
 
         this.state = {
@@ -126,9 +143,11 @@ export default class ProductDetailNew extends Component {
                 "totalPrice": 0,
                 "participant": false
               },
+            paramProduct:paramProduct,
             product:product,
             productPart:productPart,
-            quantity:1
+            quantity:1,
+            total:0
            
             
 
@@ -137,9 +156,46 @@ export default class ProductDetailNew extends Component {
         this.setPrice = this.setPrice.bind(this);
         this.setQuantity = this.setQuantity.bind(this);
 
+        
+
+        this.getConfigApi();
         this.getConfig();
         this.getSession();
 
+    }
+
+     //memanggil config
+     getConfigApi(){
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                this.setState({configApi:config});
+            }
+        });
+    }
+
+    getConfig(){
+            AsyncStorage.getItem('config', (error, result) => {
+                if (result) {    
+                    let config = JSON.parse(result);
+                    this.setState({config:config});
+                }
+            });
+    }
+
+    //memanggil session
+    getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                console.log('userSessions',JSON.stringify(userSession));
+
+                var id_user=userSession.id_user;
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.setState({login:true});
+            }
+        });
     }
 
     getDate(num){
@@ -155,25 +211,95 @@ export default class ProductDetailNew extends Component {
     }
 
 
-    //memanggil config
-    getConfig(){
-            AsyncStorage.getItem('config', (error, result) => {
-                if (result) {    
-                    let config = JSON.parse(result);
-                    this.setState({config:config});
-                }
-            });
-    }
+   
     componentDidMount(){
-        this.getData();
+        setTimeout(() => {
+            this.getData();
+            this.productHotel();
+        }, 20);
+       
+    }
+
+    productGeneral(){
+
+
+    }
+
+    productHotel(){
+
+        // let config=this.state.configApi;
+        // let baseUrl=config.apiBaseUrl;
+        // let url=baseUrl+"product/hotel/detail?type=hotel&hotelid=22858";
+        // console.log('configApiproductHotel',JSON.stringify(config));
+        // console.log('urlssproductHotel',url);
+
+        // //let token="access_token="+config.apiToken+"; refresh_token="+config.apiTokenRefresh;
+        // let token="access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxNDEsInJvbGUiOiJ1c2VyIn0sImV4cCI6MTYzNjE2NDYwMzMwNiwiaWF0IjoxNjM2MDc4MjAzfQ.23TklY0cec2bINFiqQ7mSc3qjNNwis2KskvdD_O5D0Q";
+        // console.log('tokenHotel',token);
+        
+
+
+        // var myHeaders = new Headers();
+        // myHeaders.append("Cookie", token);
+
+        // var formdata = new FormData();
+
+        // var requestOptions = {
+        // method: 'GET',
+        // headers: myHeaders,
+        // body: formdata,
+        // redirect: 'follow'
+        // };
+
+        // fetch(url, requestOptions)
+        // .then(response => response.json())
+        // .then(result => {
+        //     console.log('resutlHotel',JSON.stringify(result));
+            
+        // })
+        // .catch(error => {
+        //     console.log('error', error)
+        // });
+
+
+        var myHeaders = new Headers();
+        myHeaders.append("Cookie", "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxNDEsInJvbGUiOiJ1c2VyIn0sImV4cCI6MTYzNjE2NDYwMzMwNiwiaWF0IjoxNjM2MDc4MjAzfQ.23TklY0cec2bINFiqQ7mSc3qjNNwis2KskvdD_O5D0Q");
+
+        var formdata = new FormData();
+        var url="https://devapi.masterdiskon.com/v1/product/hotel/detail?type=hotel&hotelid=22858";
+        console.log('urlss',url)
+        var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+        };
+
+        fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log('resutlHotel',JSON.stringify(result));
+            
+        })
+        .catch(error => {
+            console.log('error', error)
+        });
+
+
+
     }
 
     getData(){
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                var url=config.apiBaseUrl+"product/"+this.state.slug;
-                console.log('url',JSON.stringify(url));
+       
+                let config=this.state.configApi;
+                let baseUrl=config.apiBaseUrl;
+                let url=baseUrl+"product/"+this.state.slug;
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+                // let config = JSON.parse(result);
+                // var url=config.apiBaseUrlDev+"product/"+this.state.slug;
+                // console.log('url',JSON.stringify(url));
                 var myHeaders = new Headers();
                 myHeaders.append("Authorization", "Bearer "+config.apiToken);
 
@@ -186,9 +312,22 @@ export default class ProductDetailNew extends Component {
                 fetch(url, requestOptions)
                  .then(response => response.json())
                  .then(result => {
+                    const array = [
+                        'https://fave-production-main.myfave.gdn/attachments/b830f5d667f72a999671580eb58683af908d4486/store/fill/400/250/5b225df71f4f5fcd71a24bb5e7f7eb44026fa4b98005d45a979853b812c3/activity_image.jpg',
+                        'https://fave-production-main.myfave.gdn/attachments/240be21ccb5ad99e3afb0f591a4c65273b0f8c16/store/fill/800/500/bd1160e0f91e468af35f6186d6fd7374868f62b1534ee5db6432399b5f48/activity_image.jpg',
+                        'https://fave-production-main.myfave.gdn/attachments/ffd7160ebf8ff67cc63e22016f82803a85714754/store/fill/400/250/975eec09dd53b92faca441aa40b75a6843a0628d30a966375404f1730f0b/activity_image.jpg'
+                        ];
+
                     console.log('detailProduct',JSON.stringify(result));
+                    result.data.img_featured_url=this.getRandomItem(array);
                     this.setState({product:result.data});
                     this.setState({productPart:result.data.product_detail[0]});
+                    console.log('option',result.data.product_detail[0])
+                    setTimeout(() => {
+                        this.setPrice(result.data.product_detail[0]);
+                    }, 20);
+                    //this.setPrice(result.data.product_detail[0]);
+                    //this.setState({total:this.state.quantity*result.data.product_detail[0].price})
                     this.setState({param:{
                         "DepartureDate": this.getDate(0),
                         "ReturnDate": "",
@@ -207,9 +346,20 @@ export default class ProductDetailNew extends Component {
                     }, 50);
                 })
                 .catch(error => {alert('Kegagalan Respon Server')});
-            }
-        });
+            
     }
+
+    getRandomItem(arr) {
+
+        // get random index value
+        const randomIndex = Math.floor(Math.random() * arr.length);
+    
+        // get random item
+        const item = arr[randomIndex];
+    
+        return item;
+    }
+
 
     
 
@@ -226,16 +376,26 @@ export default class ProductDetailNew extends Component {
         });
     }
 
+
+
     setPrice(select){
+        
         this.setState({productPart:select});
+        setTimeout(() => {
+            var total=this.state.productPart.price*this.state.quantity;
+            this.setState({total:total});
+        }, 20);
+       
 
         
     }
 
     setQuantity(value,id){
         this.setState({quantity:value});
-        
-
+        setTimeout(() => {
+            this.setPrice(this.state.productPart);
+        }, 20);
+        //console.log('value',value);
     }
     onSubmit(){
         const {product,productPart} =this.state;
@@ -324,14 +484,10 @@ export default class ProductDetailNew extends Component {
                             <Option data={this.state.product} setPrice={this.setPrice} />
                             <DescPartner navigation={navigation} data={this.state.product}/>
                             <CollectionView navigation={navigation} data={this.state.product}/>
-                            <Schedule data={this.state.product}/>
-                            
-                            
+                            <Schedule data={this.state.product}/>                            
                             <Services data={this.state.product}/>
                             <HowExchange data={this.state.product}/>
-
                             <CancelPolicy data={this.state.product}/>
-
                             <Information data={this.state.product}/>
                             <Location data={this.state.product}/>
                             <Comment data={this.state.product}/>
@@ -365,7 +521,7 @@ export default class ProductDetailNew extends Component {
                                        
                                     }}
                                 >
-                                    <Text caption1 bold>Beli - {productPart.price}</Text>
+                                    <Text caption1 bold>Beli - {this.state.total}</Text>
                                     
                                 </Button>
                             </View>

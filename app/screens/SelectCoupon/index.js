@@ -7,7 +7,7 @@ import {
     ScrollView
 } from "react-native";
 import { BaseStyle, BaseColor } from "@config";
-import { Header, SafeAreaView, Icon, Text, Image,Coupon } from "@components";
+import { Header, SafeAreaView, Icon, Text, Image,Coupon,Button } from "@components";
 import styles from "./styles";
 import DataEmpty from "../../components/DataEmpty";
 
@@ -32,6 +32,7 @@ export default class SelectCoupon extends Component {
             userSession:this.props.navigation.state.params.userSession,
             param:this.props.navigation.state.params.param,
             listdata_promo:[],
+            couponCode:'',
             coupons: [{"id_coupon_history":136,"id_coupon":33,"id_order":null,"id_user":2022,"contact_title":"Mr","contact_first":"arif","contact_last":"hendra87","coupon_code":"baro","amount":null,"product":"potongan","date_claim":"2021-03-04T06:23:01.000Z","date_used":null,"expired":"2021-03-11","detail_coupon":{"coupon_name":"Baro","type":"potongan","amount":4000,"percent":"tetap","max_reward":12000,"minimum":100000,"coupon_code":"baro","platform":"web,app","product":"","quantity":5,"term":"sk","payment_method":"semua","extra_term":null,"start_date":"2021-03-01","end_date":"2021-03-11","expired_day":0,"category":"total","coupon_type":"unik","status":1,"action":null,"date_added":"2021-02-25T09:39:14.000Z","date_modified":null},"available":true}]
             
         };
@@ -49,8 +50,16 @@ export default class SelectCoupon extends Component {
 
     useCoupon(item){
         const { navigation } = this.props;
-        //console.log('coupon',JSON.stringify());
-        this.props.navigation.state.params.setCoupon(item);
+        console.log('coupon',JSON.stringify(item));
+        this.props.navigation.state.params.useCoupon(item);
+        navigation.goBack();
+    }
+
+    useCouponForm(){
+        const { navigation } = this.props;
+        const {couponCode}=this.state;
+        console.log('couponCode',JSON.stringify(couponCode));
+        this.props.navigation.state.params.useCouponForm(couponCode);
         navigation.goBack();
     }
 
@@ -112,11 +121,11 @@ export default class SelectCoupon extends Component {
                     marginRight: 10,
                     width:'100%'
                 }}
-                name={item.product_name}
-                code={item.product_discount}
+                name={item.coupon_code}
+                code={item.coupon_code}
                 description={item.product_name}
-                valid={this.convertDateText(item.product_time2)}
-                remain={priceSplitter('Rp '+parseInt(item.product_price_minumum))}
+                valid={this.convertDateText(item.expired)}
+                remain={priceSplitter('Rp '+parseInt(item.detail_coupon.minimum))}
                 onPress={() => {
                     //alert(item.id_coupon);
                     this.useCoupon(item);
@@ -141,6 +150,7 @@ export default class SelectCoupon extends Component {
 
                 var url=config.baseUrl;
                 var path=config.dashboard.dir;
+                console.log('url+path',url+path);
 
 
                         var myHeaders = new Headers();
@@ -211,8 +221,9 @@ export default class SelectCoupon extends Component {
         fetch(url, requestOptions)
         .then(response => response.json())
         .then(result => {
+            this.setState({loading_dashboard:false});
             console.log('resultCoupon',JSON.stringify(result));
-            this.setState({coupons:result.data});
+            this.setState({listdata_promo:result.data});
 
         })
         .catch(error => { alert('Kegagalan Respon Server');});
@@ -221,8 +232,8 @@ export default class SelectCoupon extends Component {
     }
 
     componentDidMount() {
-        //this.getCoupon();
-        this.getProduct();
+        this.getCoupon();
+        //this.getProduct();
         // this.setState({ loading_spinner: true }, () => {
         //     AsyncStorage.getItem('config', (error, result) => {
         //         if (result) {   
@@ -408,6 +419,69 @@ export default class SelectCoupon extends Component {
     render() {
         const { navigation } = this.props;
         let { flight, loading, airplane,loading_spinner,coupons,loading_dashboard } = this.state;
+
+        var contentFormCoupon=<View style={{marginBottom:10,marginTop:10}}>
+            <View style={[styles.line,{flexDirection:'column'}]} />
+                <Text caption2 style={{ paddingTop: 10}}>
+                    Kode kupon
+                </Text>
+        
+                <View style={{
+                flexDirection: "row",
+                //marginBottom: this.state.couponCodeList.length == 0 ? 15 :0,
+                }}>
+                    <TouchableOpacity
+                    style={{flex: 9}}
+                        // onPress={() =>
+                        //     {
+                        //     this.getCouponDetail();
+                        //     }}
+                    >
+                    <TextInput
+                        style={[BaseStyle.textInput,{flex:11}]}
+                        onChangeText={text => {
+                            this.setState({couponCode:text});
+                        }}
+                        autoCorrect={false}
+                        placeholder="Masukkan kode kupon"
+                        placeholderTextColor={BaseColor.grayColor}
+                        selectionColor={BaseColor.primaryColor}
+                    />
+                    {/* <Text style={[BaseStyle.textInput]}>{this.state.couponCode}</Text> */}
+                    </TouchableOpacity>
+                    
+                    <Button
+                            loading={this.state.loadingCheckCoupon}
+                            style={[{backgroundColor:BaseColor.primaryColor},{flex:1,borderRadius:5,height:40,marginTop:0}]}
+                            
+                            onPress={() =>
+                                {
+                                this.useCouponForm();
+                                }}
+                        >
+                             <Icon
+                                    name="arrow-right"
+                                    size={14}
+                                    color={BaseColor.whiteColor}
+                                    style={{ textAlign: "center"}}
+                                />
+                    </Button>
+                    {/* <TouchableOpacity
+                    style={{flex: 4,borderWidth: 1,borderColor: BaseColor.fieldColor,borderRadius: 10,backgroundColor:BaseColor.primaryColor}}
+                        onPress={() =>
+                            {
+                            this.checkCoupon();
+                            }}
+                    >
+                            <View style={{justifyContent:'center',alignItems:'center',flex:1,height:30}}><Text caption2  style={{textAlign:'center'}} whiteColor>Gunakan</Text></View>
+                    </TouchableOpacity> */}
+                    
+
+                </View>
+                
+            </View>
+
+
         return (
             <SafeAreaView
                 style={BaseStyle.safeAreaView}
@@ -418,7 +492,7 @@ export default class SelectCoupon extends Component {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.whiteColor}
                             />
@@ -440,7 +514,10 @@ export default class SelectCoupon extends Component {
                         placeholderTextColor={BaseColor.grayColor}
                         selectionColor={BaseColor.primaryColor}
                     /> */}
+
+                    
                     <View style={{ width: "100%", height: "100%" }}>
+                    {contentFormCoupon}
                         {
                             loading_dashboard ? 
                             <Placeholder

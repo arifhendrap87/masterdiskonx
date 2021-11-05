@@ -572,15 +572,15 @@ export default class SignUp extends ValidationComponent {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
-                                color={BaseColor.primaryColor}
+                                color={BaseColor.whiteColor}
                             />
                         );
                     }}
                     onPressLeft={() => {
-                        //navigation.goBack();
-                        navigation.navigate('SignIn');
+                        navigation.goBack();
+                        //navigation.navigate('SignIn');
                     }}
                 />
                 <ScrollView>

@@ -249,7 +249,7 @@ export default class Verify extends ValidationComponent {
                     renderLeft={() => {
                         return (
                             <Icon
-                                name="arrow-left"
+                                name="md-arrow-back"
                                 size={20}
                                 color={BaseColor.primaryColor}
                             />
