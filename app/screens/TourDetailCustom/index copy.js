@@ -168,11 +168,11 @@ export default class TourDetailCustom extends Component {
     constructor(props) {
         super(props);
         var product = this.props.navigation.state.params.product;
-        console.log('TourDetailCustom',JSON.stringify(product));
+        console.log('TourDetailCustom', JSON.stringify(product));
 
         var minDate = new Date(); // Today
         minDate.setDate(minDate.getDate() + 7);
-        var tglAwal=this.convertDate(minDate);
+        var tglAwal = this.convertDate(minDate);
 
 
         // Temp data define
@@ -208,23 +208,23 @@ export default class TourDetailCustom extends Component {
                 // { key: "feedback", title: "Feedback" }
             ],
             product: product,
-            minPersonDef:0,
-            minPerson:0,
-            minPrice:0,
-            totalPrice:0,
+            minPersonDef: 0,
+            minPerson: 0,
+            minPrice: 0,
+            totalPrice: 0,
             modalVisiblePerson: false,
             modalVisibleDate: false,
-            dewasa:"0",
-            anak:"0",
-            bayi:"0",
+            dewasa: "0",
+            anak: "0",
+            bayi: "0",
             selectedStartDate: null,
-            tglAwal:tglAwal,
-            tglAkhir:'',
+            tglAwal: tglAwal,
+            tglAkhir: '',
 
-            tglAwalNumber:0,
-            tglAkhirNumber:0,
-            login:true,
-            
+            tglAwalNumber: 0,
+            tglAkhirNumber: 0,
+            login: true,
+
 
 
         };
@@ -238,7 +238,7 @@ export default class TourDetailCustom extends Component {
         this.setTglAkhir = this.setTglAkhir.bind(this);
     }
 
-   
+
 
     // When tab is activated, set what's index value
     _handleIndexChange = index =>
@@ -265,122 +265,122 @@ export default class TourDetailCustom extends Component {
             )}
         />
     );
-    
-    setTglAwal(dateConversion,dateNumber){
-        this.setState({tglAwal:dateConversion});
-        this.setState({tglAwalNumber:dateNumber});
+
+    setTglAwal(dateConversion, dateNumber) {
+        this.setState({ tglAwal: dateConversion });
+        this.setState({ tglAwalNumber: dateNumber });
         //console.log('setTglAwal',dateNumber);
         //alert(dateNumber);
     }
 
-    setTglAkhir(dateConversion,dateNumber){
-        this.setState({tglAkhir:dateConversion});
-        this.setState({tglAkhirNumber:dateNumber});
+    setTglAkhir(dateConversion, dateNumber) {
+        this.setState({ tglAkhir: dateConversion });
+        this.setState({ tglAkhirNumber: dateNumber });
     }
 
 
-    setPrice(select){
-        if(select.trip_minimum.length != 0){
-            var minPerson=select.trip_minimum[0].count_minimum;
-            var minPrice=select.trip_minimum[0].price_minimum;
-            var totalPrice=parseInt(minPerson)*parseInt(minPrice);
-            var minPersonDef=select.trip_minimum[0].count_minimum;
-            
-            this.setState({minPersonDef:minPerson});
-            this.setState({minPerson:minPerson});
-            this.setState({minPrice:minPrice});
-            this.setState({totalPrice:totalPrice});
-            this.setState({select:select});
+    setPrice(select) {
+        if (select.trip_minimum.length != 0) {
+            var minPerson = select.trip_minimum[0].count_minimum;
+            var minPrice = select.trip_minimum[0].price_minimum;
+            var totalPrice = parseInt(minPerson) * parseInt(minPrice);
+            var minPersonDef = select.trip_minimum[0].count_minimum;
+
+            this.setState({ minPersonDef: minPerson });
+            this.setState({ minPerson: minPerson });
+            this.setState({ minPrice: minPrice });
+            this.setState({ totalPrice: totalPrice });
+            this.setState({ select: select });
         }
     }
 
-    setJumlahDewasa(jml){
-        this.setState({dewasa:jml});
+    setJumlahDewasa(jml) {
+        this.setState({ dewasa: jml });
         setTimeout(() => {
-            var minPerson=parseInt(this.state.dewasa)+parseInt(this.state.anak)+parseInt(this.state.bayi);
-            this.setState({minPerson:minPerson});
-            var totalPrice=parseInt(minPerson)*parseInt(this.state.minPrice);
-            this.setState({totalPrice:totalPrice});
-            
-            
+            var minPerson = parseInt(this.state.dewasa) + parseInt(this.state.anak) + parseInt(this.state.bayi);
+            this.setState({ minPerson: minPerson });
+            var totalPrice = parseInt(minPerson) * parseInt(this.state.minPrice);
+            this.setState({ totalPrice: totalPrice });
+
+
             // console.log('adult :'+this.state.dewasa);
             // console.log('anak :'+this.state.anak);
             // console.log('bayi :'+this.state.bayi);
         }, 50);
     }
 
-    setJumlahAnak(jml){
-        this.setState({anak:jml});
+    setJumlahAnak(jml) {
+        this.setState({ anak: jml });
         setTimeout(() => {
-            var minPerson=parseInt(this.state.dewasa)+parseInt(this.state.anak)+parseInt(this.state.bayi);
-            this.setState({minPerson:minPerson});
-            var totalPrice=parseInt(minPerson)*parseInt(this.state.minPrice);
-            this.setState({totalPrice:totalPrice});
+            var minPerson = parseInt(this.state.dewasa) + parseInt(this.state.anak) + parseInt(this.state.bayi);
+            this.setState({ minPerson: minPerson });
+            var totalPrice = parseInt(minPerson) * parseInt(this.state.minPrice);
+            this.setState({ totalPrice: totalPrice });
             // console.log('adult :'+this.state.dewasa);
             // console.log('anak :'+this.state.anak);
             // console.log('bayi :'+this.state.bayi);
         }, 50);
     }
 
-    setJumlahBayi(jml){
-        this.setState({bayi:jml});
+    setJumlahBayi(jml) {
+        this.setState({ bayi: jml });
         setTimeout(() => {
-            var minPerson=parseInt(this.state.dewasa)+parseInt(this.state.anak)+parseInt(this.state.bayi);
-            this.setState({minPerson:minPerson});
-            var totalPrice=parseInt(minPerson)*parseInt(this.state.minPrice);
-            this.setState({totalPrice:totalPrice});
-            
+            var minPerson = parseInt(this.state.dewasa) + parseInt(this.state.anak) + parseInt(this.state.bayi);
+            this.setState({ minPerson: minPerson });
+            var totalPrice = parseInt(minPerson) * parseInt(this.state.minPrice);
+            this.setState({ totalPrice: totalPrice });
+
             // console.log('adult :'+this.state.dewasa);
             // console.log('anak :'+this.state.anak);
             // console.log('bayi :'+this.state.bayi);
         }, 50);
     }
 
-    setMinPerson(jml){
-    
-        
-        var select=this.state.select;
-        var trip_minimum=select.trip_minimum;
-        var product=this.state.product;
-        var select=this.state.select;
-        var minPersonDef=this.state.minPersonDef;
-        var minPrice=0;
-        var totalPrice=0;
-        
+    setMinPerson(jml) {
 
 
-        
-        if(jml==minPersonDef){
-            totalPrice=parseInt(this.state.minPrice)*parseInt(jml);
-            minPrice=this.state.minPrice;
-        }else{
-            totalPrice=parseInt(product.product_price)*parseInt(jml);
-            minPrice=product.product_price;
+        var select = this.state.select;
+        var trip_minimum = select.trip_minimum;
+        var product = this.state.product;
+        var select = this.state.select;
+        var minPersonDef = this.state.minPersonDef;
+        var minPrice = 0;
+        var totalPrice = 0;
+
+
+
+
+        if (jml == minPersonDef) {
+            totalPrice = parseInt(this.state.minPrice) * parseInt(jml);
+            minPrice = this.state.minPrice;
+        } else {
+            totalPrice = parseInt(product.product_price) * parseInt(jml);
+            minPrice = product.product_price;
         }
-        
 
-        this.setState({totalPrice:totalPrice});
-        this.setState({minPerson:jml});
-        this.setState({minPrice:minPrice});
+
+        this.setState({ totalPrice: totalPrice });
+        this.setState({ minPerson: jml });
+        this.setState({ minPrice: minPrice });
     }
 
 
-    componentDidMount(){
-          
+    componentDidMount() {
+
         StatusBar.setBackgroundColor("rgba(0,0,0,0)");
         StatusBar.setTranslucent(true);
         AsyncStorage.getItem('userSession', (error, result) => {
             if (result) {
-                this.setState({login:true});
-             }else{
-                this.setState({login:false});
+                this.setState({ login: true });
+            } else {
+                this.setState({ login: false });
 
-             }
+            }
         });
-        
-        
+
+
         setTimeout(() => {
-            this.setState({dewasa:this.state.minPerson});
+            this.setState({ dewasa: this.state.minPerson });
         }, 50);
     }
     // Render correct screen container when tab is activated
@@ -443,7 +443,7 @@ export default class TourDetailCustom extends Component {
         }
     };
 
-    convertDate(date){
+    convertDate(date) {
 
         var dd = String(date.getDate()).padStart(2, '0');
         var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -452,128 +452,128 @@ export default class TourDetailCustom extends Component {
         date = yyyy + '-' + mm + '-' + dd;
         return date;
     }
-    
+
     setDate(date) {
-    
+
         var date = new Date(date);
-        var tempoMonth = (date.getMonth()+1);
+        var tempoMonth = (date.getMonth() + 1);
         var tempoDate = (date.getDate());
-        var finaldate="";
+        var finaldate = "";
         if (tempoMonth < 10) tempoMonth = '0' + tempoMonth;
         if (tempoDate < 10) tempoDate = '0' + tempoDate;
-    
-        return finaldate = date.getFullYear()  + '-' +  tempoMonth  + '-' +  tempoDate;
-    };
-    
-    onSubmit() {
-    
-        const {type,product,select} =this.state;
-      var tgl_akhir='';
 
- 
-      var param = {
-        DepartureDate:this.state.tglAwal,
-        ReturnDate:tgl_akhir,
-        Adults:this.state.dewasa,
-        Children:this.state.anak,
-        Infants:this.state.bayi,
+        return finaldate = date.getFullYear() + '-' + tempoMonth + '-' + tempoDate;
+    };
+
+    onSubmit() {
+
+        const { type, product, select } = this.state;
+        var tgl_akhir = '';
+
+
+        var param = {
+            DepartureDate: this.state.tglAwal,
+            ReturnDate: tgl_akhir,
+            Adults: this.state.dewasa,
+            Children: this.state.anak,
+            Infants: this.state.bayi,
         }
-        
-        var productPart={}
-        var link='';
-       
-            link='Summary';
-            param.type='trip';
-            param.cityId=this.state.cityId;
-            param.cityText=this.state.cityText;
-            param.cityProvince=this.state.cityProvince;
-            param.minPrice=this.state.minPrice;
-            param.minPerson=this.state.minPerson;
-            param.totalPrice=this.state.totalPrice;
-            param.Qty=parseInt(param.Adults)+parseInt(param.Children)+parseInt(param.Infants);
-            param.participant=true;
-            
-            
-            this.props.navigation.navigate(link,
-                {
-                    param:param,
-                    product:product,
-                    productPart:select
-                });
-                // console.log('paramHotel',JSON.stringify(param));
-                // console.log('productHotel',JSON.stringify(product));
-                // console.log('productPartHotel',JSON.stringify(select));
+
+        var productPart = {}
+        var link = '';
+
+        link = 'Summary';
+        param.type = 'trip';
+        param.cityId = this.state.cityId;
+        param.cityText = this.state.cityText;
+        param.cityProvince = this.state.cityProvince;
+        param.minPrice = this.state.minPrice;
+        param.minPerson = this.state.minPerson;
+        param.totalPrice = this.state.totalPrice;
+        param.Qty = parseInt(param.Adults) + parseInt(param.Children) + parseInt(param.Infants);
+        param.participant = true;
+
+
+        this.props.navigation.navigate(link,
+            {
+                param: param,
+                product: product,
+                productPart: select
+            });
+        // console.log('paramHotel',JSON.stringify(param));
+        // console.log('productHotel',JSON.stringify(product));
+        // console.log('productPartHotel',JSON.stringify(select));
     }
 
 
 
     render() {
         const { navigation } = this.props;
-        const { title, heightHeader, service, product,minPerson,minPrice,totalPrice,login} = this.state;
+        const { title, heightHeader, service, product, minPerson, minPrice, totalPrice, login } = this.state;
         const heightImageBanner = Utils.scaleWithPixel(250, 1);
         const marginTopBanner = heightImageBanner - heightHeader;
         const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
 
-        const { modalVisiblePerson,modalVisibleDate} = this.state;
-      
-        var contentButton=<View></View>
-        if(product.product_option[0].trip_minimum.length != 0){
-            contentButton=<View style={styles.contentButtonBottom}>
-            <View style={{
+        const { modalVisiblePerson, modalVisibleDate } = this.state;
+
+        var contentButton = <View></View>
+        if (product.product_option[0].trip_minimum.length != 0) {
+            contentButton = <View style={styles.contentButtonBottom}>
+                <View style={{
                     alignItems: "center",
                     justifyContent: 'center',
                 }}>
-                <Text caption1 primaryColor >
-                    Rp {priceSplitter(totalPrice)}
-                </Text>
-                <Text caption2 style={{marginTop:-3}}>
-                    {minPerson} x Rp {priceSplitter(minPrice)}
-                </Text>
-                
-            </View>
-            <View>
-                <SetDate
-                    labelTglAwal={this.state.tglAwal}
-                    labelTglAkhir={this.state.tglAwal}
+                    <Text caption1 primaryColor >
+                        Rp {priceSplitter(totalPrice)}
+                    </Text>
+                    <Text caption2 style={{ marginTop: -3 }}>
+                        {minPerson} x Rp {priceSplitter(minPrice)}
+                    </Text>
 
-                    tglAwalNumber={this.state.tglAwalNumber}
-                    tglAwal={this.state.tglAwal}
-                    setTglAwal={this.setTglAwal}
+                </View>
+                <View>
+                    <SetDate
+                        labelTglAwal={this.state.tglAwal}
+                        labelTglAkhir={this.state.tglAwal}
 
-                    tglAkhirNumber={this.state.tglAkhirNumber}
-                    tglAkhir={this.state.tglAkhir}
-                    setTglAkhir={this.setTglAkhir}
+                        tglAwalNumber={this.state.tglAwalNumber}
+                        tglAwal={this.state.tglAwal}
+                        setTglAwal={this.setTglAwal}
 
-                />
+                        tglAkhirNumber={this.state.tglAkhirNumber}
+                        tglAkhir={this.state.tglAkhir}
+                        setTglAkhir={this.setTglAkhir}
+
+                    />
+                </View>
+
+                <View>
+                    <SetPenumpang
+                        label={this.state.minPerson}
+                        dewasa={this.state.dewasa}
+                        anak={this.state.anak}
+                        bayi={this.state.bayi}
+                        setJumlahDewasa={this.setJumlahDewasa}
+                        setJumlahAnak={this.setJumlahAnak}
+                        setJumlahBayi={this.setJumlahBayi}
+                        minPersonDef={this.state.minPersonDef}
+                        minPerson={this.state.minPerson}
+                        minPrice={this.state.minPrice}
+                        totalPrice={this.state.totalPrice}
+                        setMinPerson={this.setMinPerson}
+                    />
+                </View>
+
+
+                <Button
+                    style={{ height: 40 }}
+                    onPress={() => {
+                        this.onSubmit();
+                    }}
+                >
+                    Next
+                </Button>
             </View>
-            
-            <View>
-                <SetPenumpang
-                    label={this.state.minPerson}
-                    dewasa={this.state.dewasa}
-                    anak={this.state.anak}
-                    bayi={this.state.bayi}
-                    setJumlahDewasa={this.setJumlahDewasa}
-                    setJumlahAnak={this.setJumlahAnak}
-                    setJumlahBayi={this.setJumlahBayi}
-                    minPersonDef={this.state.minPersonDef}
-                    minPerson={this.state.minPerson}
-                    minPrice={this.state.minPrice}
-                    totalPrice={this.state.totalPrice}
-                    setMinPerson={this.setMinPerson}
-                />
-            </View>
-            
-            
-            <Button
-                style={{ height: 40 }}
-                onPress={() => {  
-                    this.onSubmit();
-                }}
-            >
-                Next
-            </Button>
-        </View>
         }
         return (
             <View style={{ flex: 1 }}>
@@ -601,104 +601,104 @@ export default class TourDetailCustom extends Component {
                         style={{ width: "100%", height: "100%" }}
                         resizeMode="cover"
                     />
-                   
+
                 </Animated.View>
                 {
                     login ?
-                <SafeAreaView
-                    style={BaseStyle.safeAreaView}
-                    forceInset={{ top: "always" }}
-                >
-                    {/* Header */}
-                    <Header
-                        title=""
-                        transparent={true}
-                        
-                    />
-                   
-                    <ScrollView
-                        onScroll={Animated.event([
-                            {
-                                nativeEvent: {
-                                    contentOffset: { y: this._deltaY }
-                                }
-                            }
-                        ])}
-                        onContentSizeChange={() =>
-                            this.setState({
-                                heightHeader: Utils.heightHeader()
-                            })
-                        }
-                        scrollEventThrottle={8}
-                    >
-                        {/* Main Container */}
-
-
-
-                        <View
-                            style={[
-                                {
-                                    flexDirection: "row",
-                                    paddingHorizontal: 20,
-                                    marginBottom: 10,
-                                    paddingTop: 10
-                                },
-                                { marginTop: marginTopBanner }
-                            ]}
+                        <SafeAreaView
+                            style={BaseStyle.safeAreaView}
+                            forceInset={{ top: "always" }}
                         >
-                            <Tag
-                                primary
-                                style={{ marginRight: 15 }}
-                            >
-                                {product.product_detail.name_trip_category}
-                            </Tag>
-                        </View>
+                            {/* Header */}
+                            <Header
+                                title=""
+                                transparent={true}
 
-
-                        <View
-                            style={[
-                                { paddingHorizontal: 20, paddingTop: 0 },
-                            ]}
-                        >
-                            <Text
-                                style={{ marginBottom: 10 }}
-                            >
-                                {product.product_name}
-                            </Text>
-                            
-                        </View>
-
-
-                        <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingBottom: 20 }}>
-                            <Icon
-                                name="map-marker-alt"
-                                color={BaseColor.lightPrimaryColor}
-                                size={10}
                             />
-                            <Text
-                                caption1
-                                style={{ marginLeft: 10 }}
-                                numberOfLines={1}
+
+                            <ScrollView
+                                onScroll={Animated.event([
+                                    {
+                                        nativeEvent: {
+                                            contentOffset: { y: this._deltaY }
+                                        }
+                                    }
+                                ])}
+                                onContentSizeChange={() =>
+                                    this.setState({
+                                        heightHeader: Utils.heightHeader()
+                                    })
+                                }
+                                scrollEventThrottle={8}
                             >
-                                {product.product_detail.country_name}, {product.product_detail.capital}
-                            </Text>
-                        </View>
+                                {/* Main Container */}
 
 
-                        <TabView
-                            lazy
-                            navigationState={this.state}
-                            renderScene={this._renderScene}
-                            renderTabBar={this._renderTabBar}
-                            onIndexChange={this._handleIndexChange}
-                        />
-                    </ScrollView>
-                    {contentButton}
-                </SafeAreaView>
-                :
-                <NotYetLogin redirect={'Home'} param={this.state.product} navigation={navigation} />
-                
-    }
+
+                                <View
+                                    style={[
+                                        {
+                                            flexDirection: "row",
+                                            paddingHorizontal: 20,
+                                            marginBottom: 10,
+                                            paddingTop: 10
+                                        },
+                                        { marginTop: marginTopBanner }
+                                    ]}
+                                >
+                                    <Tag
+                                        primary
+                                        style={{ marginRight: 15 }}
+                                    >
+                                        {product.product_detail.name_trip_category}
+                                    </Tag>
+                                </View>
+
+
+                                <View
+                                    style={[
+                                        { paddingHorizontal: 20, paddingTop: 0 },
+                                    ]}
+                                >
+                                    <Text
+                                        style={{ marginBottom: 10 }}
+                                    >
+                                        {product.product_name}
+                                    </Text>
+
+                                </View>
+
+
+                                <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingBottom: 20 }}>
+                                    <Icon
+                                        name="map-marker-alt"
+                                        color={BaseColor.lightPrimaryColor}
+                                        size={10}
+                                    />
+                                    <Text
+                                        caption1
+                                        style={{ marginLeft: 10 }}
+                                        numberOfLines={1}
+                                    >
+                                        {product.product_detail.country_name}, {product.product_detail.capital}
+                                    </Text>
+                                </View>
+
+
+                                <TabView
+                                    lazy
+                                    navigationState={this.state}
+                                    renderScene={this._renderScene}
+                                    renderTabBar={this._renderTabBar}
+                                    onIndexChange={this._handleIndexChange}
+                                />
+                            </ScrollView>
+                            {contentButton}
+                        </SafeAreaView>
+                        :
+                        <NotYetLogin redirect={'Home'} param={this.state.product} navigation={navigation} />
+
+                }
             </View>
         );
     }
@@ -798,31 +798,31 @@ class Hotel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            product_option:props.product.product_option
+            product_option: props.product.product_option
         };
     }
 
     componentDidMount() {
         const { navigation, product } = this.props;
-            if(product.product_option[0].trip_minimum.length != 0){
-                    var select=product.product_option[0];
-                    this.props.setPrice(select);
-                    const selected = select.id_trip_option;
-        
-                    if (selected) {
-                        this.setState({
-                            product_option: this.state.product_option.map(item => {
-                                return {
-                                    ...item,
-                                    checked: item.id_trip_option == selected
-                                };
-                            })
-                        });
-                    }
+        if (product.product_option[0].trip_minimum.length != 0) {
+            var select = product.product_option[0];
+            this.props.setPrice(select);
+            const selected = select.id_trip_option;
+
+            if (selected) {
+                this.setState({
+                    product_option: this.state.product_option.map(item => {
+                        return {
+                            ...item,
+                            checked: item.id_trip_option == selected
+                        };
+                    })
+                });
             }
-        
+        }
+
     }
-    
+
     onChange(select) {
         const { navigation, product } = this.props;
         this.setState({
@@ -838,86 +838,84 @@ class Hotel extends Component {
                         checked: false
                     };
                 }
-               
+
             })
         });
-        
+
         this.props.setPrice(select);
     }
-    
-    contentTripMinimum(items){
+
+    contentTripMinimum(items) {
         const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
         var fieldsArray = [];
 
         items.trip_minimum.map(item => {
             fieldsArray.push(
                 <View style={styles.linePrice}>
-                                                    <Text primaryColor semibold style={{ paddingHorizontal: 10 }}>
-                                                        Minimum: {item.count_minimum}
-                                                                </Text>
-                                                    <View style={styles.iconRight}>
-                                                        <Text
-                                                            style={{ paddingHorizontal: 10 }}
-                                                        >
-                                                            Rp {priceSplitter(item.price_minimum)}
-                                                        </Text>
-                                                    </View>
-                                                </View>
+                    <Text primaryColor semibold style={{ paddingHorizontal: 10 }}>
+                        Minimum: {item.count_minimum}
+                    </Text>
+                    <View style={styles.iconRight}>
+                        <Text
+                            style={{ paddingHorizontal: 10 }}
+                        >
+                            Rp {priceSplitter(item.price_minimum)}
+                        </Text>
+                    </View>
+                </View>
             );
         });
         return fieldsArray;
-        
+
     }
 
 
     render() {
-        const { renderMapView, todo, helpBlock,product_option } = this.state;
-        const { navigation} = this.props;
+        const { renderMapView, todo, helpBlock, product_option } = this.state;
+        const { navigation } = this.props;
         const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
 
 
         return (
             <View style={{}}>
                 {/* {contentHotelOption} */}
-                
+
                 <FlatList
-                            data={product_option}
-                            keyExtractor={(item, index) => item.id_trip_option}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    // style={styles.item}
-                                    onPress={() => 
-                                    
-                                    {
-                                    //alert(item.id_trip_option);
-                                    this.onChange(item)
-                                    //console.log('product_option',item.id_trip_option);
-                                    
-                                    }
-                                    
-                                    }
-                                >
-                                    <View style={[styles.itemPrice, { backgroundColor: BaseColor.secondColor == BaseColor.whiteColor ? item.checked : null}]}>
-                                            <View style={styles.linePrice}>
-                                                <Text caption1 semibold>
-                                                    {item.name_trip_option}
-                                                </Text>
-                                                
-                                                {item.checked && (
-                                                    <View style={styles.iconRight}>
-                                                    <Icon
-                                                        name="check"
-                                                        size={24}
-                                                        color={'green'}
-                                                        />
-                                                    </View>
-                                                )}
-                                                
-                                            </View>
-                        
-                                            <View style={styles.linePriceMinMax}>
-                                                {this.contentTripMinimum(item)}
-                                                {/* <View style={styles.linePrice}>
+                    data={product_option}
+                    keyExtractor={(item, index) => item.id_trip_option}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            // style={styles.item}
+                            onPress={() => {
+                                //alert(item.id_trip_option);
+                                this.onChange(item)
+                                //console.log('product_option',item.id_trip_option);
+
+                            }
+
+                            }
+                        >
+                            <View style={[styles.itemPrice, { backgroundColor: BaseColor.secondColor == BaseColor.whiteColor ? item.checked : null }]}>
+                                <View style={styles.linePrice}>
+                                    <Text caption1 semibold>
+                                        {item.name_trip_option}
+                                    </Text>
+
+                                    {item.checked && (
+                                        <View style={styles.iconRight}>
+                                            <Icon
+                                                name="check"
+                                                size={24}
+                                                color={'green'}
+                                            />
+                                        </View>
+                                    )}
+
+                                </View>
+
+                                <View style={styles.linePriceMinMax}>
+                                    {this.contentTripMinimum(item)}
+                                    {/* <View style={styles.linePrice}>
                                                     <Text primaryColor semibold style={{ paddingHorizontal: 10 }}>
                                                         Minimum: 2
                                                                 </Text>
@@ -929,8 +927,8 @@ class Hotel extends Component {
                                                         </Text>
                                                     </View>
                                                 </View> */}
-                        
-                                                {/* <View style={styles.linePrice}>
+
+                                    {/* <View style={styles.linePrice}>
                                                     <Text primaryColor semibold style={{ paddingHorizontal: 10 }}>
                                                         Minimum: 4
                                                                 </Text>
@@ -942,11 +940,11 @@ class Hotel extends Component {
                                                         </Text>
                                                     </View>
                                                 </View> */}
-                                            </View>
-                                        </View>
-                                </TouchableOpacity>
-                            )}
-                            />
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />
             </View>
         );
     }
@@ -1002,17 +1000,17 @@ class Include extends Component {
     }
 
     render() {
-        const { renderMapView, todo, helpBlock} = this.state;
-        const { navigation,product } = this.props;
-        var product_detail=product.product_detail;
-        
-        
-        
+        const { renderMapView, todo, helpBlock } = this.state;
+        const { navigation, product } = this.props;
+        var product_detail = product.product_detail;
+
+
+
         return (
             <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
                 <HTML
-                  html={product_detail.include}
-                  imagesMaxWidth={Dimensions.get("window").width}
+                    html={product_detail.include}
+                    imagesMaxWidth={Dimensions.get("window").width}
                 />
             </View>
         );
@@ -1070,17 +1068,17 @@ class Exclude extends Component {
     }
 
     render() {
-        const { renderMapView, todo, helpBlock} = this.state;
-        const { navigation,product } = this.props;
-        var product_detail=product.product_detail;
-        
-        
-        
+        const { renderMapView, todo, helpBlock } = this.state;
+        const { navigation, product } = this.props;
+        var product_detail = product.product_detail;
+
+
+
         return (
             <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
                 <HTML
-                  html={product_detail.exclude}
-                  imagesMaxWidth={Dimensions.get("window").width}
+                    html={product_detail.exclude}
+                    imagesMaxWidth={Dimensions.get("window").width}
                 />
             </View>
         );
@@ -1137,41 +1135,41 @@ class Itinerary extends Component {
     }
 
     render() {
-        const { renderMapView, todo, helpBlock,login} = this.state;
-        const { navigation,product } = this.props;
-        var product_itinerary=product.product_itinerary;
-        
-        
+        const { renderMapView, todo, helpBlock, login } = this.state;
+        const { navigation, product } = this.props;
+        var product_itinerary = product.product_itinerary;
+
+
         var contentIntinerary = [];
-        var b=1;
-        for(a=0;a<product_itinerary.length;a++){
+        var b = 1;
+        for (a = 0; a < product_itinerary.length; a++) {
             contentIntinerary.push(
-                <View style={{marginBottom:10}}>
-                <Text caption1 semibold style={{marginVertical:10}}>
-                    Day {b}: {product_itinerary[a].title_day}
-                </Text>
-                {/* <Image
+                <View style={{ marginBottom: 10 }}>
+                    <Text caption1 semibold style={{ marginVertical: 10 }}>
+                        Day {b}: {product_itinerary[a].title_day}
+                    </Text>
+                    {/* <Image
                     source={Images.cruise1}
                     style={{ height: 120, width: "100%", marginTop: 10 }}
                 /> */}
-                {/* <Text caption2 style={{ marginTop: 10 }}>
+                    {/* <Text caption2 style={{ marginTop: 10 }}>
                     Curabitur non nulla sit amet nisl tempus convallis quis ac
                     lectus. Lorem ipsum dolor sit amet, consectetur adipiscing
                     elit.
                 </Text> */}
-                
-                <HTML
-                  html={product_itinerary[a].desc_day}
-                  imagesMaxWidth={Dimensions.get("window").width}
-                />
+
+                    <HTML
+                        html={product_itinerary[a].desc_day}
+                        imagesMaxWidth={Dimensions.get("window").width}
+                    />
                 </View>
-                
+
             );
             b++;
         }
 
-        
-        
+
+
         return (
             <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
                 {contentIntinerary}
