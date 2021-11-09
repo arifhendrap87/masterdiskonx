@@ -2370,7 +2370,7 @@ export default class Pembayaran extends Component {
             this.setState({ loading_evoucher: true });
             setTimeout(() => {
                 this.fetch();
-                this.getCheckCancel();
+                //this.getCheckCancel();
             }, 50);
         });
     }
@@ -2476,7 +2476,7 @@ export default class Pembayaran extends Component {
         var parameter={"param":data}
 
         var body=parameter;
-        
+        console.log("paramgetbook",JSON.stringify(body));
         this.setState({ loading_spinner: true }, () => {
             var param={
                 method: 'POST',

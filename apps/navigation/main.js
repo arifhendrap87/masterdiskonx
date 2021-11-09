@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import { createStackNavigator,HeaderBackButton  } from "react-navigation-stack";
+import { createStackNavigator, HeaderBackButton } from "react-navigation-stack";
 import { BaseColor, BaseStyle } from "@config";
 import { Icon } from "@components";
 import * as Utils from "@utils";
@@ -30,6 +30,7 @@ import EvoucherPdf from "./../screens/EvoucherPdf";
 
 import FlightResultArrival from "./../screens/FlightResultArrival";
 import FlightResultArrivalVia from "./../screens/FlightResultArrivalVia";
+import SummaryVia from "./../screens/SummaryVia";
 import Summary from "./../screens/Summary";
 import Hotel from "./../screens/Hotel";
 import Flight from "./../screens/Flight";
@@ -190,11 +191,11 @@ const bottomTabNavigatorConfig = {
         activeTintColor: BaseColor.primaryColor,
         inactiveTintColor: BaseColor.grayColor,
         //style: BaseStyle.tabBar,
-        style:{
+        style: {
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
             marginTop: -40,
-            paddintTop:60
+            paddintTop: 60
 
         },
         labelStyle: {
@@ -253,7 +254,7 @@ const routeConfigs = {
             }
         })
     },
-    
+
     Profile: {
         screen: Profile1,
         navigationOptions: ({ navigation }) => ({
@@ -282,7 +283,7 @@ const BottomTabNavigator = createBottomTabNavigator(
 const StackNavigator = createStackNavigator(
     {
 
-      
+
 
         BottomTabNavigator: {
             screen: BottomTabNavigator
@@ -319,6 +320,9 @@ const StackNavigator = createStackNavigator(
         },
         Summary: {
             screen: Summary
+        },
+        SummaryVia: {
+            screen: SummaryVia
         },
         Hotel: {
             screen: Hotel
@@ -402,7 +406,7 @@ const StackNavigator = createStackNavigator(
         Pembayaran: {
             screen: Pembayaran,
             navigationOptions: ({ navigation }) => ({
-                headerLeft: (<HeaderBackButton onPress={_ => navigation.navigate("Booking")}/>)
+                headerLeft: (<HeaderBackButton onPress={_ => navigation.navigate("Booking")} />)
             })
         },
         PembayaranDetail: {
@@ -427,7 +431,7 @@ const StackNavigator = createStackNavigator(
 
 
 
-        
+
 
 
         // ProfileExample: {
@@ -457,7 +461,7 @@ const StackNavigator = createStackNavigator(
         // Profile8: {
         //     screen: Profile8
         // },
-        
+
         // Review: {
         //     screen: Review
         // },
@@ -515,7 +519,7 @@ const StackNavigator = createStackNavigator(
         // Coupons: {
         //     screen: Coupons
         // },
-       
+
         // ActivitiesDetail: {
         //     screen: ActivitiesDetail
         // },
@@ -570,8 +574,8 @@ const StackNavigator = createStackNavigator(
         // VirtualAccount: {
         //     screen: VirtualAccount
         // },
-        
-        
+
+
         // SelectCity: {
         //     screen: SelectCity
         // },
@@ -596,7 +600,7 @@ const StackNavigator = createStackNavigator(
         // SelectTitle: {
         //     screen: SelectTitle
         // },
-        
+
         // FlightSummary: {
         //     screen: FlightSummary
         // },
@@ -648,7 +652,7 @@ const StackNavigator = createStackNavigator(
         // Car: {
         //     screen: Car
         // },
-        
+
         // DashboardEvent: {
         //     screen: DashboardEvent
         // },

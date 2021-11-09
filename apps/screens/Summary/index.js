@@ -13,16 +13,12 @@ import {
 } from "@components";
 import {AsyncStorage,Platform} from 'react-native';
 import { PackageData } from "@data";
-import {PostData} from '../../services/PostData';
 import DropdownAlert from 'react-native-dropdownalert';
 import { UserData } from "@data";
 import AnimatedLoader from "react-native-animated-loader";
-import {PostDataTimeout} from '../../services/PostDataTimeout';
-import CountDown from 'react-native-countdown-component';
 import ImageSize from 'react-native-image-size';
 import NotYetLogin from "../../components/NotYetLogin";
 import FastImage from 'react-native-fast-image';
-import moment from "moment";
 
 
 const styles = StyleSheet.create({
@@ -97,34 +93,15 @@ export default class Summary extends Component {
         if(this.props.navigation.state.params.param){
             paramAll=this.props.navigation.state.params.param;
         }
-
         console.log('paramAll',JSON.stringify(paramAll));
+
         
         //------------------------parameter untuk flight------------------------//
         var selectDataDeparture=paramAll.selectDataDeparture;
-        // var selectDataDeparture=[];
-        // if(this.props.navigation.state.params.selectDataDeparture){
-        //     selectDataDeparture=this.props.navigation.state.params.selectDataDeparture;
-
-        // }
-
         var selectDataReturn=paramAll.selectDataReturn;
-        // var selectDataReturn=[];
-        // if(this.props.navigation.state.params.selectDataReturn){
-        //     selectDataReturn=this.props.navigation.state.params.selectDataReturn;
-        // }
-
         var departurePost=paramAll.departurePost;
-        // var departurePost=[];
-        // if(this.props.navigation.state.params.departurePost){
-        //     departurePost=this.props.navigation.state.params.departurePost;
-        // }
-
         var returnPost=paramAll.returnPost;
-        // var returnPost=[];
-        // if(this.props.navigation.state.params.returnPost){
-        //     returnPost=this.props.navigation.state.params.returnPost;
-        // }
+
 
         var dataPrice={      
             required_dob:false,
@@ -135,32 +112,8 @@ export default class Summary extends Component {
             transaction_fee:0
         };
         dataPrice=paramAll.dataPrice;
-        // if(this.props.navigation.state.params.dataPrice){
-        //     dataPrice=this.props.navigation.state.params.dataPrice;
-        // }
-        //------------------------parameter untuk flight------------------------//
-        
-        
-        //------------------------parameter untuk non flight-------------------//
-        
-        //var product=param.product;
-        // var product=[];
-        // if(this.props.navigation.state.params.product){
-        //     product=this.props.navigation.state.params.product;
-        // }
-        
-        //var productPart=param.productPart;
-        // var productPart=[];
-        // if(this.props.navigation.state.params.productPart){
-        //     productPart=this.props.navigation.state.params.productPart;
-        // }
-
+      
         var productBooking=paramAll.productBooking;
-        // var productBooking={};
-        // if(this.props.navigation.state.params.productBooking){
-        //     productBooking=this.props.navigation.state.params.productBooking;
-        // }
-        //------------------------parameter untuk non flight-------------------//
         
         //------------------------parameter inti------------------------//
         var product=paramAll.product;
@@ -179,27 +132,14 @@ export default class Summary extends Component {
             param.typeLabel="Hotel Reservasi";
         }
 
-        // var param=this.props.navigation.state.params.param;
-        // var product=this.props.navigation.state.params.product;
-        // var productPart=this.props.navigation.state.params.productPart;
         console.log('product',JSON.stringify(product));
-        
-        // var param=[];
-        // if(this.props.navigation.state.params.param){
-        //     param=this.props.navigation.state.params.param;
-        // }
-        
         console.log('param',JSON.stringify(param));
         console.log('product',JSON.stringify(product));
         console.log('productPart',JSON.stringify(productPart));
    
         //------------------------parameter inti------------------------//
-        
         var jumlahPenumpang = param.Qty;
         var arrOldGuest=this.convertOld(param);
-
-
-
         
         this.state = {
             
@@ -330,66 +270,36 @@ export default class Summary extends Component {
         this.useCouponForm=this.useCouponForm.bind(this);
         this.setCoupon=this.setCoupon.bind(this);
 
-        this.getConfig();
         this.getConfigApi();
+        this.getConfig();
         this.getSession();
         this.getTokenFireBase();
 
+        
 
 
-    }
-    //memanggil config
-    getConfigApi(){
-        AsyncStorage.getItem('configApi', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                this.setState({configApi:config});
-            }
-        });
-    }
 
-    getConfig(){    
-        AsyncStorage.getItem('config', (error, result) => {
-            if (result) {    
-                let config = JSON.parse(result);
-                console.log('getConfig',JSON.stringify(config));
-                this.setState({config:config});
-            }
-        });
-    }
-    getSession(){    
-        AsyncStorage.getItem('userSession', (error, result) => {
-            if (result) {    
-                let userSession = JSON.parse(result);
-                var id_user=userSession.id_user;
-                
-                
-                this.setState({id_user:id_user});
-                this.setState({userSession:userSession});
-                this.getProfile(userSession);
-                this.setState({login:true});
-                console.log('userSession',JSON.stringify(userSession));
-            }
-        });
     }
 
     count(){
         
                
-    
-                // let config = JSON.parse(result);
-                // let url=config.apiBaseUrl+"booking/count";
-                let param=this.state.param;
-
                 let config=this.state.configApi;
                 let baseUrl=config.apiBaseUrl;
-                let url=baseUrl+'booking/search';
+                let url=baseUrl+"booking/count";
                 console.log('configApi',JSON.stringify(config));
                 console.log('urlss',url);
 
+
+    
+                // let config = JSON.parse(result);
+                // let url=config.apiBaseUrl+"booking/count";
+
+                let param=this.state.param;
+
                 var myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
-                myHeaders.append("Cookie", "access_token="+config.apiToken);
+                myHeaders.append("Cookie", "access_token="+config.tokenMDIAccess);
 
                 var raw = JSON.stringify({
                     "product": "flight",
@@ -408,10 +318,11 @@ export default class Summary extends Component {
                 redirect: 'follow'
                 };
 
-                fetch(config.apiBaseUrl+"booking/count", requestOptions)
+                fetch(url, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     this.setState({ loading_spinner: false });
+                    //var dataPrice=result.data;
 
                     var dataPrice={      
                         required_dob:false,
@@ -433,7 +344,6 @@ export default class Summary extends Component {
 
     }
 
-
     getTokenFireBase(){
         AsyncStorage.getItem('tokenFirebase', (error, result) => {
             if (result) {
@@ -444,19 +354,56 @@ export default class Summary extends Component {
         });
     }
 
-   
+    getConfigApi() {
+        AsyncStorage.getItem('configApi', (error, result) => {
+            if (result) {
+                let config = JSON.parse(result);
+                this.setState({ configApi: config });
+            }
+        });
+    }
+
+
+
+    getConfig(){    
+        AsyncStorage.getItem('config', (error, result) => {
+            if (result) {    
+                let config = JSON.parse(result);
+                console.log('getConfig',JSON.stringify(config));
+                this.setState({config:config});
+            }
+        });
+    }
+
+    getSession(){    
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {    
+                let userSession = JSON.parse(result);
+                var id_user=userSession.id_user;
+                
+                
+                this.setState({id_user:id_user});
+                this.setState({userSession:userSession});
+                this.getProfile(userSession);
+                this.setState({login:true});
+                console.log('userSession',JSON.stringify(userSession));
+            }
+        });
+    }
 
     getProfile(userSession){
         this.setState({ loadingPoint: true }, () => {
-       
+          
 
-                let config=this.state.configApi;
-                let baseUrl=config.apiBaseUrl;
-                let url=baseUrl+"front/api/user/profile";
-                console.log('configApi',JSON.stringify(config));
-                console.log('urlss',url);
+                let config = this.state.configApi;
+                let baseUrl = config.baseUrl;
+                let url = baseUrl + "front/api/user/profile";
+                console.log('configApi', JSON.stringify(config));
+                console.log('urlss', url);
 
 
+                // let config = JSON.parse(result);
+                // var url=config.baseUrl;
                 var myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
                 myHeaders.append("Cookie", "ci_session=2m7aungmqk0gqvsacjk2gb3giuos2ill");
@@ -484,11 +431,10 @@ export default class Summary extends Component {
                     //return result.user;
 
                 })
-                .catch(error => { alert('Kegagalan Respon Server Get profile');});
-           
+                .catch(error => { alert('Kegagalan Respon Server');});
+            
         });
     }
-
 
     convertDuration(date1,date2){
         
@@ -574,6 +520,7 @@ export default class Summary extends Component {
 
     totalPrice(){
         let {param,product,productPart,discount,insurance,id_coupon,id_coupon_history,config}=this.state;
+        console.log('paramintotalPrice',JSON.stringify(param));
         var total_price=0;
 
         param.tax=0;
@@ -683,19 +630,24 @@ export default class Summary extends Component {
         
     }    
 
-
     typeFlight(){
         const data={  
             "fromCode": this.state.param.Origin,
             "toCode": this.state.param.Destination
         }
         const paramData={"param":data}
-        let config=this.state.configApi;
-        let baseUrl=config.baseUrl;
-        let url=baseUrl+'front/api/api/get_type_flight';
-        console.log('configApi',JSON.stringify(config));
-        console.log('urlss',url);
         
+       
+
+        
+
+                let config=this.state.configApi;
+                let baseUrl=config.baseUrl;
+                let url=baseUrl+"front/api/api/get_type_flight";
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+
                 // let config = JSON.parse(result);
                 // var access_token=config.token;
                 // var path=config.common_type_flight.dir;
@@ -717,12 +669,12 @@ export default class Summary extends Component {
                 
                                 })
                                 .catch(error => {
-                                    alert('Kegagalan Respon Server type flight')
+                
+                                    alert('Kegagalan Respon Server')
                                 });
-            
+           
         
     }    
-
 
     setTitle(title){
         this.setState({title:title});
@@ -730,214 +682,7 @@ export default class Summary extends Component {
 
     submitOrder(){
         var param=this.state.param;
-        if(param.type=='trip'){
-            var customer=this.state.listdata_customer;
-            var product= this.state.product;
-            var guest=this.state.listdata_participant;
-            var param=this.state.param;
-            var dataPrice=this.state.dataPrice;
-            var productPart=this.state.productPart;
-                
-            var participant = [];
-            var a=1;
-            guest.map(item => {
-                var obj = {};
-                            obj['key']= a,
-                            obj['label']= 'Penumpang '+a+' = '+item['old'],
-                            obj['old']= item['old'],
-                            obj['fullname']= item['fullname'],
-                            obj['firstname']= item['firstname'],
-                            obj['lastname']= item['lastname'],
-                            obj['birthday']= item['birthday'],
-                            obj['nationality']= item['nationality'],
-                            obj['passport_number']= item['passport_number'],
-                            obj['passport_country']= item['passport_country'],
-                            obj['passport_expire']= item['passport_expire'],
-                            obj['phone']= item['phone'],
-                            obj['title']= item['title'],
-                            obj['email']= item['email'],
-                            obj['nationality_id']= item['nationality_id'],
-                            obj['nationality_phone_code']= item['nationality_phone_code'],
-                            obj['passport_country_id']= item['passport_country_id']
-                            
-                participant.push(obj);
-                a++;
-            });
-            
-           
-                var dataCart={
-                    "departure_date": param.DepartureDate,
-                    "product":product,
-                    "product_part":productPart,
-                    "pax": [
-                        {
-                            "departure_baggage": 0,
-                            "return_baggage": 0,
-                            "loyalty_number": [],
-                            "type": "ADT",
-                            "type_name": "Adult",
-                            "title": customer[0].title,
-                            "first_name": customer[0].firstname,
-                            "last_name": customer[0].lastname,
-                            "dob": customer[0].birthday,
-                            "nationality_code": customer[0].nationality_id,
-                            "nationality_name": customer[0].nationality,
-                            "identity_type": "passport",
-                            "identity_type_name": customer[0].nationality,
-                            "identity_number": customer[0].passport_number,
-                            "identity_expired_date": customer[0].passport_expire,
-                            "identity_issuing_country_code": customer[0].passport_country_id,
-                            "identity_issuing_country_name": customer[0].passport_country_id
-                        }
-                    ],
-                    "international": false,
-                    "detail_price": [
-                        {
-                            "total_tax": 0,
-                            "type": "",
-                            "segment": "",
-                            "total_price": this.state.total_all,
-                            "nett_price": 0,
-                            "commission_percent": 0,
-                            "commission_amount": 0,
-                            "insurance_code": null,
-                            "insurance_name": null,
-                            "insurance_company": null,
-                            "insurance_program": null,
-                            "insurance_fee": 0,
-                            "insurance_total": 0,
-                            "transaction_fee": 0,
-                        }
-                    ],
-                    "id": "",
-                    "adult": param.Adults,
-                    "child": param.Children,
-                    "infant": param.Infants,
-                    "nett_price": 0,
-                    "discount": 0,
-                    "total_price": this.state.total_all,
-                    "insurance_total": 0,
-                    "transaction_fee": 0,
-                    "time_limit": "2020-09-01T11: 37: 27",
-                    "contact": {
-                        "title": customer[0].title,
-                        "first_name": customer[0].firstname,
-                        "last_name": customer[0].lastname,
-                        "country_id": customer[0].nationality_id,
-                        "country_name": customer[0].nationality,
-                        "phone_code": customer[0].nationality_phone_code,
-                        "phone_number": customer[0].phone,
-                        "email": customer[0].email
-                    },
-                    "participant": participant,
-                    "typeProduct": "trip"
-                }
-                var cartToBeSaved=dataCart;
-                this.onSubmitOrder(cartToBeSaved);
         
-        }else if(param.type=='hotelpackage'){
-            var customer=this.state.listdata_customer;
-            var product= this.state.product;
-            var guest=this.state.listdata_participant;
-            var param=this.state.param;
-            var dataPrice=this.state.dataPrice;
-            var productPart=this.state.productPart;
-            
-            var participant = [];
-            var a=1;
-            guest.map(item => {
-                var obj = {};
-                            obj['key']= a,
-                            obj['label']= 'Penumpang '+a+' = '+item['old'],
-                            obj['old']= item['old'],
-                            obj['fullname']= item['fullname'],
-                            obj['firstname']= item['firstname'],
-                            obj['lastname']= item['lastname'],
-                            obj['birthday']= item['birthday'],
-                            obj['nationality']= item['nationality'],
-                            obj['passport_number']= item['passport_number'],
-                            obj['passport_country']= item['passport_country'],
-                            obj['passport_expire']= item['passport_expire'],
-                            obj['phone']= item['phone'],
-                            obj['title']= item['title'],
-                            obj['email']= item['email'],
-                            obj['nationality_id']= item['nationality_id'],
-                            obj['nationality_phone_code']= item['nationality_phone_code'],
-                            obj['passport_country_id']= item['passport_country_id']
-                            
-                participant.push(obj);
-                a++;
-            });
-                var dataCart={
-                    "departure_date": param.DepartureDate,
-                    "product":product,
-                    "product_part":productPart,
-                    "pax": [
-                        {
-                            "departure_baggage": 0,
-                            "return_baggage": 0,
-                            "loyalty_number": [],
-                            "type": "ADT",
-                            "type_name": "Adult",
-                            "title": customer[0].title,
-                            "first_name": customer[0].firstname,
-                            "last_name": customer[0].lastname,
-                            "dob": customer[0].birthday,
-                            "nationality_code": customer[0].nationality_id,
-                            "nationality_name": customer[0].nationality,
-                            "identity_type": "passport",
-                            "identity_type_name": customer[0].nationality,
-                            "identity_number": customer[0].passport_number,
-                            "identity_expired_date": customer[0].passport_expire,
-                            "identity_issuing_country_code": customer[0].passport_country_id,
-                            "identity_issuing_country_name": customer[0].passport_country_id
-                        }
-                    ],
-                    "international": false,
-                    "detail_price": [
-                        {
-                            "total_tax": 0,
-                            "type": "",
-                            "segment": "",
-                            "total_price": this.state.total_all,
-                            "nett_price": 0,
-                            "commission_percent": 0,
-                            "commission_amount": 0,
-                            "insurance_code": null,
-                            "insurance_name": null,
-                            "insurance_company": null,
-                            "insurance_program": null,
-                            "insurance_fee": 0,
-                            "insurance_total": 0,
-                            "transaction_fee": 0,
-                        }
-                    ],
-                    "id": "",
-                    "adult": param.Adults,
-                    "child": param.Children,
-                    "infant": param.Infants,
-                    "nett_price": 0,
-                    "discount": 0,
-                    "total_price": this.state.total_all,
-                    "insurance_total": 0,
-                    "transaction_fee": 0,
-                    "time_limit": "2020-09-01T11: 37: 27",
-                    "contact": {
-                        "title": customer[0].title,
-                        "first_name": customer[0].firstname,
-                        "last_name": customer[0].lastname,
-                        "country_id": customer[0].nationality_id,
-                        "country_name": customer[0].nationality,
-                        "phone_code": customer[0].nationality_phone_code,
-                        "phone_number": customer[0].phone,
-                        "email": customer[0].email
-                    },
-                    "participant": participant,
-                    "typeProduct": "hotelpackage"
-                }
-                var cartToBeSaved=dataCart;
-                this.onSubmitOrder(cartToBeSaved);
-        }else if(param.type=='hotelLinx'){
                 var customer=this.state.listdata_customer;
                 var product= this.state.product;
                 var guest=this.state.listdata_participant;
@@ -1042,358 +787,7 @@ export default class Summary extends Component {
                     var cartToBeSaved=dataCart;
                     console.log('cartToBeSavedHotelLinx',JSON.stringify(cartToBeSaved));
                     this.onSubmitOrder(cartToBeSaved);
-        }else if(param.type=='activities'){
-                var customer=this.state.listdata_customer;
-                var product= this.state.product;
-                var guest=this.state.listdata_participant;
-                var param=this.state.param;
-                var dataPrice=this.state.dataPrice;
-                var productPart=this.state.productPart;
-                
-                var participant = [];
-                var a=1;
-                guest.map(item => {
-                    var obj = {};
-                                obj['key']= a,
-                                obj['label']= 'Penumpang '+a+' = '+item['old'],
-                                obj['old']= item['old'],
-                                obj['fullname']= item['fullname'],
-                                obj['firstname']= item['firstname'],
-                                obj['lastname']= item['lastname'],
-                                obj['birthday']= item['birthday'],
-                                obj['nationality']= item['nationality'],
-                                obj['passport_number']= item['passport_number'],
-                                obj['passport_country']= item['passport_country'],
-                                obj['passport_expire']= item['passport_expire'],
-                                obj['phone']= item['phone'],
-                                obj['title']= item['title'],
-                                obj['email']= item['email'],
-                                obj['nationality_id']= item['nationality_id'],
-                                obj['nationality_phone_code']= item['nationality_phone_code'],
-                                obj['passport_country_id']= item['passport_country_id']
-                                
-                    participant.push(obj);
-                    a++;
-                });
-                    var dataCart={
-                        "departure_date": param.DepartureDate,
-                        "product":product,
-                        "product_part":productPart,
-                        "pax": [
-                            {
-                                "departure_baggage": 0,
-                                "return_baggage": 0,
-                                "loyalty_number": [],
-                                "type": "ADT",
-                                "type_name": "Adult",
-                                "title": customer[0].title,
-                                "first_name": customer[0].firstname,
-                                "last_name": customer[0].lastname,
-                                "dob": customer[0].birthday,
-                                "nationality_code": customer[0].nationality_id,
-                                "nationality_name": customer[0].nationality,
-                                "identity_type": "passport",
-                                "identity_type_name": customer[0].nationality,
-                                "identity_number": customer[0].passport_number,
-                                "identity_expired_date": customer[0].passport_expire,
-                                "identity_issuing_country_code": customer[0].passport_country_id,
-                                "identity_issuing_country_name": customer[0].passport_country_id
-                            }
-                        ],
-                        "international": false,
-                        "detail_price": [
-                            {
-                                "total_tax": 0,
-                                "type": "",
-                                "segment": "",
-                                "total_price": this.state.total_all,
-                                "nett_price": 0,
-                                "commission_percent": 0,
-                                "commission_amount": 0,
-                                "insurance_code": null,
-                                "insurance_name": null,
-                                "insurance_company": null,
-                                "insurance_program": null,
-                                "insurance_fee": 0,
-                                "insurance_total": 0,
-                                "transaction_fee": 0,
-                            }
-                        ],
-                        "id": "",
-                        "adult": param.Adults,
-                        "child": param.Children,
-                        "infant": param.Infants,
-                        "nett_price": 0,
-                        "discount": 0,
-                        "total_price": this.state.total_all,
-                        "insurance_total": 0,
-                        "transaction_fee": 0,
-                        "time_limit": "2020-09-01T11: 37: 27",
-                        "contact": {
-                            "title": customer[0].title,
-                            "first_name": customer[0].firstname,
-                            "last_name": customer[0].lastname,
-                            "country_id": customer[0].nationality_id,
-                            "country_name": customer[0].nationality,
-                            "phone_code": customer[0].nationality_phone_code,
-                            "phone_number": customer[0].phone,
-                            "email": customer[0].email
-                        },
-                        "participant": participant,
-                        "typeProduct": "activities"
-                    }
-                    var cartToBeSaved=dataCart;
-                    this.onSubmitOrder(cartToBeSaved);
-            
-        }else if(param.type=='flight'){
-
-            var param=this.state.param;
-            var customer=this.state.listdata_customer;
-            var guest=this.state.listdata_participant;
-            var dataPrice=this.state.dataPrice;
       
-            
-            var contact= {
-                "title": customer[0].title,
-                "firstName": customer[0].firstname,
-                "lastName": customer[0].lastname,
-                //"country": customer[0].nationality_id,
-                "phoneCode": customer[0].nationality_phone_code,
-                "phone": customer[0].phone,
-                "email": customer[0].email
-                };
-
-            
-            var participant = [];
-            var a=1;
-            guest.map(item => {
-                var obj = {};
-                obj['type'] = this.convertOldVia(this.state.arr_old[a]);
-                obj['title'] = item.title;
-                //obj['nationality'] = item.nationality_id;
-                obj['firstName'] = item.firstname;
-                obj['lastName'] = item.lastname;
-                obj['dob'] = this.convertDateDMY(item.birthday);
-                //obj['identity_number'] = item.passport_number;
-                //obj['issuing_country'] = item.passport_country_id;
-                //obj['expiry_date'] = item.passport_expire;
-                //obj['departure_baggage'] = "0";
-                //obj['return_baggage'] = "0";
-                // obj['passport'] = {
-                //             "nat": item.passport_country_id,
-                //             "num": item.passport_number,
-                //             "doi": "",
-                //             "doe":  this.convertDateDMY(item.passport_expire)
-                //         }
-
-
-                // {
-                //     "type": "adult",
-                //     "title": "Mr",
-                //     "firstName": "Hamdan",
-                //     "lastName": "Awaludin",
-                //     "passport": {
-                //         "nat": "ID",
-                //         "num": "1ku2gutf2yi2",
-                //         "doi": "26-08-2021",
-                //         "doe": "26-06-2026"
-                //     }
-                // }
-
-
-                participant.push(obj);
-                a++;
-            });
-            
-            console.log('param',JSON.stringify(param));
-            console.log('contact',JSON.stringify(contact));
-            console.log('guestSubmit',JSON.stringify(guest));
-            console.log('participant',JSON.stringify(participant));
-            console.log('dataprice',JSON.stringify(dataPrice));
-
-            this.setState({ loading_spinner: true }, () => {
-            this.setState({loading_spinner_file:require("app/assets/loader_flight.json")});
-            this.setState({loading_spinner_title:'Connecting to Maskapai'});
-                
-                        let config=this.state.configApi;
-                        let baseUrl=config.apiBaseUrl;
-                        let url=baseUrl+'booking/checkout';
-                        console.log('configApi',JSON.stringify(config));
-                        console.log('urlss',url);
-                 
-                        
-                        let access_token=config.apiToken;
-                      
-
-
-                        var paramCheckout={};
-                        paramCheckout.product="flight";
-                        paramCheckout.key=param.key;
-                        paramCheckout.price={
-                            "subtotal": dataPrice.subtotal_price,
-                            "insurance": false,
-                            "tax": dataPrice.tax_fee,
-                            "iwjr": dataPrice.iwjr,
-                            "fee": dataPrice.transaction_fee,
-                            "fee2": dataPrice.transaction_fee,
-                            "discount": 0,
-                            "point": 0,
-                            "total": dataPrice.total_price,
-                        }
-                        paramCheckout.paymentMethod=0;
-                        paramCheckout.contact=contact;
-                        paramCheckout.guest=participant;
-                        paramCheckout.coupon=[];
-                        paramCheckout.platform=Platform.OS;
-                        console.log('paramCheckout',JSON.stringify(paramCheckout));
-                        
-                        
-
-                        var myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("Cookie", "access_token="+access_token);
-
-                        var raw = JSON.stringify(paramCheckout);
-
-                        var requestOptions = {
-                        method: 'POST',
-                        headers: myHeaders,
-                        body: raw,
-                        redirect: 'follow'
-                        };
-
-                        fetch(url, requestOptions)
-                        .then(response => response.json())
-                        .then(result => {
-                            this.setState({loading_spinner:false});
-                            console.log('resultcheckout',JSON.stringify(result));
-                            var redirect='Pembayaran';
-                                var id_order=result.data.id_order;
-                                
-                                var param={
-                                    id_order:id_order,
-                                    dataPayment:{},
-                                    back:''
-                                }
-                                this.props.navigation.navigate("Pembayaran",{param:param});
-
-                        })
-                        .catch(error => {
-                            alert('Kegagalan Respon Server')
-                        });
-                        
-                    
-         
-            });
-
-            
-            
-
-
-        }else{
-            var customer=this.state.listdata_customer;
-            var product= this.state.product;
-            var guest=this.state.listdata_participant;
-            var param=this.state.param;
-            var dataPrice=this.state.dataPrice;
-            var productPart=this.state.productPart;
-            
-            var participant = [];
-            var a=1;
-            guest.map(item => {
-                var obj = {};
-                            obj['key']= a,
-                            obj['label']= 'Penumpang '+a+' = '+item['old'],
-                            obj['old']= item['old'],
-                            obj['fullname']= item['fullname'],
-                            obj['firstname']= item['firstname'],
-                            obj['lastname']= item['lastname'],
-                            obj['birthday']= item['birthday'],
-                            obj['nationality']= item['nationality'],
-                            obj['passport_number']= item['passport_number'],
-                            obj['passport_country']= item['passport_country'],
-                            obj['passport_expire']= item['passport_expire'],
-                            obj['phone']= item['phone'],
-                            obj['title']= item['title'],
-                            obj['email']= item['email'],
-                            obj['nationality_id']= item['nationality_id'],
-                            obj['nationality_phone_code']= item['nationality_phone_code'],
-                            obj['passport_country_id']= item['passport_country_id']
-                            
-                participant.push(obj);
-                a++;
-            });
-                var dataCart={
-                    "departure_date": param.DepartureDate,
-                    "product":product,
-                    "product_part":productPart,
-                    "pax": [
-                        {
-                            "departure_baggage": 0,
-                            "return_baggage": 0,
-                            "loyalty_number": [],
-                            "type": "ADT",
-                            "type_name": "Adult",
-                            "title": customer[0].title,
-                            "first_name": customer[0].firstname,
-                            "last_name": customer[0].lastname,
-                            "dob": customer[0].birthday,
-                            "nationality_code": customer[0].nationality_id,
-                            "nationality_name": customer[0].nationality,
-                            "identity_type": "passport",
-                            "identity_type_name": customer[0].nationality,
-                            "identity_number": customer[0].passport_number,
-                            "identity_expired_date": customer[0].passport_expire,
-                            "identity_issuing_country_code": customer[0].passport_country_id,
-                            "identity_issuing_country_name": customer[0].passport_country_id
-                        }
-                    ],
-                    "international": false,
-                    "detail_price": [
-                        {
-                            "total_tax": 0,
-                            "type": "",
-                            "segment": "",
-                            "total_price": this.state.total_all,
-                            "nett_price": 0,
-                            "commission_percent": 0,
-                            "commission_amount": 0,
-                            "insurance_code": null,
-                            "insurance_name": null,
-                            "insurance_company": null,
-                            "insurance_program": null,
-                            "insurance_fee": 0,
-                            "insurance_total": 0,
-                            "transaction_fee": 0,
-                        }
-                    ],
-                    "id": "",
-                    "adult": param.Adults,
-                    "child": param.Children,
-                    "infant": param.Infants,
-                    "nett_price": 0,
-                    "discount": 0,
-                    "total_price": this.state.total_all,
-                    "insurance_total": 0,
-                    "transaction_fee": 0,
-                    "time_limit": "2020-09-01T11: 37: 27",
-                    "contact": {
-                        "title": customer[0].title,
-                        "first_name": customer[0].firstname,
-                        "last_name": customer[0].lastname,
-                        "country_id": customer[0].nationality_id,
-                        "country_name": customer[0].nationality,
-                        "phone_code": customer[0].nationality_phone_code,
-                        "phone_number": customer[0].phone,
-                        "email": customer[0].email
-                    },
-                    "participant": participant,
-                    "typeProduct": "activities"
-                }
-                var cartToBeSaved=dataCart;
-                this.onSubmitOrder(cartToBeSaved);
-        
-        }
     }
 
     expiredPasportMonth(passport_expire){
@@ -1414,7 +808,6 @@ export default class Summary extends Component {
         }
         return old;
     }
-    
 
     onSubmit() {
 
@@ -1487,7 +880,6 @@ export default class Summary extends Component {
         }else{
             
         this.setState({loading:true});
-        //this.saveParticipant();
         this.submitOrder();
         }
 
@@ -1497,42 +889,31 @@ export default class Summary extends Component {
         
     }
 
-
-
-    
     onSubmitOrder(cartToBeSaved){
         var item=cartToBeSaved;
         this.setState({loading_spinner_file:require("app/assets/loader_wait.json")});
         this.setState({loading_spinner_title:'Create Order'});
-              
-                    // let config = JSON.parse(result);
-                    // var access_token=config.token;
-
-                    // let config=this.state.configApi;
-                    // let baseUrl=config.apiBaseUrl;
-
-                    // let url=baseUrl+"front/api/OrderSubmit/submit";
-                    // console.log('configApi',JSON.stringify(config));
-                    // console.log('urlss',url);
-
-
-
-                    // //var midtransMethod=config.midtransMethod;
-                    // var path=config.user_order_submit.dir;
-                    // var url=config.baseUrl;
-
+            
                     let config=this.state.configApi;
                     let baseUrl=config.baseUrl;
                     let url=baseUrl+"front/api/OrderSubmit/submit";
                     console.log('configApi',JSON.stringify(config));
                     console.log('urlss',url);
+
+
+                    // let config = JSON.parse(result);
+                    // var access_token=config.token;
+                    //var midtransMethod=config.midtransMethod;
+                    // var path=config.user_order_submit.dir;
+                    // var url=config.baseUrl;
+                    // console.log('urlSubmit',url+path);
                     
                     var param=this.state.param;
                     param.discountCoupon=this.state.discountCoupon;
                     param.discountPoint=this.state.discountPoint;
                     param.platform=Platform.OS;
                     var dataCartArrayRealSend={
-                    "token":access_token,
+                    //"token":access_token,
                     "id_user":this.state.id_user,
                     "dataCart":item,
                     "type":this.state.param.type,
@@ -1546,7 +927,7 @@ export default class Summary extends Component {
                     
                     console.log("---------------data cart array cart kirim  ------------");
                     console.log(JSON.stringify(dataCartArrayRealSend));
-                    console.log(url+path,JSON.stringify(dataCartArrayRealSend));
+                    console.log(url,JSON.stringify(dataCartArrayRealSend));
 
              
                     
@@ -1585,17 +966,14 @@ export default class Summary extends Component {
         
                     })
                         .catch(error => {
-                            alert('Kegagalan Respon Server submitorder')
+                            alert('Kegagalan Respon Server')
                     });
 
-                
+              
     
 
     }
 
-    
-    
-    
     updateUserSession(){
             AsyncStorage.getItem('userSession', (error, result) => {
                 if (result) {  
@@ -1679,20 +1057,6 @@ export default class Summary extends Component {
         
     }
 
-    
-    // convertOldParticipant(dateString){
-
-    //     var age = parseInt(moment().diff(dateString,'years',true));
-    //     var old="";
-    //     if(age < 2){
-    //         old="INF";
-    //     }else if(age>=2 && age<=11){
-    //         old="CHD";
-    //     }else{
-    //         old="ADT";
-    //     }
-    //     return old;
-    // }
     convertParticipantBirthday(old){
         let maxDate = new Date();
         let minDate = new Date();
@@ -1757,8 +1121,7 @@ export default class Summary extends Component {
         
     }
 
-
-    saveParticipant(
+    saveParticipants(
         key,
         fullname,
         firstname,
@@ -1776,9 +1139,19 @@ export default class Summary extends Component {
         passport_country_id,
         old
         ){
-        const {config,login,id_user,idParam} =this.state;
-                var url=config.baseUrl;
-                var path=config.user_participant_save.dir;
+        const {login,id_user,idParam} =this.state;
+        console.log('config',JSON.stringify(config));
+        //alert('asdss');
+                //var url=config.baseUrl;
+
+                let config=this.state.configApi;
+                let baseUrl=config.baseUrl;
+                let url=baseUrl+"front/api/user/participant_update";
+                console.log('configApi',JSON.stringify(config));
+                console.log('urlss',url);
+
+
+                //var path=config.user_participant_save.dir;
     
                 const data={  
                     "id": key,
@@ -1814,8 +1187,8 @@ export default class Summary extends Component {
                 redirect: 'follow'
                 };
               
-                console.log('url+path',url+path);
-                fetch(url+path,requestOptions)
+                // console.log('url+path',url+path);
+                fetch(url,requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     setTimeout(() => {
@@ -1826,104 +1199,10 @@ export default class Summary extends Component {
                 })
                 .catch(error => {
     
-                    alert('Kegagalan Respon Server save participant')
+                    alert('Kegagalan Respon Server')
                 });
     }
 
-
-
-
-    // saveParticipant(){
-    //     AsyncStorage.getItem('userSession', (error, result) => {
-    //         if (result) {
-    //             let userSession = JSON.parse(result);
-    //             this.setState({userSession:userSession});
-    //             this.setState({login:true});
-    
-    
-    //             var id_user=userSession.id_user;
-    //             var guest=this.state.listdata_participant;
-                           
-    //                     var participant = [];
-    //                     var a=1;
-    //                     guest.map(item => {
-    //                         var obj = {};
-    //                         obj['id_user'] = id_user;
-    //                         obj['fullname'] = item.fullname;
-    //                         obj['firstname'] = item.firstname;
-    //                         obj['lastname'] = item.lastname;
-    //                         obj['birthday'] = item.birthday;
-    //                         obj['nationality'] = item.nationality;
-    //                         obj['passport_number'] = item.passport_number;
-    //                         obj['passport_country'] = item.passport_country;
-    //                         obj['passport_expire'] = item.passport_expire;
-    //                         obj['phone'] = item.phone;
-    //                         obj['title'] = item.title;
-    //                         obj['email'] = item.email;
-    //                         obj['nationality_id'] = item.nationality_id;
-    //                         obj['nationality_phone_code'] = item.nationality_phone_code;
-    //                         obj['passport_country_id'] = item.passport_country_id;
-
-    //                         participant.push(obj);
-    //                         a++;
-    //                     });
-
-                    
-    //             var customer=this.state.listdata_customer;
-                           
-    //             var customers = [];
-    //             var a=1;
-    //             customer.map(item => {
-    //                 var obj = {};
-    //                 obj['id_user'] = id_user;
-    //                 obj['fullname'] = item.fullname;
-    //                 obj['firstname'] = item.firstname;
-    //                 obj['lastname'] = item.lastname;
-    //                 obj['birthday'] = item.birthday;
-    //                 obj['nationality'] = item.nationality;
-    //                 obj['passport_number'] = item.passport_number;
-    //                 obj['passport_country'] = item.passport_country;
-    //                 obj['passport_expire'] = item.passport_expire;
-    //                 obj['phone'] = item.phone;
-    //                 obj['title'] = item.title;
-    //                 obj['email'] = item.email;
-    //                 obj['nationality_id'] = item.nationality_id;
-    //                 obj['nationality_phone_code'] = item.nationality_phone_code;
-    //                 obj['passport_country_id'] = item.passport_country_id;
-
-    //                 customers.push(obj);
-    //                 a++;
-    //             });    
-
-
-    //             const data={  
-    //                 "id_user": id_user,
-    //                 "participant":participant,
-    //                 "customer":customers
-    //             }
-    //              const param={"param":data}
-
-
-
-             
-    //                     PostData('user/participant_save',param)
-    //                         .then((result) => {
-    //                             ////console.log("------------------result save profle-------------");
-
-    //                         ////console.log(JSON.stringify(result));
-
-    //                         },
-    //                         (error) => {
-    //                             this.setState({ error });
-    //                         }
-    //                     );
-                   
-    //         }      
-                    
-    //     });        
-                        
-    // }
-    
     filterArray(array, filters) {
         const filterKeys = Object.keys(filters);
         return array.filter(item => {
@@ -1935,7 +1214,6 @@ export default class Summary extends Component {
           });
         });
     }
-
 
     validaton_participant(){
         var hasil = false;
@@ -1954,8 +1232,6 @@ export default class Summary extends Component {
         console.log(JSON.stringify(filtered));
         return jml;
     }
-    
-
 
     validaton_customer(){
         var hasil = false;
@@ -2010,12 +1286,11 @@ export default class Summary extends Component {
                       "Difference in Months: " + diffMonths+ " " + 
                       "Difference in Years: " + diffYears;
         return diffMonths;
-     }
+    }
 
     formatDate(date) {
          return date.split('-').reverse().join('-');
     }
-
     
     checkParticipant(id_user,title,firstname,lastname){
         var myHeaders = new Headers();
@@ -2144,13 +1419,15 @@ export default class Summary extends Component {
             
                     let response = await fetch("https://masterdiskon.com/front/api/user/participant_check", requestOptions);
                     let json = await response.json();
-                    console.log('checkParticipant',JSON.stringify(json));
+                    console.log('checkParticipantxxx',JSON.stringify(json));
 
                     // console.log('countPersons',countPersons.length);
                     var id=0;
                     if(json.length != 0){
                         id=json[0].id_passenger;
                     }
+
+                    console.log('setDataParticipantxx',JSON.stringify(resultParsed));
                     const newProjects = resultParsed.map(p =>
                         p.key === key
                         ? { ...p, 
@@ -2173,6 +1450,7 @@ export default class Summary extends Component {
                             }
                         : p
                     );
+                    console.log('newProjectsxxx',JSON.stringify(newProjects));
     
                     AsyncStorage.setItem('setDataParticipant',JSON.stringify(newProjects));
                     this.setState({listdata_participant:newProjects});
@@ -2182,7 +1460,7 @@ export default class Summary extends Component {
 
                     
 
-                    this.saveParticipant( 
+                    this.saveParticipants( 
                         id,
                         fullname,
                         firstname,
@@ -2212,6 +1490,10 @@ export default class Summary extends Component {
                 }
               };
               checkParticipant();
+            //   setTimeout(() => {
+            //     checkParticipant();
+            //   }, 20);
+              
 
 
                 
@@ -2267,21 +1549,19 @@ export default class Summary extends Component {
   
 
 
-  }
+    }
 
-  removePrice(dataObj)
-  {
-      var array = {};
-      for (var key in dataObj) {
-          var obj = {};
-          if(key!='price'){
-              array[key] = dataObj[key];
-          }
-      }
-      return array;
-  }
-
-  
+    removePrice(dataObj)
+    {
+        var array = {};
+        for (var key in dataObj) {
+            var obj = {};
+            if(key!='price'){
+                array[key] = dataObj[key];
+            }
+        }
+        return array;
+    }
 
     addDate(dt, amount, dateType) {
         switch (dateType) {
@@ -2296,7 +1576,6 @@ export default class Summary extends Component {
         }
     }
 
-
     formatDateToString(date){
         // 01, 02, 03, ... 29, 30, 31
         var dd = (date.getDate() < 10 ? '0' : '') + date.getDate();
@@ -2307,10 +1586,9 @@ export default class Summary extends Component {
      
         // create the format you want
         return (yyyy + "-" + MM + "-" + dd);
-     }
+    }
     
-     useCoupon(item){
-        // alert('asd');
+    useCoupon(item){
         const {userSession,param,couponCode,discount,couponCodeList,product}=this.state;
         console.log('useCoupon',JSON.stringify(item));
         console.log('paramUseCoupn',JSON.stringify(param));
@@ -2403,7 +1681,6 @@ export default class Summary extends Component {
             //this.setState({couponCode:item.coupon_code});
      }
 
-
      useCouponForm(couponCode){
         const {navigation}=this.props;
         const {userSession,param,discount,couponCodeList,product}=this.state;
@@ -2492,8 +1769,7 @@ export default class Summary extends Component {
        
      }
 
-
-     setCoupon(data){
+    setCoupon(data){
         //this.setState({couponCode:item.coupon_code});
         //  const {param}=this.state;
         //  console.log('useCoupon',JSON.stringify(data));
@@ -2529,11 +1805,7 @@ export default class Summary extends Component {
         var paramCode="code="+couponCode.toLowerCase();
         var paramTotal="&total="+param.total;
         var paramProduct="&product="+param.type;
-        // var paramIdUser="&id_user="+userSession.id_user;
-        // var paramPlatform="&platform=app";
-        // var paramId="&id="+product.id;
         var paramUrl=paramCode+paramTotal+paramProduct;
-        //var paramUrl=paramCode+paramTotal+paramProduct+paramIdUser+paramPlatform+paramId;
         var url="https://masterdiskon.com/front/page/coupon/get_coupon_detail?"+paramUrl;
        
         
@@ -2543,82 +1815,36 @@ export default class Summary extends Component {
         .then(result => {
             console.log('checkCoupon',JSON.stringify(result));
             this.setState({loadingCheckCoupon:false});
-            // if(result.code==200){
-               
-            //     const arrayIncludesInObj = (arr, key, valueToCheck) => {
-            //         return arr.some(value => value[key] === valueToCheck);
-            //       }
-
-            //     const found = arrayIncludesInObj(couponCodeList, "couponCode", this.state.couponCode); // true
-            //     if(found==false){
-            //         this.setState({discount:parseInt(discount)+parseInt(result.res.amount)});
-            //         couponCodeList.push({
-            //             couponCode:this.state.couponCode,
-            //             couponName:result.res.coupon_name,
-            //             couponAmount:result.res.amount,
-            //         });
-                    
-            //         var discountCoupon=0;
-            //         couponCodeList.map(item => {
-            //             discountCoupon+=parseInt(item.couponAmount);
-            //         });
-
-            //         this.setState({discountCoupon:discountCoupon});
-            //         this.setState({couponCodeList:couponCodeList});
-                    
-                    
-
-            //     }
-                
-            //     //this.setState({couponCode:"Pilih Kupon"});
-            //     setTimeout(() => {
-            //         this.totalPrice();
-            //         console.log('discount',this.state.discount);
-            //         console.log('couponCodeList',JSON.stringify(this.state.couponCodeList));
-            //     }, 50);
-            // }else{
-            //     //this.setState({couponCode:"Pilih Kupon"});
-            //     console.log('resultCheckCoupon',JSON.stringify(result));
-            //     this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
-
-            // }
-             
-
         })
         .catch(error => {
-
         });
     }
 
-   
-    
-
     getCouponDetail(){
-
         const {navigation}=this.props;
         const {userSession,param}=this.state;
         navigation.navigate('SelectCoupon',{userSession:userSession,param:param,useCoupon:this.useCoupon,useCouponForm:this.useCouponForm});
-        
 
     }
 
-    
     componentDidMount() {
 
         var param=this.state.param;
         var typeProduct=param.type;
         var typeFlight=this.state.typeFlight;
-        console.log('param',JSON.stringify(param));
-      
-        setTimeout(() => {
-            this.count();
-            if(param.type=='flight'){
-                this.typeFlight();
-            }
-        }, 20);
-        
+        //console.log('');
+        //this.setState({ reminders: true });
 
+        // if(typeFlight=='flight' || typeProduct=='hotelLinx'){
+        //     this.setState({ reminders: true });
+        //     console.log('reminder true');
+        // }
         
+        this.totalPrice();
+
+        if(param.type=='flight'){
+            this.typeFlight();
+        }
         
         let dtDefPassportExpired = new Date();
         dtDefPassportExpired = this.addDate(dtDefPassportExpired, +3, 'days');
@@ -2736,14 +1962,8 @@ export default class Summary extends Component {
 
     }    
 
-
-
- 
-
     toggleSwitch = value => {
-        
-        
-        
+
         this.setState({ reminders: value });
         var customer=this.state.listdata_customer[0];
 
@@ -2788,7 +2008,6 @@ export default class Summary extends Component {
             nationality_phone_code == null
         ){
         
-            //alert('Pastikan Detail Pemesan Terisi Semua');
             this.setState({style_form_customer:{
                 flexDirection: "row",
                 backgroundColor: BaseColor.fieldColor,
@@ -2824,10 +2043,7 @@ export default class Summary extends Component {
             );
         }
         
-        
-
         }else{
-            
         var key=1;
         var fullname='';
         var firstname='';
@@ -2866,11 +2082,8 @@ export default class Summary extends Component {
         old,
         ''
         );
-
-
         }
     };
-
 
     convertDateText(date){
         var d = new Date(date);
@@ -2881,33 +2094,28 @@ export default class Summary extends Component {
         return d.getDate()+" "+months[d.getMonth()]+" "+d.getFullYear();
     }
 
-
-
     toggleSwitchInsurance = value => {
         var param=this.state.param;
         this.setState({ remindersInsurance: value });
-        setTimeout(() => {
-            this.count();
-        }, 50);
-        // if(value==true){
-        //     var total_all=parseInt(this.state.dataPrice.total_price)+parseInt(this.state.dataPrice.insurance_total);
-        //     this.setState({total_all:total_all});
-        //     this.setState({insurance_included:true});
-        //     param.insurance=this.state.dataPrice.insurance_total;
-        //     param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
-        //     this.setState({param:param});
-        // }else{
-        //     var total_all=parseInt(this.state.dataPrice.total_price);
-        //     this.setState({total_all:total_all});
-        //     this.setState({insurance_included:false});
+        if(value==true){
+            var total_all=parseInt(this.state.dataPrice.total_price)+parseInt(this.state.dataPrice.insurance_total);
+            this.setState({total_all:total_all});
+            this.setState({insurance_included:true});
+            param.insurance=this.state.dataPrice.insurance_total;
+            param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
+            this.setState({param:param});
+        }else{
+            var total_all=parseInt(this.state.dataPrice.total_price);
+            this.setState({total_all:total_all});
+            this.setState({insurance_included:false});
 
-        //     param.insurance=0;
-        //     param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
-        //     this.setState({param:param});
-        // }
+            param.insurance=0;
+            param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
+            this.setState({param:param});
+        }
+
+
     };
-
-   
 
     toggleSwitchOtherUser = value => {
         this.setState({ remindersOtherUser: value });
@@ -2922,50 +2130,39 @@ export default class Summary extends Component {
         
         const {param}=this.state;
         this.setState({ usePointUser: value });
-        // var userPoint=this.state.userSession.point;
-        // if(value==true){
-        //     console.log('total',param.total);
-        //     console.log('discountPoint',this.state.discountPoint);
+        var userPoint=this.state.userSession.point;
+        if(value==true){
+            console.log('total',param.total);
+            console.log('discountPoint',this.state.discountPoint);
 
             
-        //     if(param.total <= userPoint){
-        //         //alert('1');
-        //         var discountPointSisa=parseInt(userPoint)-parseInt(this.state.param.total);
+            if(param.total <= userPoint){
+                var discountPointSisa=parseInt(userPoint)-parseInt(this.state.param.total);
                 
-        //         //setTimeout(() => {
-        //             var discountPoint=parseInt(userPoint)-parseInt(discountPointSisa);
-        //             console.log('discountPoint',discountPoint);
-        //             this.setState({discountPoint:discountPoint});
-        //             //console.log('discountPoint',parseInt(userPoint)-parseInt(this.state.discountPoint));
-        //         //}, 50);
+                    var discountPoint=parseInt(userPoint)-parseInt(discountPointSisa);
+                    console.log('discountPoint',discountPoint);
+                    this.setState({discountPoint:discountPoint});
                 
-        //     }else{
-        //         //alert('2');
-        //         var discountPointSisa=0;
-        //         var discountPoint=userPoint;
-        //         console.log('discountPoint',discountPoint);
-        //         this.setState({discountPoint:discountPoint});
-        //         // setTimeout(() => {
-        //         //     console.log('discountPoint',this.state.discountPoint);
-        //         // }, 50);
-        //     }
+            }else{
+                var discountPointSisa=0;
+                var discountPoint=userPoint;
+                console.log('discountPoint',discountPoint);
+                this.setState({discountPoint:discountPoint});
 
-        //     this.setState({discountPointSisa:discountPointSisa});
-        //     this.setState({pointUser:true});
-        //     this.setState({discount:parseInt(this.state.discount)+parseInt(userPoint)});
-        // }else{
-        //     this.setState({discountPoint:0});
-            
-        //     //this.usePointCancel();
-        //     this.setState({pointUser:false});
-        //     this.setState({discountPointSisa:this.state.userSession.point});
-        //     this.setState({discount:parseInt(this.state.discount)-parseInt(userPoint)});
-        // }
+            }
+
+            this.setState({discountPointSisa:discountPointSisa});
+            this.setState({pointUser:true});
+            this.setState({discount:parseInt(this.state.discount)+parseInt(userPoint)});
+        }else{
+            this.setState({discountPoint:0});
+            this.setState({pointUser:false});
+            this.setState({discountPointSisa:this.state.userSession.point});
+            this.setState({discount:parseInt(this.state.discount)-parseInt(userPoint)});
+        }
 
         setTimeout(() => {
-            // console.log('discount',this.state.discount);
-            // this.totalPrice();
-            this.count();
+             this.totalPrice();
         }, 50);
         
     };
@@ -2993,7 +2190,6 @@ export default class Summary extends Component {
     }
 
     removeItem(object, key, item) {
-        //this.state.couponCodeList, "couponCode", item
         console.log('couponCodeList',JSON.stringify(object));
         console.log('couponCode',JSON.stringify(key));
         console.log('item',JSON.stringify(item));
@@ -3025,33 +2221,11 @@ export default class Summary extends Component {
                     }, 50);
     };
 
-
     render() {
         const { navigation } = this.props;
         let { couponCodeList,param,product,productPart,selectDataDeparture,selectDataReturn,dataPrice, packageItem, packageItemDetail,loading, loading_spinner,userData,loading_spinner_file,loading_spinner_title,login } = this.state;
         const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
         const { flights, refreshing, clampedScroll } = this.state;
-       
-        
-
-        // var contentFormCoupon=<View style={{
-        //                                     flexDirection: "row",
-        //                                     marginBottom: 15,
-        //                                     }}>
-
-        //                         <Text style={{flex: 8,marginRight: 10}} >Voucher</Text>
-        //                         <TouchableOpacity
-        //                             style={{flex: 4,borderWidth: 1,borderColor: BaseColor.fieldColor,borderRadius: 10,backgroundColor:BaseColor.primaryColor}}
-        //                             onPress={() =>
-        //                                 {
-        //                                     this.getCouponDetail();
-        //                                 }}
-        //                         >
-        //                                         <View style={{justifyContent:'center',alignItems:'center',flex:1,height:30}}><Text caption2  style={{textAlign:'center'}} whiteColor>Cari Voucher</Text></View>
-        //                         </TouchableOpacity>
-                                
-        //                     </View>
-
 
         const contentCodeCouponList = this.state.couponCodeList.map((item) => {
             return (
@@ -3083,29 +2257,14 @@ export default class Summary extends Component {
 
         var contentFormCoupon=<View>
             <View style={[{flexDirection:'column'}]} />
-                
-        
                 <View style={{
                 flexDirection: "row",
-                //marginBottom: this.state.couponCodeList.length == 0 ? 15 :0,
                 }}>
                     <View
                     style={{flex: 9,justifyContent:'center'}}
-                        // onPress={() =>
-                        //     {
-                        //     this.getCouponDetail();
-                        //     }}
+
                     >
-                    {/* <TextInput
-                        style={[BaseStyle.textInput,{flex:9}]}
-                        onChangeText={text => {
-                            this.setState({couponCode:text});
-                        }}
-                        autoCorrect={false}
-                        placeholder="Masukkan kode kupon"
-                        placeholderTextColor={BaseColor.grayColor}
-                        selectionColor={BaseColor.primaryColor}
-                    /> */}
+
                     <Text>{this.state.couponCode}</Text>
                     </View>
                     <Button
@@ -3114,23 +2273,11 @@ export default class Summary extends Component {
                             
                             onPress={() =>
                                 {
-                                //this.checkCoupon();
                                 this.getCouponDetail();
                                 }}
                         >
                             <Text style={{color:BaseColor.whiteColor}}>Gunakan</Text>
                     </Button>
-                    {/* <TouchableOpacity
-                    style={{flex: 4,borderWidth: 1,borderColor: BaseColor.fieldColor,borderRadius: 10,backgroundColor:BaseColor.primaryColor}}
-                        onPress={() =>
-                            {
-                            this.checkCoupon();
-                            }}
-                    >
-                            <View style={{justifyContent:'center',alignItems:'center',flex:1,height:30}}><Text caption2  style={{textAlign:'center'}} whiteColor>Gunakan</Text></View>
-                    </TouchableOpacity> */}
-                    
-
                 </View>
                 <View>
                     {contentCodeCouponList}
@@ -3212,7 +2359,7 @@ export default class Summary extends Component {
                 <ProfileDetail
                     textFirst={item.label}
                     textSecond={item.fullname}
-                    icon={'pencil-alt'}
+                    icon={'create-outline'}
                     onPress={() => this.props.navigation.navigate('DetailContact',{
                         key:item.key,
                         label:item.label,
@@ -3274,7 +2421,7 @@ export default class Summary extends Component {
                 <ProfileDetail
                     textFirst={item.label}
                     textSecond={item.fullname}
-                    icon={'pencil-alt'}
+                    icon={'create-outline'}
                     onPress={() => {
                         this.props.navigation.navigate('DetailContact',{
                         key:item.key,
@@ -3534,17 +2681,26 @@ export default class Summary extends Component {
                                     <Image
                                         style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
                                         resizeMode="contain"
-                                        source={{uri: this.state.selectDataDeparture.image}}
+                                        source={{uri: this.state.selectDataDeparture.flight_schedule[0].airline_logo.includes("https") ? this.state.selectDataDeparture.flight_schedule[0].airline_logo : 'https:'+this.state.selectDataDeparture.flight_schedule[0].airline_logo}}
                                     />
                                     <View>
                                         <Text caption1>
                                             {this.state.selectDataDeparture.name}
                                         </Text>
                                         <Text caption2>
-                                            {this.state.selectDataDeparture.detail.flight[0].departure.code} - 
+
+                                        {this.state.selectDataDeparture.flight_schedule[0].from} - 
+                                            {this.state.selectDataDeparture.flight_schedule[0].to} | 
+                                            {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
+                                            {this.state.selectDataDeparture.flight_schedule[0].departure_time} |
+                                            
+                                            {/* {this.state.selectDataDeparture.detail.flight[0].departure.code} - 
                                             {this.state.selectDataDeparture.detail.flight[0].arrival.code} | 
                                             {this.state.selectDataDeparture.detail.flight[0].arrival.date} | 
                                             {this.state.selectDataDeparture.detail.flight[0].arrival.time}
+                                             */}
+                                            
+                                            
                                             {/* {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
                                             {this.state.selectDataDeparture.flight_schedule[0].departure_time} | */}
                                         </Text>
@@ -3561,27 +2717,26 @@ export default class Summary extends Component {
             
     
             
-            if(this.state.selectDataReturn != null){
+            var dataReturn=null;
+            if(this.state.selectDataReturn){
                 dataReturn=<View style={{flexDirection: "row",marginTop: 10,justifyContent: "space-between"}}>
                             <View style={{flexDirection: "row", alignItems: "center"}}>
-                                    <Image
-                                        style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
-                                        resizeMode="contain"
-                                        source={{uri: this.state.selectDataReturn.image}}
+                                <Image
+                                    style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
+                                    resizeMode="contain"
+                                    source={{uri: this.state.selectDataReturn.flight_schedule[0].airline_logo.includes("https") ? this.state.selectDataReturn.flight_schedule[0].airline_logo : 'https:'+this.state.selectDataReturn.flight_schedule[0].airline_logo}}
                                     />
-                                    <View>
-                                        <Text caption1>
-                                            {this.state.selectDataReturn.name}
-                                        </Text>
-                                        <Text caption2>
-                                            {this.state.selectDataReturn.detail.flight[0].departure.code} - 
-                                            {this.state.selectDataReturn.detail.flight[0].arrival.code} | 
-                                            {this.state.selectDataReturn.detail.flight[0].arrival.date} | 
-                                            {this.state.selectDataReturn.detail.flight[0].arrival.time}
-                                            {/* {this.convertDateText(this.state.selectDataReturn.flight_schedule[0].departure_date)} | 
-                                            {this.state.selectDataReturn.flight_schedule[0].departure_time} | */}
-                                        </Text>
-                                    </View>
+                                <View>
+                                    <Text caption1>
+                                        {this.state.selectDataReturn.flight_schedule[0].airline_name}
+                                    </Text>
+                                    <Text caption2>
+                                        {this.state.selectDataReturn.flight_schedule[0].from} - 
+                                        {this.state.selectDataReturn.flight_schedule[0].to} | 
+                                        {this.convertDateText(this.state.selectDataReturn.flight_schedule[0].departure_date)} 
+                                        {this.state.selectDataReturn.flight_schedule[0].departure_time}
+                                    </Text>
+                                </View>
                             </View>
                             <View
                                 style={{ flexDirection: "row", alignItems: "flex-end" }}
@@ -3614,21 +2769,9 @@ export default class Summary extends Component {
                             <View style={{ flex: 3,flexDirection: "row",justifyContent: "flex-start",alignItems: "center"}}>
                                 
                                 <View>
-                                        {/* <Image
-                                            style={{width: 70, height: 70, marginRight: 10, borderRadius: 16}}
-                                            resizeMode="cover"
-                                            source={{uri: this.state.product.img_featured_url}}
-                                            onError={() => this.setState({ uri: "new uri" })}
-                                        /> */}
-
                                         <FastImage
                                                     style={{width: 70, height: 70, marginRight: 10, borderRadius: 16}}
                                                     source={this.state.img}
-                                                    // source={{
-                                                    //   uri:propImage.url,
-                                                    //   headers:{ Authorization: 'someAuthToken' },
-                                                    //   priority: FastImage.priority.normal,
-                                                    // }}
                                                     resizeMode={FastImage.resizeMode.stretch}
                                                     cacheControl={FastImage.cacheControl.cacheOnly}
                                                     resizeMethod={'scale'}
@@ -3643,7 +2786,6 @@ export default class Summary extends Component {
                                                         })
                                                     }
                                                     }
-                                                    //onError={() => this.setState({ uri: "new uri" })}
                                                     >
                                             </FastImage>
                                 </View>
@@ -3696,8 +2838,6 @@ export default class Summary extends Component {
                                                 <Text caption1 semibold numberOfLines={1} style={{color:BaseColor.thirdColor}} >
                                                 {'IDR '+priceSplitter(this.state.discountPoint)}
                                                 </Text>
-
-                                            
                                     </View>
                                 </View>
                                 :
@@ -3719,8 +2859,6 @@ export default class Summary extends Component {
                                                 <Text caption1 semibold numberOfLines={1} style={{color:BaseColor.thirdColor}} >
                                                 {'IDR '+priceSplitter(this.state.discountCoupon)}
                                                 </Text>
-
-                                            
                                     </View>
                                 </View>
                                 :
@@ -3852,7 +2990,7 @@ export default class Summary extends Component {
                         <View style={{flex: 6,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.dataprice.subtotal)}
+                                {'IDR '+priceSplitter(this.state.param.subtotal)}
                                 </Text>
                         </View>
                     </View>
@@ -3917,7 +3055,7 @@ export default class Summary extends Component {
                         <View style={{flex: 5,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.dataPrice.subtotal_price)}
+                                {'IDR '+priceSplitter(this.state.param.subtotal)}
                                 </Text>
                         </View>
                     </View>
@@ -3984,7 +3122,7 @@ export default class Summary extends Component {
                         <View style={{flex: 5,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.dataPrice.total_price)}
+                                {'IDR '+priceSplitter(this.state.param.total)}
                                 </Text>
                         </View>
                     </View>
@@ -4005,7 +3143,7 @@ export default class Summary extends Component {
                         <View style={{flex: 6,justifyContent: "center",alignItems: "flex-end"}}>
                                
                                 <Text caption1 semibold numberOfLines={1}>
-                                {'IDR '+priceSplitter(this.state.dataprice.subtotal)}
+                                {'IDR '+priceSplitter(this.state.param.subtotal)}
                                 </Text>
                         </View>
                     </View>
@@ -4174,9 +3312,6 @@ export default class Summary extends Component {
                 :
                 contentFormPoint
                 }
-
-                
-
                 
             </View>
             {contentPrice}

@@ -21,38 +21,44 @@ class Loading extends Component {
 
     getConfig(){
         this.setState({ loading_spinner: true }, () => {
-
-        let { navigation, auth } = this.props;
-        const {DataMasterDiskon} =this.state;
-        var url=DataMasterDiskon.baseUrl;
-        var dir=DataMasterDiskon.dir;
+            AsyncStorage.getItem('userSession', (error, result) => {
+                if (result) {    
+                    let userSession = JSON.parse(result);
+                    let { navigation, auth } = this.props;
+                    const {DataMasterDiskon} =this.state;
+                    var url=DataMasterDiskon.baseUrl;
+                    var dir=DataMasterDiskon.dir;
      
-        var params={"param":{"username":DataMasterDiskon.username,"password":DataMasterDiskon.password}};
-        console.log('getConfigsss',url+dir,JSON.stringify(params));
-        var param={
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(params),
-          }
+                    var params={"param":{"username":DataMasterDiskon.username,"password":DataMasterDiskon.password}};
+                    console.log('getConfigsss',url+dir,JSON.stringify(params));
+                    var param={
+                        method: 'POST',
+                        headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(params),
+                    }
 
-            fetch(url+dir,param)
-                .then(response => response.json())
-                .then(result => {
-                    var config=result;
-                    var configApi=this.generateConfigApi(config);
-                    console.log('configApi',JSON.stringify(configApi));
-                    this.setState({config:config});
-                    this.setState({loading_spinner:false});
-                    AsyncStorage.setItem('config', JSON.stringify(config));
-                    AsyncStorage.setItem('configApi', JSON.stringify(configApi));
-                    navigation.navigate('Home');
-                })
-                .catch(error => {
-                    this.setState({error:true});
-                });
+                        fetch(url+dir,param)
+                            .then(response => response.json())
+                            .then(result => {
+                                var config=result;
+                                var configApi=this.generateConfigApi(config);
+                                console.log('configApi',JSON.stringify(configApi));
+                                this.setState({config:config});
+                                this.setState({loading_spinner:false});
+                                AsyncStorage.setItem('config', JSON.stringify(config));
+                                AsyncStorage.setItem('configApi', JSON.stringify(configApi));
+                                navigation.navigate('Home');
+                            })
+                            .catch(error => {
+                                this.setState({error:true});
+                            });
+                }else{
+                    
+                }
+        });
 
     });
     }

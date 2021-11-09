@@ -119,20 +119,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderBottomColor: BaseColor.textSecondaryColor,
         borderBottomWidth: 1,
-        backgroundColor:BaseColor.whiteColor,
+        backgroundColor: BaseColor.whiteColor,
 
         borderBottomColor: BaseColor.textSecondaryColor,
-                                            borderBottomWidth: 1,
-                                            backgroundColor: "#fff",
-                                            shadowColor: "#000",
-                                            shadowOffset: {
-                                                    width: 0,
-                                                    height: 2,
-                                            },
-                                            shadowOpacity: 0.25,
-                                            shadowRadius: 3.84,
-                                            // padding:20,
-                                            marginBottom:10
+        borderBottomWidth: 1,
+        backgroundColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        // padding:20,
+        marginBottom: 10
     }
 });
 
@@ -155,7 +155,7 @@ export default class SummaryVia extends Component {
         var selectDataReturn = paramAll.selectDataReturn;
         var departurePost = paramAll.departurePost;
         var returnPost = paramAll.returnPost;
-        var extra=paramAll.extra;
+        var extra = paramAll.extra;
 
         var dataPrice = {
             required_dob: false,
@@ -174,7 +174,7 @@ export default class SummaryVia extends Component {
         var productPart = paramAll.productPart;
         var param = paramAll.param;
         param.typeLabel = "Flight";
-        
+
         console.log('product', JSON.stringify(product));
         console.log('param', JSON.stringify(param));
         console.log('product', JSON.stringify(product));
@@ -192,7 +192,7 @@ export default class SummaryVia extends Component {
             product: product,
             productPart: productPart,
             productBooking: productBooking,
-            extra:extra,
+            extra: extra,
             typeFlight: '',
 
             selectDataDeparture: selectDataDeparture,
@@ -305,21 +305,21 @@ export default class SummaryVia extends Component {
             biayaPenangananValue: 10000,
 
 
-            modalTambahanBagasi:false,
-            modalTambahanMakanan:false,
+            modalTambahanBagasi: false,
+            modalTambahanMakanan: false,
 
-            tambahanBagasi:{
+            tambahanBagasi: {
                 "desc": "Tidak tambah bagasi",
                 "code": "",
                 "amount": 0
-              },
-            tambahanMakanan:{
+            },
+            tambahanMakanan: {
                 "desc": "Tidak tambah makanan",
                 "code": "",
                 "amount": 0
-              },
+            },
 
-            dataCount:{}
+            dataCount: {}
         };
 
         this.updateParticipant = this.updateParticipant.bind(this);
@@ -377,64 +377,64 @@ export default class SummaryVia extends Component {
     }
 
     count() {
-        
-                let config = this.state.configApi;
-                let baseUrl = config.apiBaseUrl;
-                let url = baseUrl + "booking/count";
-                console.log('configApi', JSON.stringify(config));
-                console.log('urlss', url);
+
+        let config = this.state.configApi;
+        let baseUrl = config.apiBaseUrl;
+        let url = baseUrl + "booking/count";
+        console.log('configApi', JSON.stringify(config));
+        console.log('urlss', url);
 
 
 
-                let param = this.state.param;
+        let param = this.state.param;
 
-                var myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/json");
-                myHeaders.append("Cookie", "access_token=" + config.apiToken);
-                var paramCount={};
-                paramCount.product="flight";
-                paramCount.key=param.key;
-                paramCount.point=this.state.usePointUser;
-                paramCount.insurance=this.state.remindersInsurance;
-                paramCount.coupon=[];
-                paramCount.paymentMethod=0;
-                paramCount.platform="app";
-                paramCount.ssr=[];
-                var raw = JSON.stringify(paramCount);
-                
-                
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Cookie", "access_token=" + config.apiToken);
+        var paramCount = {};
+        paramCount.product = "flight";
+        paramCount.key = param.key;
+        paramCount.point = this.state.usePointUser;
+        paramCount.insurance = this.state.remindersInsurance;
+        paramCount.coupon = [];
+        paramCount.paymentMethod = 0;
+        paramCount.platform = "app";
+        paramCount.ssr = [];
+        var raw = JSON.stringify(paramCount);
 
-                var requestOptions = {
-                    method: 'POST',
-                    headers: myHeaders,
-                    body: raw,
-                    redirect: 'follow'
-                };
 
-                fetch(url, requestOptions)
-                    .then(response => response.json())
-                    .then(result => {
-                        this.setState({ loading_spinner: false });
-                        //var dataPrice=result.data;
 
-                        var dataPrice = {
-                            required_dob: false,
-                            required_passport: false,
-                            total_price: result.data.total,
-                            subtotal_price: result.data.subtotal,
-                            nett_price: result.data.subtotal,
-                            iwjr: result.data.iwjr,
-                            insurance_total: result.data.insurance,
-                            transaction_fee: result.data.fee,
-                            tax_fee: result.data.tax,
-                            point_user: result.data.point,
-                            addon:result.data.addon
-                        }
-                        this.setState({dataPrice:dataPrice});
-                        console.log('countResult', JSON.stringify(result));
-                    })
-                    .catch(error => console.log('error', error));
-            
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                this.setState({ loading_spinner: false });
+                //var dataPrice=result.data;
+
+                var dataPrice = {
+                    required_dob: false,
+                    required_passport: false,
+                    total_price: result.data.total,
+                    subtotal_price: result.data.subtotal,
+                    nett_price: result.data.subtotal,
+                    iwjr: result.data.iwjr,
+                    insurance_total: result.data.insurance,
+                    transaction_fee: result.data.fee,
+                    tax_fee: result.data.tax,
+                    point_user: result.data.point,
+                    addon: result.data.addon
+                }
+                this.setState({ dataPrice: dataPrice });
+                console.log('countResult', JSON.stringify(result));
+            })
+            .catch(error => console.log('error', error));
+
 
     }
 
@@ -450,43 +450,43 @@ export default class SummaryVia extends Component {
 
     getProfile(userSession) {
         this.setState({ loadingPoint: true }, () => {
-                    let config = this.state.configApi;
-                    let baseUrl = config.baseUrl;
-                    let url = baseUrl + "front/api/user/profile";
-                    console.log('configApi', JSON.stringify(config));
-                    console.log('urlss', url);
+            let config = this.state.configApi;
+            let baseUrl = config.baseUrl;
+            let url = baseUrl + "front/api/user/profile";
+            console.log('configApi', JSON.stringify(config));
+            console.log('urlss', url);
 
-                    
 
-                    var myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("Cookie", "ci_session=2m7aungmqk0gqvsacjk2gb3giuos2ill");
 
-                    var raw = JSON.stringify({ "param": { "id_user": userSession.id_user } });
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Cookie", "ci_session=2m7aungmqk0gqvsacjk2gb3giuos2ill");
 
-                    var requestOptions = {
-                        method: 'POST',
-                        headers: myHeaders,
-                        body: raw,
-                        redirect: 'follow'
-                    };
-                    console.log('getProfile1', JSON.stringify({ "param": { "id_user": userSession.id_user } }));
-                    fetch(url, requestOptions)
-                        .then(response => response.json())
-                        .then(result => {
-                            this.setState({ loadingPoint: false });
-                            console.log('getProfile2', result.user);
-                            userSession.point = result.user.point;
-                            this.setState({ discountPointLabel: result.user.point });
-                            this.setState({ discountPointSisa: result.user.point });
-                            //this.setState({discountPoint:result.user.point});
-                            this.setState({ userSession: userSession });
-                            AsyncStorage.setItem('userSession', JSON.stringify(userSession));
-                            //return result.user;
+            var raw = JSON.stringify({ "param": { "id_user": userSession.id_user } });
 
-                        })
-                        .catch(error => { alert('Kegagalan Respon Server'); });
-                
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            console.log('getProfile1', JSON.stringify({ "param": { "id_user": userSession.id_user } }));
+            fetch(url, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    this.setState({ loadingPoint: false });
+                    console.log('getProfile2', result.user);
+                    userSession.point = result.user.point;
+                    this.setState({ discountPointLabel: result.user.point });
+                    this.setState({ discountPointSisa: result.user.point });
+                    //this.setState({discountPoint:result.user.point});
+                    this.setState({ userSession: userSession });
+                    AsyncStorage.setItem('userSession', JSON.stringify(userSession));
+                    //return result.user;
+
+                })
+                .catch(error => { alert('Kegagalan Respon Server'); });
+
         });
     }
 
@@ -693,40 +693,40 @@ export default class SummaryVia extends Component {
 
 
 
-        
 
 
-                let config=this.state.configApi;
-                let baseUrl=config.baseUrl;
-                let url=baseUrl+"front/api/api/get_type_flight";
-                console.log('configApi',JSON.stringify(config));
-                console.log('urlss',url);
+
+        let config = this.state.configApi;
+        let baseUrl = config.baseUrl;
+        let url = baseUrl + "front/api/api/get_type_flight";
+        console.log('configApi', JSON.stringify(config));
+        console.log('urlss', url);
 
 
-                
 
 
-                var param = {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(paramData),
-                }
 
-                fetch(url, param)
-                    .then(response => response.json())
-                    .then(result => {
-                        console.log('typeFlightsss', JSON.stringify(result));
-                        this.setState({ typeFlight: result.typeFlight })
+        var param = {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(paramData),
+        }
 
-                    })
-                    .catch(error => {
+        fetch(url, param)
+            .then(response => response.json())
+            .then(result => {
+                console.log('typeFlightsss', JSON.stringify(result));
+                this.setState({ typeFlight: result.typeFlight })
 
-                        alert('Kegagalan Respon Server')
-                    });
-            
+            })
+            .catch(error => {
+
+                alert('Kegagalan Respon Server')
+            });
+
 
     }
 
@@ -735,152 +735,152 @@ export default class SummaryVia extends Component {
     }
 
     submitOrder() {
-            var param = this.state.param;
-       
-            var param=this.state.param;
-            var customer=this.state.listdata_customer;
-            var guest=this.state.listdata_participant;
-            var dataPrice=this.state.dataPrice;
-      
-            
-            var contact= {
-                "title": customer[0].title,
-                "firstName": customer[0].firstname,
-                "lastName": customer[0].lastname,
-                //"country": customer[0].nationality_id,
-                "phoneCode": customer[0].nationality_phone_code,
-                "phone": customer[0].phone,
-                "email": customer[0].email
-                };
+        var param = this.state.param;
 
-            
-            var participant = [];
-            var a=1;
-            guest.map(item => {
-                var obj = {};
-                obj['type'] = this.convertOldVia(this.state.arr_old[a]);
-                obj['title'] = item.title;
-                //obj['nationality'] = item.nationality_id;
-                obj['firstName'] = item.firstname;
-                obj['lastName'] = item.lastname;
-                obj['dob'] = this.convertDateDMY(item.birthday);
-                //obj['identity_number'] = item.passport_number;
-                //obj['issuing_country'] = item.passport_country_id;
-                //obj['expiry_date'] = item.passport_expire;
-                //obj['departure_baggage'] = "0";
-                //obj['return_baggage'] = "0";
-                // obj['passport'] = {
-                //             "nat": item.passport_country_id,
-                //             "num": item.passport_number,
-                //             "doi": "",
-                //             "doe":  this.convertDateDMY(item.passport_expire)
-                //         }
+        var param = this.state.param;
+        var customer = this.state.listdata_customer;
+        var guest = this.state.listdata_participant;
+        var dataPrice = this.state.dataPrice;
 
 
-                // {
-                //     "type": "adult",
-                //     "title": "Mr",
-                //     "firstName": "Hamdan",
-                //     "lastName": "Awaludin",
-                //     "passport": {
-                //         "nat": "ID",
-                //         "num": "1ku2gutf2yi2",
-                //         "doi": "26-08-2021",
-                //         "doe": "26-06-2026"
-                //     }
-                // }
+        var contact = {
+            "title": customer[0].title,
+            "firstName": customer[0].firstname,
+            "lastName": customer[0].lastname,
+            //"country": customer[0].nationality_id,
+            "phoneCode": customer[0].nationality_phone_code,
+            "phone": customer[0].phone,
+            "email": customer[0].email
+        };
 
 
-                participant.push(obj);
-                a++;
-            });
-            
-            console.log('param',JSON.stringify(param));
-            console.log('contact',JSON.stringify(contact));
-            console.log('guestSubmit',JSON.stringify(guest));
-            console.log('participant',JSON.stringify(participant));
-            console.log('dataprice',JSON.stringify(dataPrice));
-
-            this.setState({ loading_spinner: true }, () => {
-                this.setState({loading_spinner_file:require("app/assets/loader_flight.json")});
-                this.setState({loading_spinner_title:'Connecting to Maskapai'});
-                
-    
-                        let config=this.state.configApi;
-                        let baseUrl=config.apiBaseUrl;
-                        let url=baseUrl+'booking/checkout';
-                        console.log('configApi',JSON.stringify(config));
-                        console.log('urlss',url);
-                        
-                        // let config = JSON.parse(result);
-                        // let access_token=config.tokenMDIAccess;
-                        // let url=config.apiBaseUrl+'booking/checkout';
-                        // console.log('access_token',access_token);
-                        // console.log('urlCheckhout',url);
-                        var paramCheckout={};
-                        paramCheckout.product="flight";
-                        paramCheckout.key=param.key;
-                        paramCheckout.price={
-                            "subtotal": dataPrice.subtotal_price,
-                            "insurance": false,
-                            "tax": dataPrice.tax_fee,
-                            "iwjr": dataPrice.iwjr,
-                            "fee": dataPrice.transaction_fee,
-                            "fee2": dataPrice.transaction_fee,
-                            "addon":dataPrice.addon,
-                            "discount": 0,
-                            "point": 0,
-                            "total": dataPrice.total_price,
-                        }
-                        paramCheckout.paymentMethod=0;
-                        paramCheckout.contact=contact;
-                        paramCheckout.guest=participant;
-                        paramCheckout.coupon=[];
-                        paramCheckout.platform=Platform.OS;
-                        console.log('paramCheckout',JSON.stringify(paramCheckout));
-                        
-                        
-
-                        var myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("Cookie", "access_token="+config.apiToken);
-
-                        var raw = JSON.stringify(paramCheckout);
-
-                        var requestOptions = {
-                        method: 'POST',
-                        headers: myHeaders,
-                        body: raw,
-                        redirect: 'follow'
-                        };
-
-                        fetch(url, requestOptions)
-                        .then(response => response.json())
-                        .then(result => {
-                            this.setState({loading_spinner:false});
-                            console.log('resultcheckout',JSON.stringify(result));
-                            var redirect='Pembayaran';
-                                var id_order=result.data.id_order;
-                                
-                                var param={
-                                    id_order:id_order,
-                                    dataPayment:{},
-                                    back:''
-                                }
-                                console.log('paramPembayaran',JSON.stringify(param));
-                                //this.props.navigation.navigate("Pembayaran",{param:param});
-
-                        })
-                        .catch(error => {
-                            alert('Kegagalan Respon Server')
-                        });
-                        
-                    
-         
-            });
+        var participant = [];
+        var a = 1;
+        guest.map(item => {
+            var obj = {};
+            obj['type'] = this.convertOldVia(this.state.arr_old[a]);
+            obj['title'] = item.title;
+            //obj['nationality'] = item.nationality_id;
+            obj['firstName'] = item.firstname;
+            obj['lastName'] = item.lastname;
+            obj['dob'] = this.convertDateDMY(item.birthday);
+            //obj['identity_number'] = item.passport_number;
+            //obj['issuing_country'] = item.passport_country_id;
+            //obj['expiry_date'] = item.passport_expire;
+            //obj['departure_baggage'] = "0";
+            //obj['return_baggage'] = "0";
+            // obj['passport'] = {
+            //             "nat": item.passport_country_id,
+            //             "num": item.passport_number,
+            //             "doi": "",
+            //             "doe":  this.convertDateDMY(item.passport_expire)
+            //         }
 
 
-            
+            // {
+            //     "type": "adult",
+            //     "title": "Mr",
+            //     "firstName": "Hamdan",
+            //     "lastName": "Awaludin",
+            //     "passport": {
+            //         "nat": "ID",
+            //         "num": "1ku2gutf2yi2",
+            //         "doi": "26-08-2021",
+            //         "doe": "26-06-2026"
+            //     }
+            // }
+
+
+            participant.push(obj);
+            a++;
+        });
+
+        console.log('param', JSON.stringify(param));
+        console.log('contact', JSON.stringify(contact));
+        console.log('guestSubmit', JSON.stringify(guest));
+        console.log('participant', JSON.stringify(participant));
+        console.log('dataprice', JSON.stringify(dataPrice));
+
+        this.setState({ loading_spinner: true }, () => {
+            this.setState({ loading_spinner_file: require("app/assets/loader_flight.json") });
+            this.setState({ loading_spinner_title: 'Connecting to Maskapai' });
+
+
+            let config = this.state.configApi;
+            let baseUrl = config.apiBaseUrl;
+            let url = baseUrl + 'booking/checkout';
+            console.log('configApi', JSON.stringify(config));
+            console.log('urlss', url);
+
+            // let config = JSON.parse(result);
+            // let access_token=config.tokenMDIAccess;
+            // let url=config.apiBaseUrl+'booking/checkout';
+            // console.log('access_token',access_token);
+            // console.log('urlCheckhout',url);
+            var paramCheckout = {};
+            paramCheckout.product = "flight";
+            paramCheckout.key = param.key;
+            paramCheckout.price = {
+                "subtotal": dataPrice.subtotal_price,
+                "insurance": false,
+                "tax": dataPrice.tax_fee,
+                "iwjr": dataPrice.iwjr,
+                "fee": dataPrice.transaction_fee,
+                "fee2": dataPrice.transaction_fee,
+                "addon": dataPrice.addon,
+                "discount": 0,
+                "point": 0,
+                "total": dataPrice.total_price,
+            }
+            paramCheckout.paymentMethod = 0;
+            paramCheckout.contact = contact;
+            paramCheckout.guest = participant;
+            paramCheckout.coupon = [];
+            paramCheckout.platform = Platform.OS;
+            console.log('paramCheckout', JSON.stringify(paramCheckout));
+
+
+
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Cookie", "access_token=" + config.apiToken);
+
+            var raw = JSON.stringify(paramCheckout);
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch(url, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    this.setState({ loading_spinner: false });
+                    console.log('resultcheckout', JSON.stringify(result));
+                    var redirect = 'Pembayaran';
+                    var id_order = result.data.id_order;
+
+                    var param = {
+                        id_order: id_order,
+                        dataPayment: {},
+                        back: ''
+                    }
+                    console.log('paramPembayaran', JSON.stringify(param));
+                    this.props.navigation.navigate("Pembayaran", { param: param });
+
+                })
+                .catch(error => {
+                    alert('Kegagalan Respon Server')
+                });
+
+
+
+        });
+
+
+
 
 
     }
@@ -1226,11 +1226,11 @@ export default class SummaryVia extends Component {
     ) {
         const { login, id_user, idParam } = this.state;
 
-        let config=this.state.configApi;
-        let baseUrl=config.baseUrl;
-        let url=baseUrl+"front/api/user/participant_update";
-        console.log('configApi',JSON.stringify(config));
-        console.log('urlss',url);
+        let config = this.state.configApi;
+        let baseUrl = config.baseUrl;
+        let url = baseUrl + "front/api/user/participant_update";
+        console.log('configApi', JSON.stringify(config));
+        console.log('urlss', url);
 
 
         // var url = config.baseUrl;
@@ -1273,7 +1273,7 @@ export default class SummaryVia extends Component {
         fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
-                console.log('saveParticipant',JSON.stringify(result));
+                console.log('saveParticipant', JSON.stringify(result));
                 setTimeout(() => {
                     this.validation();
                 }, 50);
@@ -1452,11 +1452,11 @@ export default class SummaryVia extends Component {
                                 redirect: 'follow'
                             };
 
-                            let config=this.state.configApi;
-                            let baseUrl=config.baseUrl;
-                            let url=baseUrl+'front/api/user/participant_check';
-                            console.log('configApi',JSON.stringify(config));
-                            console.log('urlss',url);
+                            let config = this.state.configApi;
+                            let baseUrl = config.baseUrl;
+                            let url = baseUrl + 'front/api/user/participant_check';
+                            console.log('configApi', JSON.stringify(config));
+                            console.log('urlss', url);
 
                             let response = await fetch(url, requestOptions);
                             let json = await response.json();
@@ -2507,203 +2507,203 @@ export default class SummaryVia extends Component {
         })
 
         var contentProduct = <View></View>
-      
-        var dataDeparture=<View />
-        var dataReturn=<View />
-        dataDeparture=<View style={{flexDirection: "row",marginTop: 10,justifyContent: "space-between"}}>
-                            <View style={{flexDirection: "row", alignItems: "center"}}>
-                                <Image
-                                    style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
-                                    resizeMode="contain"
-                                    source={{uri: this.state.selectDataDeparture.image}}
-                                />
-                                <View>
-                                    <Text caption1>
-                                        {this.state.selectDataDeparture.name}
-                                    </Text>
-                                    <Text caption2>
-                                        {this.state.selectDataDeparture.detail.flight[0].departure.code} - 
-                                        {this.state.selectDataDeparture.detail.flight[0].arrival.code} | 
-                                        {this.state.selectDataDeparture.detail.flight[0].arrival.date} | 
-                                        {this.state.selectDataDeparture.detail.flight[0].arrival.time}
-                                        {/* {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
-                                        {this.state.selectDataDeparture.flight_schedule[0].departure_time} | */}
-                                    </Text>
-                                </View>
-                            </View>
-                            <View
-                                style={{ flexDirection: "row", alignItems: "flex-end" }}
-                            >
-                                <Text caption2 semibold primaryColor>
-                                    Departure
-                                </Text>
-                            </View>
-                        </View>
-        
 
-        
-        if(this.state.selectDataReturn != null){
-            dataReturn=<View style={{flexDirection: "row",marginTop: 10,justifyContent: "space-between"}}>
-                        <View style={{flexDirection: "row", alignItems: "center"}}>
-                                <Image
-                                    style={{width: 32, height: 32, marginRight: 10, borderRadius: 16}}
-                                    resizeMode="contain"
-                                    source={{uri: this.state.selectDataReturn.image}}
-                                />
-                                <View>
-                                    <Text caption1>
-                                        {this.state.selectDataReturn.name}
-                                    </Text>
-                                    <Text caption2>
-                                        {this.state.selectDataReturn.detail.flight[0].departure.code} - 
-                                        {this.state.selectDataReturn.detail.flight[0].arrival.code} | 
-                                        {this.state.selectDataReturn.detail.flight[0].arrival.date} | 
+        var dataDeparture = <View />
+        var dataReturn = <View />
+        dataDeparture = <View style={{ flexDirection: "row", marginTop: 10, justifyContent: "space-between" }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                    style={{ width: 32, height: 32, marginRight: 10, borderRadius: 16 }}
+                    resizeMode="contain"
+                    source={{ uri: this.state.selectDataDeparture.image }}
+                />
+                <View>
+                    <Text caption1>
+                        {this.state.selectDataDeparture.name}
+                    </Text>
+                    <Text caption2>
+                        {this.state.selectDataDeparture.detail.flight[0].departure.code} -
+                                        {this.state.selectDataDeparture.detail.flight[0].arrival.code} |
+                                        {this.state.selectDataDeparture.detail.flight[0].arrival.date} |
+                                        {this.state.selectDataDeparture.detail.flight[0].arrival.time}
+                        {/* {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
+                                        {this.state.selectDataDeparture.flight_schedule[0].departure_time} | */}
+                    </Text>
+                </View>
+            </View>
+            <View
+                style={{ flexDirection: "row", alignItems: "flex-end" }}
+            >
+                <Text caption2 semibold primaryColor>
+                    Departure
+                                </Text>
+            </View>
+        </View>
+
+
+
+        if (this.state.selectDataReturn != null) {
+            dataReturn = <View style={{ flexDirection: "row", marginTop: 10, justifyContent: "space-between" }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                        style={{ width: 32, height: 32, marginRight: 10, borderRadius: 16 }}
+                        resizeMode="contain"
+                        source={{ uri: this.state.selectDataReturn.image }}
+                    />
+                    <View>
+                        <Text caption1>
+                            {this.state.selectDataReturn.name}
+                        </Text>
+                        <Text caption2>
+                            {this.state.selectDataReturn.detail.flight[0].departure.code} -
+                                        {this.state.selectDataReturn.detail.flight[0].arrival.code} |
+                                        {this.state.selectDataReturn.detail.flight[0].arrival.date} |
                                         {this.state.selectDataReturn.detail.flight[0].arrival.time}
-                                        {/* {this.convertDateText(this.state.selectDataReturn.flight_schedule[0].departure_date)} | 
+                            {/* {this.convertDateText(this.state.selectDataReturn.flight_schedule[0].departure_date)} | 
                                         {this.state.selectDataReturn.flight_schedule[0].departure_time} | */}
-                                    </Text>
-                                </View>
-                        </View>
-                        <View
-                            style={{ flexDirection: "row", alignItems: "flex-end" }}
-                        >
-                            <Text caption2 semibold primaryColor>
-                                Return
-                            </Text>
-                        </View>
+                        </Text>
                     </View>
+                </View>
+                <View
+                    style={{ flexDirection: "row", alignItems: "flex-end" }}
+                >
+                    <Text caption2 semibold primaryColor>
+                        Return
+                            </Text>
+                </View>
+            </View>
         }
 
-            contentProduct = <View><FlightPlan
-                round={this.state.param.IsReturn}
-                fromCode={this.state.param.Origin}
-                toCode={this.state.param.Destination}
-                from={this.state.param.bandaraAsalLabel}
-                to={this.state.param.bandaraTujuanLabel}
-            />
+        contentProduct = <View><FlightPlan
+            round={this.state.param.IsReturn}
+            fromCode={this.state.param.Origin}
+            toCode={this.state.param.Destination}
+            from={this.state.param.bandaraAsalLabel}
+            to={this.state.param.bandaraTujuanLabel}
+        />
 
 
-                {dataDeparture}
-                {dataReturn}
+            {dataDeparture}
+            {dataReturn}
 
-            </View>
+        </View>
 
 
-        
+
 
 
         var contentPrice = <View></View>
         var contentCicil = <View></View>
         var contentDiscount = <View></View>
 
-        var contentTambahanBagasi=<View />
-        if (this.state.extra.baggage.length != 0){
-        var contentTambahanBagasi=<View style={styles.contentProfile}>
-                                        <ProfileDetail
-                                            textFirst={'Tambah bagasi penerbangan'}
-                                            textSecond={this.state.tambahanBagasi.desc}
-                                            icon={'create-outline'}
-                                            onPress={() => {
-                                                this.setState({modalTambahanBagasi:true});
-                                            }
-                                            }
-                                            viewImage={false}
-                                            style={{ flex: 10, marginRight: 10 }}
-                                        />
-                                        <Modal
-                                        isVisible={this.state.modalTambahanBagasi}
-                                        onBackdropPress={() => {
-                                            this.setState({modalTambahanBagasi:false});
-                                        }}
-                                        onSwipeComplete={() => {
-                                            this.setState({modalTambahanBagasi:false});
-                                        }}
-                                        swipeDirection={["down"]}
-                                        style={styles.bottomModal}
-                                    >
-                                        <View style={styles.contentFilterBottom}>
-                                            
-                                            <View style={styles.contentSwipeDown}>
-                                                <View style={styles.lineSwipeDown} />
-                                            </View>
-                                            {this.state.extra.baggage[0].data.map((item, index) => (
-                                                <TouchableOpacity
-                                                    style={styles.contentActionModalBottom}
-                                                    key={item.desc}
-                                                    onPress={() => {
-                                                        console.log('itemTambahanBagasi',JSON.stringify(item));
-                                                        this.count();
-                                                        this.setState({tambahanBagasi:item});
-                                                        this.setState({modalTambahanBagasi:false});
-                                                        
-                                                    }}
-                                                >
- 
-                                                    <Text>{item.desc}</Text>
-                                                    <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
-                                               </TouchableOpacity>
-                                            ))}
-                                        
-                                        </View>
-                                        </Modal>
-                                        
-                                    </View>
+        var contentTambahanBagasi = <View />
+        if (this.state.extra.baggage.length != 0) {
+            var contentTambahanBagasi = <View style={styles.contentProfile}>
+                <ProfileDetail
+                    textFirst={'Tambah bagasi penerbangan'}
+                    textSecond={this.state.tambahanBagasi.desc}
+                    icon={'create-outline'}
+                    onPress={() => {
+                        this.setState({ modalTambahanBagasi: true });
+                    }
+                    }
+                    viewImage={false}
+                    style={{ flex: 10, marginRight: 10 }}
+                />
+                <Modal
+                    isVisible={this.state.modalTambahanBagasi}
+                    onBackdropPress={() => {
+                        this.setState({ modalTambahanBagasi: false });
+                    }}
+                    onSwipeComplete={() => {
+                        this.setState({ modalTambahanBagasi: false });
+                    }}
+                    swipeDirection={["down"]}
+                    style={styles.bottomModal}
+                >
+                    <View style={styles.contentFilterBottom}>
+
+                        <View style={styles.contentSwipeDown}>
+                            <View style={styles.lineSwipeDown} />
+                        </View>
+                        {this.state.extra.baggage[0].data.map((item, index) => (
+                            <TouchableOpacity
+                                style={styles.contentActionModalBottom}
+                                key={item.desc}
+                                onPress={() => {
+                                    console.log('itemTambahanBagasi', JSON.stringify(item));
+                                    this.count();
+                                    this.setState({ tambahanBagasi: item });
+                                    this.setState({ modalTambahanBagasi: false });
+
+                                }}
+                            >
+
+                                <Text>{item.desc}</Text>
+                                <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
+                            </TouchableOpacity>
+                        ))}
+
+                    </View>
+                </Modal>
+
+            </View>
 
         }
 
-        var contentTambahanMakanan=<View />
-        if (this.state.extra.meal.length != 0){
-        var contentTambahanMakanan=<View style={styles.contentProfile}>
-        <ProfileDetail
-            textFirst={'Tambah makanan'}
-            textSecond={this.state.tambahanMakanan.desc}
-            icon={'create-outline'}
-            onPress={() => {
-                this.setState({modalTambahanMakanan:true});
+        var contentTambahanMakanan = <View />
+        if (this.state.extra.meal.length != 0) {
+            var contentTambahanMakanan = <View style={styles.contentProfile}>
+                <ProfileDetail
+                    textFirst={'Tambah makanan'}
+                    textSecond={this.state.tambahanMakanan.desc}
+                    icon={'create-outline'}
+                    onPress={() => {
+                        this.setState({ modalTambahanMakanan: true });
 
-            }
-            }
-            viewImage={false}
-            style={{ flex: 10, marginRight: 10 }}
-        />
-        <Modal
-                                        isVisible={this.state.modalTambahanMakanan}
-                                        onBackdropPress={() => {
-                                            this.setState({modalTambahanMakanan:false});
-                                        }}
-                                        onSwipeComplete={() => {
-                                            this.setState({modalTambahanMakanan:false});
-                                        }}
-                                        swipeDirection={["down"]}
-                                        style={styles.bottomModal}
-                                    >
-                                        <View style={styles.contentFilterBottom}>
-                                            
-                                            <View style={styles.contentSwipeDown}>
-                                                <View style={styles.lineSwipeDown} />
-                                            </View>
-                                            {this.state.extra.meal[0].data.map((item, index) => (
-                                                <TouchableOpacity
-                                                    style={styles.contentActionModalBottom}
-                                                    key={item.desc}
-                                                    onPress={() => {
-                                                        console.log('itemTambahanMakanan',JSON.stringify(item));
-                                                        this.count();
-                                                        this.setState({tambahanMakanan:item});
-                                                        this.setState({modalTambahanMakanan:false});
-                                                    
-                                                    }}
-                                                >
- 
-                                                    <Text>{item.desc}</Text>
-                                                    <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
-                                               </TouchableOpacity>
-                                            ))}
-                                        
-                                        </View>
-                                        </Modal>
+                    }
+                    }
+                    viewImage={false}
+                    style={{ flex: 10, marginRight: 10 }}
+                />
+                <Modal
+                    isVisible={this.state.modalTambahanMakanan}
+                    onBackdropPress={() => {
+                        this.setState({ modalTambahanMakanan: false });
+                    }}
+                    onSwipeComplete={() => {
+                        this.setState({ modalTambahanMakanan: false });
+                    }}
+                    swipeDirection={["down"]}
+                    style={styles.bottomModal}
+                >
+                    <View style={styles.contentFilterBottom}>
 
-        </View>
+                        <View style={styles.contentSwipeDown}>
+                            <View style={styles.lineSwipeDown} />
+                        </View>
+                        {this.state.extra.meal[0].data.map((item, index) => (
+                            <TouchableOpacity
+                                style={styles.contentActionModalBottom}
+                                key={item.desc}
+                                onPress={() => {
+                                    console.log('itemTambahanMakanan', JSON.stringify(item));
+                                    this.count();
+                                    this.setState({ tambahanMakanan: item });
+                                    this.setState({ modalTambahanMakanan: false });
+
+                                }}
+                            >
+
+                                <Text>{item.desc}</Text>
+                                <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
+                            </TouchableOpacity>
+                        ))}
+
+                    </View>
+                </Modal>
+
+            </View>
         }
 
 
@@ -2757,29 +2757,29 @@ export default class SummaryVia extends Component {
 
 
 
-            contentPrice = <View>
-                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
-                    <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
-                        <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                            <View>
-                                <Text caption2 grayColor numberOfLines={1}>
-                                    Jumlah Pembayaran
+        contentPrice = <View>
+            <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
+                <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
+                    <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                        <View>
+                            <Text caption2 grayColor numberOfLines={1}>
+                                Jumlah Pembayaran
                                 </Text>
-                            </View>
-                        </View>
-                        <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
-
-                            <Text caption1 semibold numberOfLines={1}>
-                                {'IDR ' + priceSplitter(this.state.dataPrice.subtotal_price)}
-                            </Text>
                         </View>
                     </View>
+                    <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
 
+                        <Text caption1 semibold numberOfLines={1}>
+                            {'IDR ' + priceSplitter(this.state.dataPrice.subtotal_price)}
+                        </Text>
+                    </View>
                 </View>
 
+            </View>
 
 
-                {/* <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
+
+            {/* <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
                     <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
                         <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
                             <View>
@@ -2807,74 +2807,74 @@ export default class SummaryVia extends Component {
                     </View>
                 </View> */}
 
-                {contentDiscount}
+            {contentDiscount}
 
-                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
-                    <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
-                        <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                            <View>
-                                <Text caption2 grayColor numberOfLines={1}>
-                                    Pajak dan Lainnya
+            <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
+                <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
+                    <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                        <View>
+                            <Text caption2 grayColor numberOfLines={1}>
+                                Pajak dan Lainnya
                                 </Text>
 
-                            </View>
-                        </View>
-                        <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
-
-                            <Text caption1 semibold numberOfLines={1}>
-                                {'IDR ' + priceSplitter(this.state.dataPrice.tax_fee)}
-                            </Text>
                         </View>
                     </View>
-                </View>
+                    <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
 
-                {
-                    this.state.dataPrice.addon != 0 ?
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
-                    <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
-                        <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                            <View>
-                                <Text caption2 grayColor numberOfLines={1}>
-                                    Tambahan
-                                </Text>
-
-                            </View>
-                        </View>
-                        <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
-
-                            <Text caption1 semibold numberOfLines={1}>
-                                {'IDR ' + priceSplitter(this.state.dataPrice.tax_fee)}
-                            </Text>
-                        </View>
+                        <Text caption1 semibold numberOfLines={1}>
+                            {'IDR ' + priceSplitter(this.state.dataPrice.tax_fee)}
+                        </Text>
                     </View>
                 </View>
-                :
-                <View />
-                }
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
-                    <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
-                        <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                            <View>
-                                <Text caption2 grayColor numberOfLines={1}>
-                                    Total
-                                </Text>
-
-                            </View>
-                        </View>
-                        <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
-
-                            <Text caption1 semibold numberOfLines={1}>
-                                {'IDR ' + priceSplitter(this.state.dataPrice.total_price)}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-
-
-
             </View>
+
+            {
+                this.state.dataPrice.addon != 0 ?
+
+                    <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
+                        <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
+                            <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                                <View>
+                                    <Text caption2 grayColor numberOfLines={1}>
+                                        Tambahan
+                                </Text>
+
+                                </View>
+                            </View>
+                            <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
+
+                                <Text caption1 semibold numberOfLines={1}>
+                                    {'IDR ' + priceSplitter(this.state.dataPrice.tax_fee)}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                    :
+                    <View />
+            }
+
+            <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
+                <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
+                    <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                        <View>
+                            <Text caption2 grayColor numberOfLines={1}>
+                                Total
+                                </Text>
+
+                        </View>
+                    </View>
+                    <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
+
+                        <Text caption1 semibold numberOfLines={1}>
+                            {'IDR ' + priceSplitter(this.state.dataPrice.total_price)}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+
+
+
+        </View>
 
 
 
@@ -2989,7 +2989,7 @@ export default class SummaryVia extends Component {
                     {contentformParticipant}
 
                     <Text caption2 style={{ paddingVertical: 10, fontSize: 12 }}>
-                    Tambahan
+                        Tambahan
                     </Text>
                     {contentTambahanBagasi}
                     {contentTambahanMakanan}

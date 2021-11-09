@@ -180,6 +180,7 @@ class SignIn extends Component {
                             }else if(result.success==true){
                                 var userSession=result.userSession;
                                 userSession.loginVia = "form";
+                                userSession.password=password;
                                 this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
                             
                                 AsyncStorage.setItem('userSession', JSON.stringify(userSession));
@@ -425,10 +426,10 @@ class SignIn extends Component {
         //var url=config.baseUrl+"front/api/AuthLogin/login_app_apple";
 
         let config=this.state.configApi;
-                        let baseUrl=config.baseUrl;
-                        let url=baseUrl+"front/api/AuthLogin/login_app_apple";
-                        console.log('configApi',JSON.stringify(config));
-                        console.log('urlss',url);
+        let baseUrl=config.baseUrl;
+        let url=baseUrl+"front/api/AuthLogin/login_app_apple";
+        console.log('configApi',JSON.stringify(config));
+        console.log('urlss',url);
 
 
         

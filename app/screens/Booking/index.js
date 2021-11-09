@@ -95,76 +95,76 @@ export default class Booking extends Component {
 
 
 
-    fetch_num() {
-        const { login, userSession, idParam } = this.state;
+    // fetch_num() {
+    //     const { login, userSession, idParam } = this.state;
 
-        if (userSession != null) {
-
-
-
-            let config = this.state.configApi;
-            let baseUrl = config.baseUrl;
-            let url = baseUrl + 'front/api/order/get_booking_history_num';
-            console.log('configApi', JSON.stringify(config));
-            console.log('urlss', url);
-
-            var id_user = userSession.id_user;
-
-            // var url=config.baseUrl;
-            // var path='front/api/order/get_booking_history_num';
-
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-
-            if (login == true) {
-                var param = { "param": { "id": id_user, "id_order": "", "id_order_status": "", "product": "" } };
-                var raw = JSON.stringify(param);
-            } else {
-                var param = { "param": { "id": "1", "id_order": "", "id_order_status": "", "product": "" } };
-                var raw = JSON.stringify(param);
-            }
+    //     if (userSession != null) {
 
 
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-            fetch(url, requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    var arr_num = result;
-                    var statuses = [
-                        { id: "1", name: "New Order (" + arr_num._1 + ")", checked: true },
-                        { id: "3", name: "Processed (" + arr_num._3 + ")" },
-                        { id: "5", name: "Paid (" + arr_num._5 + ")" },
-                        { id: "7", name: "Booked (" + arr_num._7 + ")" },
-                        { id: "9", name: "Complete (" + arr_num._9 + ")" },
-                        { id: "11", name: "Canceled (" + arr_num._11 + ")" },
-                        { id: "13", name: "Expired (" + arr_num._13 + ")" },
-                        { id: "15", name: "Billed (" + arr_num._15 + ")" },
-                        { id: "17", name: "Deny (" + arr_num._17 + ")" },
-                        { id: "19", name: "Error (" + arr_num._19 + ")" },
-                        { id: "21", name: "Dropped (" + arr_num._21 + ")" },
-                        { id: "23", name: "Refunded (" + arr_num._23 + ")" }
-                    ];
-                    this.setState({ statuses: statuses });
-                })
-                .catch(error => {
-                    alert('Kegagalan Respon Servers');
-                });
 
-        }
+    //         let config = this.state.configApi;
+    //         let baseUrl = config.baseUrl;
+    //         let url = baseUrl + 'front/api/order/get_booking_history_num';
+    //         console.log('configApi', JSON.stringify(config));
+    //         console.log('urlss', url);
 
-    }
+    //         var id_user = userSession.id_user;
+
+    //         // var url=config.baseUrl;
+    //         // var path='front/api/order/get_booking_history_num';
+
+    //         var myHeaders = new Headers();
+    //         myHeaders.append("Content-Type", "application/json");
+
+    //         if (login == true) {
+    //             var param = { "param": { "id": id_user, "id_order": "", "id_order_status": "", "product": "" } };
+    //             var raw = JSON.stringify(param);
+    //         } else {
+    //             var param = { "param": { "id": "1", "id_order": "", "id_order_status": "", "product": "" } };
+    //             var raw = JSON.stringify(param);
+    //         }
+
+
+    //         var requestOptions = {
+    //             method: 'POST',
+    //             headers: myHeaders,
+    //             body: raw,
+    //             redirect: 'follow'
+    //         };
+    //         fetch(url, requestOptions)
+    //             .then(response => response.json())
+    //             .then(result => {
+    //                 var arr_num = result;
+    //                 var statuses = [
+    //                     { id: "1", name: "New Order (" + arr_num._1 + ")", checked: true },
+    //                     { id: "3", name: "Processed (" + arr_num._3 + ")" },
+    //                     { id: "5", name: "Paid (" + arr_num._5 + ")" },
+    //                     { id: "7", name: "Booked (" + arr_num._7 + ")" },
+    //                     { id: "9", name: "Complete (" + arr_num._9 + ")" },
+    //                     { id: "11", name: "Canceled (" + arr_num._11 + ")" },
+    //                     { id: "13", name: "Expired (" + arr_num._13 + ")" },
+    //                     { id: "15", name: "Billed (" + arr_num._15 + ")" },
+    //                     { id: "17", name: "Deny (" + arr_num._17 + ")" },
+    //                     { id: "19", name: "Error (" + arr_num._19 + ")" },
+    //                     { id: "21", name: "Dropped (" + arr_num._21 + ")" },
+    //                     { id: "23", name: "Refunded (" + arr_num._23 + ")" }
+    //                 ];
+    //                 this.setState({ statuses: statuses });
+    //             })
+    //             .catch(error => {
+    //                 alert('Kegagalan Respon Servers');
+    //             });
+
+    //     }
+
+    // }
 
     componentDidMount() {
         const { navigation } = this.props;
         navigation.addListener('didFocus', () => {
             //this.getSession();
             setTimeout(() => {
-                this.fetch_num();
+                //this.fetch_num();
                 this.getData();
 
             }, 20);
@@ -196,6 +196,7 @@ export default class Booking extends Component {
 
 
             var param = { "param": { "id": id_user, "id_order": "", "id_order_status": "", "product": "" } };
+            console.log('paramBooking', JSON.stringify(param));
             var raw = JSON.stringify(param);
 
 
@@ -216,7 +217,7 @@ export default class Booking extends Component {
                     this.setState({ dataBooking: result });
                 })
                 .catch(error => {
-                    alert('Kegagalan Respon Server');
+                    alert('Kegagalan Respon Servers');
                 });
 
         }
