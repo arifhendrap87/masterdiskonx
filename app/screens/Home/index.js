@@ -100,14 +100,14 @@ export default class Home extends Component {
             DataMasterDiskon: DataMasterDiskon[0],
             login: false,
             icons: [
-                {
-                    icon: "airplane-outline",
-                    name: "Flights",
-                    route: "FlightSearch",
-                    iconAnimation: "flight.json",
-                    type: 'flight',
-                    checked: true
-                },
+                // {
+                //     icon: "airplane-outline",
+                //     name: "Flights",
+                //     route: "FlightSearch",
+                //     iconAnimation: "flight.json",
+                //     type: 'flight',
+                //     checked: true
+                // },
                 {
                     icon: "bed-outline",
                     name: "Hotels",
@@ -123,13 +123,13 @@ export default class Home extends Component {
                 //     iconAnimation:"tour.json",
                 //     type:'other',
                 // },
-                {
-                    icon: "bed-outline",
-                    name: "New",
-                    route: "HomeNew",
-                    iconAnimation: "tour.json",
-                    type: 'other',
-                },
+                // {
+                //     icon: "bed-outline",
+                //     name: "New",
+                //     route: "HomeNew",
+                //     iconAnimation: "tour.json",
+                //     type: 'other',
+                // },
             ],
             heightHeader: Utils.heightHeader(),
             listdata_musium: DataLoading,
@@ -356,7 +356,7 @@ export default class Home extends Component {
         fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
-                console.log('getProvince', JSON.stringify(result));
+                //console.log('getProvince', JSON.stringify(result));
 
 
             })
@@ -377,7 +377,7 @@ export default class Home extends Component {
             let config = this.state.configApi;
             let baseUrl = config.baseUrl;
 
-            let url = baseUrl + "front/api/product/dashboard";
+            let url = baseUrl + "front/api_new/product/dashboard";
             //console.log('urlgetProvince',url);
 
 
@@ -397,7 +397,7 @@ export default class Home extends Component {
                 .then(response => response.json())
                 .then(result => {
 
-                    console.log('dataDashboard', JSON.stringify(result));
+                    //console.log('dataDashboard', JSON.stringify(result));
                     this.setState({ loading_dashboard: false });
                     var listdata_product_hotel_package_room_promo = result.list_product_hotel_package_room_promo;
                     var listdata_product_hotel_package_buy_now_stay_later = result.list_product_hotel_package_paynow_stay_later;
@@ -777,7 +777,7 @@ export default class Home extends Component {
         const diffInMs = new Date(endDate) - new Date(startDate)
         const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
         return diffInDays;
-        
+
     }
 
 
@@ -1055,9 +1055,6 @@ export default class Home extends Component {
                 ]}
             />
         );
-
-
-
 
     }
 
@@ -1490,42 +1487,42 @@ export default class Home extends Component {
 
 
 
-                        {/* {   
-                                    this.state.listdata_topFlight.length != 0 ?
-                                    <View style={{flex:1}}>
-                                        <CardCustomTitle 
-                                            style={{marginLeft:20}} 
-                                            title={'Penerbangan Populer'} 
-                                            desc={'Dari Jakarta ke'}  
-                                            more={false}
-                                            onPress={() =>
-                                                navigation.navigate("Activities")
-                                            }
-                                        />
-                                        <FlatList
-                                                contentContainerStyle={{
-                                                    paddingRight: 20
-                                                }}
-                                                horizontal={true}
-                                                data={this.state.listdata_topFlight}
-                                                showsHorizontalScrollIndicator={false}
-                                                keyExtractor={(item, index) => item.id}
-                                                getItemLayout={(item, index) => (
-                                                    {length: 70, offset: 70 * index, index}
-                                                  )}
-                                                  removeClippedSubviews={true} // Unmount components when outside of window 
-                                                  initialNumToRender={2} // Reduce initial render amount
-                                                  maxToRenderPerBatch={1} // Reduce number in each render batch
-                                                  maxToRenderPerBatch={100} // Increase time between renders
-                                                  windowSize={7} // Reduce the window size
-                                                renderItem={({ item,index }) => this.renderItemTopFlight(item,index)}
+                        {
+                            this.state.listdata_topFlight.length != 0 ?
+                                <View style={{ flex: 1 }}>
+                                    <CardCustomTitle
+                                        style={{ marginLeft: 20 }}
+                                        title={'Penerbangan Populer'}
+                                        desc={'Dari Jakarta ke'}
+                                        more={false}
+                                        onPress={() =>
+                                            navigation.navigate("Activities")
+                                        }
+                                    />
+                                    <FlatList
+                                        contentContainerStyle={{
+                                            paddingRight: 20
+                                        }}
+                                        horizontal={true}
+                                        data={this.state.listdata_topFlight}
+                                        showsHorizontalScrollIndicator={false}
+                                        keyExtractor={(item, index) => item.id}
+                                        getItemLayout={(item, index) => (
+                                            { length: 70, offset: 70 * index, index }
+                                        )}
+                                        removeClippedSubviews={true} // Unmount components when outside of window 
+                                        initialNumToRender={2} // Reduce initial render amount
+                                        maxToRenderPerBatch={1} // Reduce number in each render batch
+                                        maxToRenderPerBatch={100} // Increase time between renders
+                                        windowSize={7} // Reduce the window size
+                                        renderItem={({ item, index }) => this.renderItemTopFlight(item, index)}
 
-                                               
-                                            />
-                                    </View>
-                                    :
-                                    <View></View>
-                                } */}
+
+                                    />
+                                </View>
+                                :
+                                <View></View>
+                        }
 
                         {
                             this.state.listdata_get_province.length != 0 ?

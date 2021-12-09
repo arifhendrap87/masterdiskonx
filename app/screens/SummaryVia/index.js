@@ -18,6 +18,7 @@ import { UserData } from "@data";
 import AnimatedLoader from "react-native-animated-loader";
 import NotYetLogin from "../../components/NotYetLogin";
 import Modal from "react-native-modal";
+import { TSpan } from "react-native-svg";
 
 
 const styles = StyleSheet.create({
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     contentProfile: {
         flexDirection: "row",
         backgroundColor: BaseColor.fieldColor,
-        marginBottom: 15,
+        marginBottom: 5,
 
         borderWidth: 1,
         borderRadius: 10,
@@ -156,16 +157,21 @@ export default class SummaryVia extends Component {
         var departurePost = paramAll.departurePost;
         var returnPost = paramAll.returnPost;
         var extra = paramAll.extra;
+        var resultVia = paramAll.resultVia;
 
-        var dataPrice = {
-            required_dob: false,
-            required_passport: false,
-            total_price: 0,
-            nett_price: 0,
-            insurance_total: 0,
-            transaction_fee: 0
-        };
-        dataPrice = paramAll.dataPrice;
+        console.log('extra', JSON.stringify(extra));
+
+        console.log('resultVia', JSON.stringify(resultVia));
+
+        // var dataCount = {
+        //     required_dob: false,
+        //     required_passport: false,
+        //     total_price: 0,
+        //     nett_price: 0,
+        //     insurance_total: 0,
+        //     transaction_fee: 0
+        // };
+        // dataCount = paramAll.dataCount;
 
         var productBooking = paramAll.productBooking;
 
@@ -181,8 +187,64 @@ export default class SummaryVia extends Component {
         console.log('productPart', JSON.stringify(productPart));
 
         //------------------------parameter inti------------------------//
+
         var jumlahPenumpang = param.Qty;
+        console.log('jumlahPenumpang', jumlahPenumpang);
         var arrOldGuest = this.convertOld(param);
+        var tambahanBagasi = {};
+        tambahanBagasi.desc = "Tidak tambah bagasi";
+        tambahanBagasi.code = "";
+        tambahanBagasi.amount = 0;
+
+        var tambahanMakanan = {};
+        tambahanMakanan.desc = "Tidak tambah makanan";
+        tambahanMakanan.code = "";
+        tambahanMakanan.amount = 0;
+
+        var extraBaggage = [];
+        var extraMeal = [];
+
+        var ssr = [];
+
+        if (extra.baggage.length != 0) {
+            extraBaggage.push(tambahanBagasi);
+            Array.prototype.push.apply(extraBaggage, extra.baggage[0].data);
+            console.log('extraBaggage', JSON.stringify(extraBaggage));
+            for (a = 1; a <= jumlahPenumpang; a++) {
+                var obj = {};
+                obj['number'] = a;
+                obj['num'] = a.toString() + "-baggage";
+                obj['desc'] = tambahanBagasi.desc;
+                obj['code'] = tambahanBagasi.code;
+                // obj['amount'] = tambahanBagasi.amount;
+                obj['key'] = extra.baggage[0].key;
+                obj['ssrType'] = "baggage";
+                ssr.push(obj);
+
+            }
+        }
+
+        if (extra.meal.length != 0) {
+            extraMeal.push(tambahanMakanan);
+            Array.prototype.push.apply(extraMeal, extra.meal[0].data);
+            console.log('extraMeal', JSON.stringify(extraMeal));
+            for (a = 1; a <= jumlahPenumpang; a++) {
+                var obj = {};
+                obj['number'] = a;
+                obj['num'] = a.toString() + "-meal";
+                obj['desc'] = tambahanMakanan.desc;
+                obj['code'] = tambahanMakanan.code;
+                // obj['amount'] = tambahanMakanan.amount;
+                obj['key'] = extra.meal[0].key;
+                obj['ssrType'] = "meal";
+                ssr.push(obj);
+
+            }
+        }
+
+        console.log('ssrAwal', JSON.stringify(ssr));
+
+
 
         this.state = {
 
@@ -192,11 +254,13 @@ export default class SummaryVia extends Component {
             product: product,
             productPart: productPart,
             productBooking: productBooking,
-            extra: extra,
+
+
             typeFlight: '',
 
             selectDataDeparture: selectDataDeparture,
             selectDataReturn: selectDataReturn,
+            resultVia: resultVia,
 
             departurePost: departurePost,
             returnPost: returnPost,
@@ -243,7 +307,39 @@ export default class SummaryVia extends Component {
             pointUser: false,
             usePointUser: false,
 
-            dataPrice: dataPrice,
+            dataCount: {
+                subtotal: 910000,
+                fee: 0,
+                fee2: 0,
+                insurance: 0,
+                tax: 176000,
+                iwjr: 5000,
+                addon: 0,
+                total: 591000,
+                discount: {
+                    subtotal: 0,
+                    fee: 0,
+                    fee2: 0,
+                    insurance: 0,
+                    tax: 0,
+                    iwjr: 0,
+                    addon: 0,
+                    total: 500000,
+                    grandTotal: 500000
+                },
+                point: 0,
+                coupon: [
+                    {
+                        id: 51,
+                        name: "UAT 2021 Claim(50 %)",
+                        code: "UAT2021CLAIM",
+                        amount: 500000,
+                        category: "total",
+                        type: "unik",
+                        idHistory: 237
+                    }
+                ]
+            },
             insurance_included: false,
             total_all: 0,
             dataCart: {
@@ -299,6 +395,7 @@ export default class SummaryVia extends Component {
             userSession: { "address": null, "avatar": null, "birthday": "0000-00-00", "cart": "", "city_name": null, "email": "arifhendrap87@gmail.com", "firstname": "arif", "fullname": "Mr arif hendra87", "gender": "Mr", "id_city": null, "id_user": "2022", "lastname": "hendra87", "loginVia": "form", "nationality": null, "nationality_id": null, "nationality_phone_code": null, "passport_country": "", "passport_country_id": null, "passport_expire": "", "passport_number": "", "phone": "45678", "point": "10", "postal_code": null, "referral_code": "arifhendrap87", "status": "customer", "title": "Mr", "un_nationality": null, "username": "arifhendrap87" },
             couponCode: "Pilih kupon",
             couponCodeList: [],
+            couponCodeListId: [],
             loadingCheckCoupon: false,
             loadingPoint: true,
             biayaPenanganan: false,
@@ -308,18 +405,17 @@ export default class SummaryVia extends Component {
             modalTambahanBagasi: false,
             modalTambahanMakanan: false,
 
-            tambahanBagasi: {
-                "desc": "Tidak tambah bagasi",
-                "code": "",
-                "amount": 0
-            },
-            tambahanMakanan: {
-                "desc": "Tidak tambah makanan",
-                "code": "",
-                "amount": 0
-            },
+            tambahanBagasi: tambahanBagasi,
+            tambahanMakanan: tambahanMakanan,
+            ssr: ssr,
+            ssrOri: ssr,
 
-            dataCount: {}
+            extra: extra,
+            extraBaggage: extraBaggage,
+            extraMeal: extraMeal,
+
+            dataCount: {},
+            activeExtra: 0,
         };
 
         this.updateParticipant = this.updateParticipant.bind(this);
@@ -396,10 +492,13 @@ export default class SummaryVia extends Component {
         paramCount.key = param.key;
         paramCount.point = this.state.usePointUser;
         paramCount.insurance = this.state.remindersInsurance;
-        paramCount.coupon = [];
+        paramCount.coupon = this.state.couponCodeListId;
         paramCount.paymentMethod = 0;
         paramCount.platform = "app";
-        paramCount.ssr = [];
+        paramCount.ssr = this.extraFilter(this.state.ssr);
+        //paramCount.ssr = this.state.ssr;
+
+        console.log('paramCount', JSON.stringify(paramCount));
         var raw = JSON.stringify(paramCount);
 
 
@@ -414,24 +513,34 @@ export default class SummaryVia extends Component {
         fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
-                this.setState({ loading_spinner: false });
-                //var dataPrice=result.data;
 
-                var dataPrice = {
-                    required_dob: false,
-                    required_passport: false,
-                    total_price: result.data.total,
-                    subtotal_price: result.data.subtotal,
-                    nett_price: result.data.subtotal,
-                    iwjr: result.data.iwjr,
-                    insurance_total: result.data.insurance,
-                    transaction_fee: result.data.fee,
-                    tax_fee: result.data.tax,
-                    point_user: result.data.point,
-                    addon: result.data.addon
+                if (result.success == false) {
+                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+
+                } else {
+
+                    console.log('resultCountss', JSON.stringify(result));
+                    this.setState({ loading_spinner: false });
+                    //var dataCount=result.data;
+
+                    var dataCount = {
+                        required_dob: false,
+                        required_passport: false,
+                        total_price: result.data.total,
+                        subtotal_price: result.data.subtotal,
+                        nett_price: result.data.subtotal,
+                        iwjr: result.data.iwjr,
+                        insurance_total: result.data.insurance,
+                        transaction_fee: result.data.fee,
+                        transaction_fee2: result.data.fee2,
+                        tax_fee: result.data.tax,
+                        point_user: result.data.point,
+                        addon: result.data.addon
+                    }
+                    this.setState({ dataCount: result.data });
+                    console.log('countResult', JSON.stringify(result));
                 }
-                this.setState({ dataPrice: dataPrice });
-                console.log('countResult', JSON.stringify(result));
+
             })
             .catch(error => console.log('error', error));
 
@@ -452,7 +561,7 @@ export default class SummaryVia extends Component {
         this.setState({ loadingPoint: true }, () => {
             let config = this.state.configApi;
             let baseUrl = config.baseUrl;
-            let url = baseUrl + "front/api/user/profile";
+            let url = baseUrl + "front/api_new/user/profile";
             console.log('configApi', JSON.stringify(config));
             console.log('urlss', url);
 
@@ -572,117 +681,117 @@ export default class SummaryVia extends Component {
 
     }
 
-    totalPrice() {
-        let { param, product, productPart, discount, insurance, id_coupon, id_coupon_history, config } = this.state;
-        console.log('paramintotalPrice', JSON.stringify(param));
-        var total_price = 0;
+    // totalPrice() {
+    //     let { param, product, productPart, discount, insurance, id_coupon, id_coupon_history, config } = this.state;
+    //     console.log('paramintotalPrice', JSON.stringify(param));
+    //     var total_price = 0;
 
-        param.tax = 0;
-        param.subtotal = param.totalPrice;
-        param.discount = discount;
-        param.insurance = insurance;
-        param.id_coupon = id_coupon;
-        param.id_coupon_history = id_coupon_history;
-        param.tokenMDI = config.apiToken;
+    //     param.tax = 0;
+    //     param.subtotal = param.totalPrice;
+    //     param.discount = discount;
+    //     param.insurance = insurance;
+    //     param.id_coupon = id_coupon;
+    //     param.id_coupon_history = id_coupon_history;
+    //     param.tokenMDI = config.apiToken;
 
-        if (this.state.discount >= param.totalPrice) {
-            param.total = 0;
+    //     if (this.state.discount >= param.totalPrice) {
+    //         param.total = 0;
 
-        } else {
-            //param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
-            param.total = parseInt(param.subtotal) - parseInt(param.discount);
+    //     } else {
+    //         //param.total=parseInt(param.subtotal)+parseInt(param.tax)+parseInt(param.insurance)-parseInt(param.discount);
+    //         param.total = parseInt(param.subtotal) - parseInt(param.discount);
 
-        }
-        this.setState({ param: param });
-        setTimeout(() => {
-            console.log('paramTotalPrice', JSON.stringify(this.state.param));
+    //     }
+    //     this.setState({ param: param });
+    //     setTimeout(() => {
+    //         console.log('paramTotalPrice', JSON.stringify(this.state.param));
 
-        }, 50);
+    //     }, 50);
 
-        if (param.type == 'trip') {
-            this.setState({ loading_spinner: true }, () => {
-                this.setState({ loading_spinner: false });
-                var dataPrice = {
-                    required_dob: false,
-                    required_passport: false,
-                    total_price: total_price,
-                    nett_price: 0,
-                    insurance_total: 0,
-                    transaction_fee: 0
-                };
-                this.setState({ dataPrice: dataPrice });
-                this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataPrice.transaction_fee) });
-            });
-        } else if (param.type == 'hotelpackage') {
-            this.setState({ loading_spinner: true }, () => {
-                this.setState({ loading_spinner: false });
-                var dataPrice = {
-                    required_dob: false,
-                    required_passport: false,
-                    total_price: total_price,
-                    nett_price: 0,
-                    insurance_total: 0,
-                    transaction_fee: 0
-                };
-                this.setState({ dataPrice: dataPrice });
-                this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataPrice.transaction_fee) });
-            });
-        } else if (param.type == 'hotelLinx') {
-            console.log('paramHotelLinx', JSON.stringify(param));
-            this.setState({ loading_spinner: true }, () => {
-                this.setState({ loading_spinner: false });
-                var dataPrice = {
-                    required_dob: false,
-                    required_passport: false,
-                    total_price: total_price,
-                    nett_price: 0,
-                    insurance_total: 0,
-                    transaction_fee: 0
-                };
-                this.setState({ dataPrice: dataPrice });
-                this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataPrice.transaction_fee) });
-            });
-        } else if (param.type == 'activities') {
-            this.setState({ loading_spinner: true }, () => {
-                this.setState({ loading_spinner: false });
-                var dataPrice = {
-                    required_dob: false,
-                    required_passport: false,
-                    total_price: total_price,
-                    nett_price: 0,
-                    insurance_total: 0,
-                    transaction_fee: 0
-                };
-                this.setState({ dataPrice: dataPrice });
-                this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataPrice.transaction_fee) });
-            });
-        } else if (param.type == 'flight') {
-            this.setState({ loading_spinner: true }, () => {
-                this.setState({ loading_spinner: false });
-                var departurePost = this.removePrice(this.state.selectDataDeparture);
-                var returnPost = this.removePrice(this.state.selectDataReturn);
-                this.setState({ total_all: this.state.dataPrice.total_price });
-            });
-        } else {
-            this.setState({ loading_spinner: true }, () => {
-                this.setState({ loading_spinner: false });
+    //     if (param.type == 'trip') {
+    //         this.setState({ loading_spinner: true }, () => {
+    //             this.setState({ loading_spinner: false });
+    //             var dataCount = {
+    //                 required_dob: false,
+    //                 required_passport: false,
+    //                 total_price: total_price,
+    //                 nett_price: 0,
+    //                 insurance_total: 0,
+    //                 transaction_fee: 0
+    //             };
+    //             this.setState({ dataCount: dataCount });
+    //             this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataCount.transaction_fee) });
+    //         });
+    //     } else if (param.type == 'hotelpackage') {
+    //         this.setState({ loading_spinner: true }, () => {
+    //             this.setState({ loading_spinner: false });
+    //             var dataCount = {
+    //                 required_dob: false,
+    //                 required_passport: false,
+    //                 total_price: total_price,
+    //                 nett_price: 0,
+    //                 insurance_total: 0,
+    //                 transaction_fee: 0
+    //             };
+    //             this.setState({ dataCount: dataCount });
+    //             this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataCount.transaction_fee) });
+    //         });
+    //     } else if (param.type == 'hotelLinx') {
+    //         console.log('paramHotelLinx', JSON.stringify(param));
+    //         this.setState({ loading_spinner: true }, () => {
+    //             this.setState({ loading_spinner: false });
+    //             var dataCount = {
+    //                 required_dob: false,
+    //                 required_passport: false,
+    //                 total_price: total_price,
+    //                 nett_price: 0,
+    //                 insurance_total: 0,
+    //                 transaction_fee: 0
+    //             };
+    //             this.setState({ dataCount: dataCount });
+    //             this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataCount.transaction_fee) });
+    //         });
+    //     } else if (param.type == 'activities') {
+    //         this.setState({ loading_spinner: true }, () => {
+    //             this.setState({ loading_spinner: false });
+    //             var dataCount = {
+    //                 required_dob: false,
+    //                 required_passport: false,
+    //                 total_price: total_price,
+    //                 nett_price: 0,
+    //                 insurance_total: 0,
+    //                 transaction_fee: 0
+    //             };
+    //             this.setState({ dataCount: dataCount });
+    //             this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataCount.transaction_fee) });
+    //         });
+    //     } else if (param.type == 'flight') {
+    //         this.setState({ loading_spinner: true }, () => {
+    //             this.setState({ loading_spinner: false });
+    //             var departurePost = this.removePrice(this.state.selectDataDeparture);
+    //             var returnPost = this.removePrice(this.state.selectDataReturn);
+    //             this.setState({ total_all: this.state.dataCount.total_price });
+    //         });
+    //     } else {
+    //         this.setState({ loading_spinner: true }, () => {
+    //             this.setState({ loading_spinner: false });
 
-                var dataPrice = {
-                    required_dob: false,
-                    required_passport: false,
-                    total_price: total_price,
-                    nett_price: 0,
-                    insurance_total: 0,
-                    transaction_fee: 0
-                };
-                this.setState({ dataPrice: dataPrice });
-                this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataPrice.transaction_fee) });
+    //             var dataCount = {
+    //                 required_dob: false,
+    //                 required_passport: false,
+    //                 total_price: total_price,
+    //                 nett_price: 0,
+    //                 insurance_total: 0,
+    //                 transaction_fee: 0
+    //             };
+    //             this.setState({ dataCount: dataCount });
+    //             this.setState({ total_all: parseInt(param.totalPrice) + parseInt(dataCount.transaction_fee) });
 
-            });
+    //         });
 
-        }
+    //     }
 
-    }
+    // }
 
     typeFlight() {
         const data = {
@@ -698,7 +807,7 @@ export default class SummaryVia extends Component {
 
         let config = this.state.configApi;
         let baseUrl = config.baseUrl;
-        let url = baseUrl + "front/api/api/get_type_flight";
+        let url = baseUrl + "front/api_new/api/get_type_flight";
         console.log('configApi', JSON.stringify(config));
         console.log('urlss', url);
 
@@ -734,13 +843,100 @@ export default class SummaryVia extends Component {
         this.setState({ title: title });
     }
 
+    groupArray(ssr, number) {
+        var array = ssr,
+            result = array.reduce(function (r, a) {
+                r[a.number] = r[a.number] || [];
+                r[a.number].push(a);
+                return r;
+            }, Object.create(null));
+
+        console.log(result);
+
+
+    }
+
+    groupBy(xs, f) {
+        return xs.reduce((r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r), {});
+    }
+
+    filterArray(array, number) {
+        // var newArray = array.filter(function (el) {
+        //     return el.number == number
+        // });
+
+        var aquaticCreatures = array.filter(function (creature) {
+            return creature.number == number;
+        });
+
+        return aquaticCreatures;
+    }
+
+    json2array(json) {
+        var result = [];
+        var keys = Object.keys(json);
+        keys.forEach(function (key) {
+            result.push(json[key]);
+        });
+        return result;
+    }
+
+    filtervar(number) {
+        const filters = {
+            number: number => number === 50
+        };
+        return filters;
+    }
+
+
+
+
+
+
+
+
+
+
+    rebuildParticipant(participant) {
+        var participant_new = [];
+        var a = 1;
+        participant.map(item => {
+            var obj = {};
+
+            var newArray = this.state.ssr.filter(function (el) {
+                return el.number === a;
+            });
+
+            obj['type'] = item.type;
+            obj['title'] = item.title;
+            obj['firstName'] = item.firstName;
+            obj['lastName'] = item.lastName;
+            obj['dob'] = item.dob;
+            obj['guestnum'] = item.guestnum;
+            // obj['ssr'] = this.filterArray(this.state.ssr, a);//this.state.ssr;
+            // obj['ssr1'] = this.state.ssr;
+            obj['ssr'] = this.extraFilter(newArray);
+            obj['passport'] = item.passport;
+            //obj['ssr'] = newArray;
+            //obj['ssr'] = this.groupBy(this.state.ssr, (c) => c.number);
+
+            participant_new.push(obj);
+            a++;
+        });
+
+        return participant_new;
+
+    }
+
     submitOrder() {
         var param = this.state.param;
 
         var param = this.state.param;
         var customer = this.state.listdata_customer;
         var guest = this.state.listdata_participant;
-        var dataPrice = this.state.dataPrice;
+        var dataCount = this.state.dataCount;
+        var ssr = this.state.ssr;
+        console.log('guest', JSON.stringify(guest));
 
 
         var contact = {
@@ -764,17 +960,18 @@ export default class SummaryVia extends Component {
             obj['firstName'] = item.firstname;
             obj['lastName'] = item.lastname;
             obj['dob'] = this.convertDateDMY(item.birthday);
+            obj['guestnum'] = a;
             //obj['identity_number'] = item.passport_number;
             //obj['issuing_country'] = item.passport_country_id;
             //obj['expiry_date'] = item.passport_expire;
             //obj['departure_baggage'] = "0";
             //obj['return_baggage'] = "0";
-            // obj['passport'] = {
-            //             "nat": item.passport_country_id,
-            //             "num": item.passport_number,
-            //             "doi": "",
-            //             "doe":  this.convertDateDMY(item.passport_expire)
-            //         }
+            obj['passport'] = {
+                "nat": item.passport_country_id,
+                "num": item.passport_number,
+                // "doi": "",
+                // "doe": this.convertDateDMY(item.passport_expire)
+            }
 
 
             // {
@@ -799,7 +996,7 @@ export default class SummaryVia extends Component {
         console.log('contact', JSON.stringify(contact));
         console.log('guestSubmit', JSON.stringify(guest));
         console.log('participant', JSON.stringify(participant));
-        console.log('dataprice', JSON.stringify(dataPrice));
+        console.log('dataCount', JSON.stringify(dataCount));
 
         this.setState({ loading_spinner: true }, () => {
             this.setState({ loading_spinner_file: require("app/assets/loader_flight.json") });
@@ -812,30 +1009,26 @@ export default class SummaryVia extends Component {
             console.log('configApi', JSON.stringify(config));
             console.log('urlss', url);
 
-            // let config = JSON.parse(result);
-            // let access_token=config.tokenMDIAccess;
-            // let url=config.apiBaseUrl+'booking/checkout';
-            // console.log('access_token',access_token);
-            // console.log('urlCheckhout',url);
+
             var paramCheckout = {};
             paramCheckout.product = "flight";
             paramCheckout.key = param.key;
             paramCheckout.price = {
-                "subtotal": dataPrice.subtotal_price,
-                "insurance": false,
-                "tax": dataPrice.tax_fee,
-                "iwjr": dataPrice.iwjr,
-                "fee": dataPrice.transaction_fee,
-                "fee2": dataPrice.transaction_fee,
-                "addon": dataPrice.addon,
-                "discount": 0,
-                "point": 0,
-                "total": dataPrice.total_price,
+                "subtotal": dataCount.subtotal,
+                "insurance": dataCount.insurance,
+                "tax": dataCount.tax,
+                "iwjr": dataCount.iwjr,
+                "fee": dataCount.fee,
+                "fee2": dataCount.fee2,
+                "addon": dataCount.addon,
+                "discount": dataCount.discount.grandTotal,
+                "point": dataCount.point,
+                "total": dataCount.total,
             }
             paramCheckout.paymentMethod = 0;
             paramCheckout.contact = contact;
-            paramCheckout.guest = participant;
-            paramCheckout.coupon = [];
+            paramCheckout.guest = this.rebuildParticipant(participant);
+            paramCheckout.coupon = this.state.couponCodeListId;;
             paramCheckout.platform = Platform.OS;
             console.log('paramCheckout', JSON.stringify(paramCheckout));
 
@@ -854,24 +1047,34 @@ export default class SummaryVia extends Component {
                 redirect: 'follow'
             };
 
+
             fetch(url, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     this.setState({ loading_spinner: false });
-                    console.log('resultcheckout', JSON.stringify(result));
-                    var redirect = 'Pembayaran';
-                    var id_order = result.data.id_order;
 
-                    var param = {
-                        id_order: id_order,
-                        dataPayment: {},
-                        back: ''
+                    if (result.success == true) {
+                        console.log('resultcheckout', JSON.stringify(result));
+                        var redirect = 'Pembayaran';
+                        var id_order = result.data.id_order;
+
+                        var param = {
+                            id_order: id_order,
+                            dataPayment: {},
+                            back: ''
+                        }
+                        console.log('paramPembayaran', JSON.stringify(param));
+                        this.props.navigation.navigate("Pembayaran", { param: param });
+                    } else {
+                        console.log('Error', JSON.stringify(result));
+                        this.dropdown.alertWithType('error', 'Error', JSON.stringify(result));
+
                     }
-                    console.log('paramPembayaran', JSON.stringify(param));
-                    this.props.navigation.navigate("Pembayaran", { param: param });
 
                 })
                 .catch(error => {
+                    //this.dropdown.alertWithType('error', 'Error', JSON.stringify(error));
+
                     alert('Kegagalan Respon Server')
                 });
 
@@ -1228,7 +1431,7 @@ export default class SummaryVia extends Component {
 
         let config = this.state.configApi;
         let baseUrl = config.baseUrl;
-        let url = baseUrl + "front/api/user/participant_update";
+        let url = baseUrl + "front/api_new/user/participant_update";
         console.log('configApi', JSON.stringify(config));
         console.log('urlss', url);
 
@@ -1374,6 +1577,8 @@ export default class SummaryVia extends Component {
         return date.split('-').reverse().join('-');
     }
 
+
+
     updateParticipant(
         key,
         fullname,
@@ -1408,11 +1613,7 @@ export default class SummaryVia extends Component {
                     var today = new Date();
                     var date2 = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
                     var expiredPasportMonth = this.getDateDiff(date2, date1);
-
                     var countPersons = persons.filter(item => item.fullname === fullname);
-
-
-
 
                     const checkParticipant = async () => {
                         try {
@@ -1454,7 +1655,7 @@ export default class SummaryVia extends Component {
 
                             let config = this.state.configApi;
                             let baseUrl = config.baseUrl;
-                            let url = baseUrl + 'front/api/user/participant_check';
+                            let url = baseUrl + 'front/api_new/user/participant_check';
                             console.log('configApi', JSON.stringify(config));
                             console.log('urlss', url);
 
@@ -1466,6 +1667,7 @@ export default class SummaryVia extends Component {
                             if (json.length != 0) {
                                 id = json[0].id_passenger;
                             }
+
                             const newProjects = resultParsed.map(p =>
                                 p.key === key
                                     ? {
@@ -1615,7 +1817,7 @@ export default class SummaryVia extends Component {
         return (yyyy + "-" + MM + "-" + dd);
     }
 
-    useCoupon(item) {
+    useCoupon2(item) {
         const { userSession, param, couponCode, discount, couponCodeList, product } = this.state;
         console.log('useCoupon', JSON.stringify(item));
         console.log('paramUseCoupn', JSON.stringify(param));
@@ -1650,7 +1852,7 @@ export default class SummaryVia extends Component {
             body: raw,
             redirect: 'follow'
         };
-        var url = "https://masterdiskon.com/front/api/product/useCoupon";
+        var url = "https://masterdiskon.com/front/api_new/product/useCoupon";
 
 
         fetch(url, requestOptions)
@@ -1694,7 +1896,7 @@ export default class SummaryVia extends Component {
 
                     //this.setState({couponCode:"Pilih Kupon"});
                     setTimeout(() => {
-                        this.totalPrice();
+                        //this.totalPrice();
                         console.log('discount', this.state.discount);
                         console.log('couponCodeList', JSON.stringify(this.state.couponCodeList));
                     }, 50);
@@ -1709,92 +1911,31 @@ export default class SummaryVia extends Component {
         //this.setState({couponCode:item.coupon_code});
     }
 
+    useCoupon(item) {
+        let couponCodeList = this.state.couponCodeList;
+        let couponCodeListId = this.state.couponCodeListId;
+        let param = this.state.param;
+        console.log('useCoupon', JSON.stringify(item));
+
+        couponCodeListId.push(item.id_coupon.toString());
+        this.setState({ couponCodeListId: couponCodeListId });
+        setTimeout(() => {
+            console.log('couponCodeListId', JSON.stringify(this.state.couponCodeListId));
+            this.count();
+        }, 20);
+    }
+
     useCouponForm(couponCode) {
-        const { navigation } = this.props;
-        const { userSession, param, discount, couponCodeList, product } = this.state;
-        console.log('product', JSON.stringify(product));
-        console.log('param', JSON.stringify(param));
+        let couponCodeList = this.state.couponCodeList;
+        let couponCodeListId = this.state.couponCodeListId;
+        let param = this.state.param;
 
-        this.setState({ loadingCheckCoupon: true });
-        console.log('discount', discount);
-        var myHeaders = new Headers();
-        myHeaders.append("Cookie", "ci_session=t8rooel5ugjfvjll6fv4fu0b7b1nif93");
-
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-        var paramCode = "code=" + couponCode.toLowerCase();
-        var paramTotal = "&total=" + param.total;
-        var paramProduct = "&product=" + param.type;
-        var paramIdUser = "&id_user=" + userSession.id_user;
-        var paramPlatform = "&platform=app";
-        var paramId = param.type == 'hotelLinx' ? "&id=" + product.id : "&id=";
-        var from = param.type == 'hotelLinx' ? "&from=" + param.city : "&from=" + param.bandaraAsalCode;
-        var to = param.type == 'hotelLinx' ? "&to=" : "&to=" + param.bandaraTujuanCode;
-
-        var paramUrl = paramCode + paramTotal + paramProduct + paramIdUser + paramPlatform + paramId + from + to;
-        console.log('paramCouponForm', JSON.stringify(paramUrl));
-        var url = "https://masterdiskon.com/front/page/coupon/get_coupon_detail?" + paramUrl;
-
-
-        console.log('urlcheckCoupon', url);
-        fetch(url, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log('checkCoupon', JSON.stringify(result));
-                this.setState({ loadingCheckCoupon: false });
-                if (result.status == "success") {
-
-                    const arrayIncludesInObj = (arr, key, valueToCheck) => {
-                        return arr.some(value => value[key] === valueToCheck);
-                    }
-
-                    const found = arrayIncludesInObj(couponCodeList, "couponCode", this.state.couponCode); // true
-                    if (found == false) {
-                        this.setState({ discount: parseInt(discount) + parseInt(result.res.amount) });
-                        couponCodeList.push({
-                            couponCode: result.res.coupon_code,
-                            couponName: result.res.coupon_name,
-                            couponAmount: result.res.amount,
-                            couponIdHistory: "",
-                            couponId: result.res.id_coupon,
-                            from: param.type == 'hotelLinx' ? param.city : param.bandaraAsalCode,
-                            to: param.type == 'hotelLinx' ? "" : param.bandaraTujuanCode
-                        });
-
-                        var discountCoupon = 0;
-                        couponCodeList.map(item => {
-                            discountCoupon += parseInt(item.couponAmount);
-                        });
-
-                        this.setState({ discountCoupon: discountCoupon });
-                        this.setState({ couponCodeList: couponCodeList });
-
-
-
-                    }
-
-                    //this.setState({couponCode:"Pilih Kupon"});
-                    setTimeout(() => {
-                        this.totalPrice();
-                        console.log('discount', this.state.discount);
-                        console.log('couponCodeList', JSON.stringify(this.state.couponCodeList));
-                    }, 50);
-                } else {
-                    //this.setState({couponCode:"Pilih Kupon"});
-                    console.log('resultCheckCoupon', JSON.stringify(result));
-                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
-
-                }
-
-
-            })
-            .catch(error => {
-
-            });
-
+        couponCodeListId.push(couponCode);
+        this.setState({ couponCodeListId: couponCodeListId });
+        setTimeout(() => {
+            console.log('couponCodeListId', JSON.stringify(this.state.couponCodeListId));
+            this.count();
+        }, 20);
     }
 
     setCoupon(data) {
@@ -1809,7 +1950,7 @@ export default class SummaryVia extends Component {
         //     this.setState({id_coupon_history:data.id_coupon_history});
         //     this.setState({param:param});
         // setTimeout(() => {
-        //     this.totalPrice();
+        //     //this.totalPrice();
         // }, 50);
         // console.log('couponsummary',JSON.stringify(data));
         //  }
@@ -1860,9 +2001,17 @@ export default class SummaryVia extends Component {
         var param = this.state.param;
         var typeProduct = param.type;
         var typeFlight = this.state.typeFlight;
+        var ssr = this.state.ssr;
+        var ssrOri = this.state.ssrOri;
+        var ssrFilter = this.extraFilter(ssr);
+        console.log('ssr', JSON.stringify(ssr));
+        // console.log('ssrFilter', JSON.stringify(ssrFilter));
+        // this.setState({ ssr: ssrFilter });
+
+        this.setState({ loading_spinner: true });
         setTimeout(() => {
             this.count();
-            this.totalPrice();
+            //this.totalPrice();
             if (param.type == 'flight') {
                 this.typeFlight();
             }
@@ -1976,11 +2125,15 @@ export default class SummaryVia extends Component {
             obj['nationality_phone_code'] = "";
 
             obj['passport_country_id'] = def_passport_country_id;
+            obj['ssr'] = this.state.ssr;
 
             participant.push(obj)
         }
         AsyncStorage.setItem('setDataParticipant', JSON.stringify(participant));
         this.setState({ listdata_participant: participant });
+        setTimeout(() => {
+            console.log('listdata_participant', JSON.stringify(this.state.listdata_participant))
+        }, 20);
 
     }
 
@@ -2118,28 +2271,28 @@ export default class SummaryVia extends Component {
         return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
     }
 
-    toggleSwitchInsurance = value => {
-        var param = this.state.param;
-        this.setState({ remindersInsurance: value });
-        if (value == true) {
-            var total_all = parseInt(this.state.dataPrice.total_price) + parseInt(this.state.dataPrice.insurance_total);
-            this.setState({ total_all: total_all });
-            this.setState({ insurance_included: true });
-            param.insurance = this.state.dataPrice.insurance_total;
-            param.total = parseInt(param.subtotal) + parseInt(param.tax) + parseInt(param.insurance) - parseInt(param.discount);
-            this.setState({ param: param });
-        } else {
-            var total_all = parseInt(this.state.dataPrice.total_price);
-            this.setState({ total_all: total_all });
-            this.setState({ insurance_included: false });
+    // toggleSwitchInsurance = value => {
+    //     var param = this.state.param;
+    //     this.setState({ remindersInsurance: value });
+    //     if (value == true) {
+    //         var total_all = parseInt(this.state.dataCount.total_price) + parseInt(this.state.dataCount.insurance_total);
+    //         this.setState({ total_all: total_all });
+    //         this.setState({ insurance_included: true });
+    //         param.insurance = this.state.dataCount.insurance_total;
+    //         param.total = parseInt(param.subtotal) + parseInt(param.tax) + parseInt(param.insurance) - parseInt(param.discount);
+    //         this.setState({ param: param });
+    //     } else {
+    //         var total_all = parseInt(this.state.dataCount.total_price);
+    //         this.setState({ total_all: total_all });
+    //         this.setState({ insurance_included: false });
 
-            param.insurance = 0;
-            param.total = parseInt(param.subtotal) + parseInt(param.tax) + parseInt(param.insurance) - parseInt(param.discount);
-            this.setState({ param: param });
-        }
+    //         param.insurance = 0;
+    //         param.total = parseInt(param.subtotal) + parseInt(param.tax) + parseInt(param.insurance) - parseInt(param.discount);
+    //         this.setState({ param: param });
+    //     }
 
 
-    };
+    // };
 
     toggleSwitchOtherUser = value => {
         this.setState({ remindersOtherUser: value });
@@ -2151,6 +2304,18 @@ export default class SummaryVia extends Component {
     };
 
     toggleSwitchPointUser = value => {
+
+        const { param } = this.state;
+        console.log('usePointUser', value);
+        this.setState({ usePointUser: value });
+
+        setTimeout(() => {
+            this.count();
+        }, 20);
+
+    }
+
+    toggleSwitchPointUser2 = value => {
 
         const { param } = this.state;
         this.setState({ usePointUser: value });
@@ -2186,7 +2351,7 @@ export default class SummaryVia extends Component {
         }
 
         setTimeout(() => {
-            this.totalPrice();
+            //this.totalPrice();
         }, 50);
 
     };
@@ -2198,7 +2363,7 @@ export default class SummaryVia extends Component {
         this.setState({ param: param });
         setTimeout(() => {
             console.log('discount', this.state.discount);
-            this.totalPrice();
+            //this.totalPrice();
         }, 50);
     }
 
@@ -2208,7 +2373,7 @@ export default class SummaryVia extends Component {
         this.setState({ discount: parseInt(this.state.discount) + parseInt(this.state.discountCoupon) });
         this.setState({ param: param });
         setTimeout(() => {
-            this.totalPrice();
+            //this.totalPrice();
         }, 50);
 
     }
@@ -2240,41 +2405,348 @@ export default class SummaryVia extends Component {
 
 
         setTimeout(() => {
-            this.totalPrice();
+            //this.totalPrice();
             console.log('couponCodeList', JSON.stringify(this.state.couponCodeList));
         }, 50);
     };
 
+    removeItem2(item) {
+        let couponCodeListId = this.state.couponCodeListId;
+        console.log('item', item);
+        console.log('couponCodeListId', JSON.stringify(couponCodeListId));
+        let array = couponCodeListId;
+        const index = array.indexOf(item);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
+
+
+        this.setState({ couponCodeListId: array });
+
+
+        setTimeout(() => {
+            console.log('couponCodeListId', JSON.stringify(this.state.couponCodeListId));
+            this.count();
+        }, 20);
+
+    };
+
+    getSsr(ssr, num) {
+        let filter = ssr.filter(d =>
+            d.num == num
+        )
+        //console.log('filter', JSON.stringify(filter));
+        return filter;
+
+    }
+
+    extraFilter(ssr) {
+        let filter = ssr.filter(d =>
+            d.code != ""
+        )
+        console.log('filter', JSON.stringify(filter));
+        return filter;
+
+    }
+    extraUpdate(num, item) {
+        console.log('itemUpdate', num, JSON.stringify(item));
+        var ssr = this.state.ssr;
+        const ssrNew = ssr.map(p =>
+            p.num === num
+                ? {
+                    ...p,
+                    desc: item.desc,
+                    code: item.code,
+                }
+                : p
+        );
+
+
+        console.log('ssrNew', JSON.stringify(ssrNew));
+        return ssrNew;
+        //this.setState({ ssr: ssrNew });
+    }
+
+    filterValue(obj, key, value, type) {
+        return obj.find(function (v) { return v[key] === value + type });
+        //return key + value;
+    }
+
+    updateParticipantExtra(
+        key,
+        extraItem,
+        extraType
+    ) {
+
+        var listdata_participant = this.state.listdata_participant;
+        var resultParsed = listdata_participant;
+        console.log('listdata_participant', JSON.stringify(listdata_participant));
+        console.log('keyupdateParticipantExtra', key);
+        console.log('extraItem', JSON.stringify(extraItem));
+
+        const newProjects = resultParsed.map(p =>
+            p.key === key
+                ? {
+                    ...p,
+                    //ssr: p.ssr.push(extraItem),
+                    nationality: "xxxx"
+                }
+                : p
+        );
+
+        //console.log('updateParticipantExtra', JSON.stringify(newProjects));
+
+        // AsyncStorage.setItem('setDataParticipant', JSON.stringify(newProjects));
+        this.setState({ listdata_participant: newProjects });
+        setTimeout(() => {
+            console.log('updateParticipantExtrass', this.state.listdata_participant);
+        }, 20);
+
+
+
+    }
+
+
+    contentTambahanBagasi(index) {
+
+        const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+        var contentTambahanBagasi = <View />
+        if (this.state.extra.baggage.length != 0 || this.state.extraBaggage.length != 0) {
+            contentTambahanBagasi = <View style={styles.contentProfile}>
+                <ProfileDetail
+                    textFirst={'Tambahan Bagasi'}
+                    textSecond={this.filterValue(this.state.ssr, "num", index, "-baggage").desc}
+                    icon={'create-outline'}
+                    onPress={() => {
+
+                        console.log('contentTambahanBagasi', index);
+                        this.setState({ activeExtra: index });
+                        this.setState({ modalTambahanBagasi: true });
+                    }
+                    }
+                    viewImage={false}
+                    style={{ flex: 10, marginRight: 10 }}
+                />
+                <Modal
+                    isVisible={this.state.modalTambahanBagasi}
+                    onBackdropPress={() => {
+                        this.setState({ activeExtra: 0 });
+                        this.setState({ modalTambahanBagasi: false });
+                    }}
+                    onSwipeComplete={() => {
+                        this.setState({ activeExtra: 0 });
+                        this.setState({ modalTambahanBagasi: false });
+                    }}
+                    swipeDirection={["down"]}
+                    style={styles.bottomModal}
+                >
+                    <View style={styles.contentFilterBottom}>
+
+                        <View style={styles.contentSwipeDown}>
+                            <View style={styles.lineSwipeDown} />
+                        </View>
+                        {this.state.extraBaggage.map((item) => (
+                            <TouchableOpacity
+                                style={styles.contentActionModalBottom}
+                                //key={index2}
+                                onPress={() => {
+                                    console.log('itemTambahanBagasi' + this.state.activeExtra, JSON.stringify(item));
+                                    var ssrNew = this.extraUpdate(this.state.activeExtra.toString() + "-baggage", item);
+
+                                    this.updateParticipantExtra(this.state.activeExtra,
+                                        item,
+                                        'baggage');
+
+                                    console.log('ssrNew', JSON.stringify(ssrNew));
+
+                                    this.setState({ ssr: ssrNew });
+                                    this.setState({ tambahanBagasi: item });
+                                    this.setState({ modalTambahanBagasi: false });
+                                    this.setState({ activeExtra: 0 });
+
+                                    setTimeout(() => {
+                                        this.count();
+                                    }, 20);
+
+
+                                    // console.log('itemTambahanBagasi' + num, JSON.stringify(item));
+                                    // // var ssrNew = this.extraUpdate(index.toString() + "-baggage", item);
+
+                                    // // console.log('ssrNew', JSON.stringify(ssrNew));
+
+                                    // // this.setState({ ssr: ssrNew });
+                                    // // this.setState({ tambahanBagasi: item });
+                                    // this.setState({ modalTambahanBagasi: false });
+
+                                    // // setTimeout(() => {
+                                    // //     this.count();
+                                    // // }, 20);
+
+                                }}
+                            >
+
+                                <Text>{item.desc}</Text>
+                                <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
+                            </TouchableOpacity>
+                        ))}
+
+                    </View>
+                </Modal>
+
+            </View>
+
+        }
+        return contentTambahanBagasi;
+    }
+
+
+    contentTambahanMakanan(index) {
+        const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+
+        var contentTambahanMakanan = <View />
+        if (this.state.extra.meal.length != 0 || this.state.extraMeal.length != 0) {
+            var contentTambahanMakanan = <View style={styles.contentProfile}>
+                <ProfileDetail
+                    textFirst={'Tambah makanan'}
+                    textSecond={this.filterValue(this.state.ssr, "num", index, "-meal").desc}
+                    icon={'create-outline'}
+                    onPress={() => {
+                        this.setState({ activeExtra: index });
+                        this.setState({ modalTambahanMakanan: true });
+                    }
+                    }
+                    viewImage={false}
+                    style={{ flex: 10, marginRight: 10 }}
+                />
+                <Modal
+                    isVisible={this.state.modalTambahanMakanan}
+                    onBackdropPress={() => {
+                        this.setState({ activeExtra: 0 });
+                        this.setState({ modalTambahanMakanan: false });
+                    }}
+                    onSwipeComplete={() => {
+                        this.setState({ activeExtra: 0 });
+                        this.setState({ modalTambahanMakanan: false });
+                    }}
+                    swipeDirection={["down"]}
+                    style={styles.bottomModal}
+                >
+                    <View style={styles.contentFilterBottom}>
+
+                        <View style={styles.contentSwipeDown}>
+                            <View style={styles.lineSwipeDown} />
+                        </View>
+                        {this.state.extraMeal.map((item) => (
+                            <TouchableOpacity
+                                style={styles.contentActionModalBottom}
+                                key={item.desc}
+                                onPress={() => {
+
+                                    // console.log('itemTambahanBagasi' + this.state.activeExtra, JSON.stringify(item));
+                                    // var ssrNew = this.extraUpdate(this.state.activeExtra.toString() + "-baggage", item);
+
+                                    // console.log('ssrNew', JSON.stringify(ssrNew));
+
+                                    // this.setState({ ssr: ssrNew });
+                                    // this.setState({ tambahanBagasi: item });
+                                    // this.setState({ modalTambahanBagasi: false });
+                                    // this.setState({ activeExtra: 0 });
+
+                                    // setTimeout(() => {
+                                    //     this.count();
+                                    // }, 20);
+
+
+                                    console.log('itemTambahanMakanan' + this.state.activeExtra, JSON.stringify(item));
+                                    var ssrNew = this.extraUpdate(this.state.activeExtra.toString() + "-meal", item);
+
+                                    console.log('ssrNew', JSON.stringify(ssrNew));
+                                    // //console.log('ssrFilter', JSON.stringify(ssrFilter));
+
+                                    this.setState({ ssr: ssrNew });
+                                    this.setState({ tambahanMakanan: item });
+                                    this.setState({ modalTambahanMakanan: false });
+                                    this.setState({ activeExtra: 0 });
+
+
+                                    setTimeout(() => {
+                                        this.count();
+                                    }, 20);
+
+                                }}
+                            >
+
+                                <Text>{item.desc}</Text>
+                                <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
+                            </TouchableOpacity>
+                        ))}
+
+                    </View>
+                </Modal>
+
+            </View>
+        }
+        return contentTambahanMakanan;
+    }
+
+
+
+
     render() {
         const { navigation } = this.props;
-        let { couponCodeList, param, product, productPart, selectDataDeparture, selectDataReturn, dataPrice, packageItem, packageItemDetail, loading, loading_spinner, userData, loading_spinner_file, loading_spinner_title, login } = this.state;
+        let { couponCodeList, param, product, productPart, selectDataDeparture, selectDataReturn, dataCount, packageItem, packageItemDetail, loading, loading_spinner, userData, loading_spinner_file, loading_spinner_title, login } = this.state;
         const priceSplitter = (number) => (number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
         const { flights, refreshing, clampedScroll } = this.state;
 
-        const contentCodeCouponList = this.state.couponCodeList.map((item) => {
-            return (
-                <View style={{ flexDirection: 'row', marginBottom: 3, justifyContent: "space-between" }}>
-                    <Text caption2 style={{ fontStyle: 'italic', color: BaseColor.primaryColor }}>({item.couponCode}) - (Rp {priceSplitter(item.couponAmount)})</Text>
-                    <TouchableOpacity
-                        style={{ flexDirection: 'row', borderRadius: 3, paddingHorizontal: 5, paddingVertical: 3, backgroundColor: BaseColor.thirdColor }}
-                        onPress={() => {
+        if (this.state.loading_spinner == false) {
+            var coupon = this.state.dataCount.coupon;
+            console.log('dataCount.coupon', JSON.stringify(coupon));
+            if (coupon != undefined) {
+                if (coupon.length != 0) {
+                    var contentCodeCouponList = coupon.map((item) => {
+                        return (
+                            <View style={{ flexDirection: 'row', marginBottom: 3, justifyContent: "space-between" }}>
+                                <Text caption2 style={{ fontStyle: 'italic', color: BaseColor.primaryColor }}>({item.name}) - (Rp {priceSplitter(item.amount)})</Text>
+                                <TouchableOpacity
+                                    style={{ flexDirection: 'row', borderRadius: 3, paddingHorizontal: 5, paddingVertical: 3, backgroundColor: BaseColor.thirdColor }}
+                                    onPress={() => {
+                                        //this.removeItem(this.state.couponCodeList, "couponCode", item);
+                                        if (item.type == "unik") {
+                                            this.removeItem2(item.id.toString());
+                                        } else {
+                                            this.removeItem2(item.code);
+                                        }
 
-                            this.removeItem(this.state.couponCodeList, "couponCode", item);
-                        }
-                        }
-                    >
-                        <Icon
-                            name="times-circle"
-                            size={12}
-                            color={BaseColor.whiteColor}
-                            style={{ textAlign: "center", marginRight: 3 }}
-                        />
-                        <Text caption2 whiteColor>Hapus</Text>
-                    </TouchableOpacity>
+                                        //console.log(item.id.toString());
+                                    }
+                                    }
+                                >
+                                    <Icon
+                                        name="times-circle"
+                                        size={12}
+                                        color={BaseColor.whiteColor}
+                                        style={{ textAlign: "center", marginRight: 3 }}
+                                    />
+                                    <Text caption2 whiteColor>Hapus</Text>
+                                </TouchableOpacity>
 
-                </View>
-            )
-        })
+                            </View>
+                        )
+                    })
+                } else {
+                    var contentCodeCouponList = <View />
+
+                }
+            }
+
+
+
+
+        }
+
+
+
+
 
 
 
@@ -2302,6 +2774,7 @@ export default class SummaryVia extends Component {
             </View>
             <View>
                 {contentCodeCouponList}
+
             </View>
 
         </View>
@@ -2374,7 +2847,10 @@ export default class SummaryVia extends Component {
 
 
 
-        const contentFormCustomer = this.state.listdata_customer.map((item) => {
+
+
+
+        const contentFormCustomer = this.state.listdata_customer.map((item, index) => {
             return (
                 <View style={this.state.style_form_customer}>
                     <ProfileDetail
@@ -2437,71 +2913,90 @@ export default class SummaryVia extends Component {
         })
 
 
-        const contentformParticipant = this.state.listdata_participant.map((item) => {
+
+
+        const contentformParticipant = this.state.listdata_participant.map((item, index) => {
             return (
-                <View style={styles.contentProfile}>
-                    <ProfileDetail
-                        textFirst={item.label}
-                        textSecond={item.fullname}
-                        icon={'create-outline'}
-                        onPress={() => {
-                            this.props.navigation.navigate('DetailContact', {
-                                key: item.key,
-                                label: item.label,
-                                fullname: item.fullname,
-                                firstname: item.firstname,
-                                lastname: item.lastname,
-                                birthday: item.birthday,
-                                nationality: item.nationality,
-                                passport_number: item.passport_number,
-                                passport_country: item.passport_country,
-                                passport_expire: item.passport_expire,
-                                phone: item.phone,
-                                title: item.title,
-                                email: item.email,
+                <View style={{ marginBottom: 20 }}>
+                    <View style={styles.contentProfile}>
+                        <ProfileDetail
+                            textFirst={item.label}
+                            textSecond={item.fullname}
+                            icon={'create-outline'}
+                            onPress={() => {
+                                this.props.navigation.navigate('DetailContact', {
+                                    key: item.key,
+                                    label: item.label,
+                                    fullname: item.fullname,
+                                    firstname: item.firstname,
+                                    lastname: item.lastname,
+                                    birthday: item.birthday,
+                                    nationality: item.nationality,
+                                    passport_number: item.passport_number,
+                                    passport_country: item.passport_country,
+                                    passport_expire: item.passport_expire,
+                                    phone: item.phone,
+                                    title: item.title,
+                                    email: item.email,
 
-                                nationality_id: item.nationality_id,
-                                nationality_phone_code: item.nationality_phone_code,
+                                    nationality_id: item.nationality_id,
+                                    nationality_phone_code: item.nationality_phone_code,
 
-                                passport_country_id: item.passport_country_id,
+                                    passport_country_id: item.passport_country_id,
 
-                                updateParticipant: this.updateParticipant,
-                                type: 'guest',
-                                old: item.old,
-                                typeFlight: this.state.typeFlight,
-                                typeProduct: this.state.param.type,
-                                dataPrice: this.state.dataPrice
-
-
-                            })
-                        }
-                        }
-                        viewImage={false}
-                        style={{ flex: 10, marginRight: 10 }}
-                    />
-                    <TouchableOpacity
-                        style={styles.searchIcon}
-                        onPress={() => {
-                            navigation.navigate("ProfileSmart",
-                                {
-                                    sourcePage: 'summary',
-                                    item: item,
-                                    old: item.old,
-                                    type: 'guest',
                                     updateParticipant: this.updateParticipant,
-                                    listdata_participant: this.state.listdata_participant
-                                }
-                            );
-                        }
-                        }
-                    >
-                        <Icon
-                            name="search"
-                            size={18}
-                            color={BaseColor.primaryColor}
-                            style={{ textAlign: "center" }}
+                                    type: 'guest',
+                                    old: item.old,
+                                    typeFlight: this.state.typeFlight,
+                                    typeProduct: this.state.param.type,
+                                    dataCount: this.state.dataCount
+
+
+                                })
+                            }
+                            }
+                            viewImage={false}
+                            style={{ flex: 10, marginRight: 10 }}
                         />
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.searchIcon}
+                            onPress={() => {
+                                navigation.navigate("ProfileSmart",
+                                    {
+                                        sourcePage: 'summary',
+                                        item: item,
+                                        old: item.old,
+                                        type: 'guest',
+                                        updateParticipant: this.updateParticipant,
+                                        listdata_participant: this.state.listdata_participant
+                                    }
+                                );
+                            }
+                            }
+                        >
+                            <Icon
+                                name="search"
+                                size={18}
+                                color={BaseColor.primaryColor}
+                                style={{ textAlign: "center" }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        {/* <Text caption2 style={{ paddingVertical: 10, fontSize: 12 }}>
+                            Tambahan
+                        </Text> */}
+                        <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
+                            <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                                {this.contentTambahanBagasi(index + 1)}
+
+                            </View>
+                            <View style={{ flex: 5, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                                {this.contentTambahanMakanan(index + 1)}
+                            </View>
+                        </View>
+
+                    </View>
                 </View>
             )
         })
@@ -2515,17 +3010,17 @@ export default class SummaryVia extends Component {
                 <Image
                     style={{ width: 32, height: 32, marginRight: 10, borderRadius: 16 }}
                     resizeMode="contain"
-                    source={{ uri: this.state.selectDataDeparture.image }}
+                    source={{ uri: this.state.resultVia.data.detail.onwardFlight.flight[0].image }}
                 />
                 <View>
                     <Text caption1>
-                        {this.state.selectDataDeparture.name}
+                        {this.state.resultVia.data.detail.onwardFlight.flight[0].name}
                     </Text>
                     <Text caption2>
-                        {this.state.selectDataDeparture.detail.flight[0].departure.code} -
-                                        {this.state.selectDataDeparture.detail.flight[0].arrival.code} |
-                                        {this.state.selectDataDeparture.detail.flight[0].arrival.date} |
-                                        {this.state.selectDataDeparture.detail.flight[0].arrival.time}
+                        {this.state.resultVia.data.detail.onwardFlight.flight[0].departure.code} -
+                        {this.state.resultVia.data.detail.onwardFlight.flight[0].arrival.code} |
+                        {this.state.resultVia.data.detail.onwardFlight.flight[0].arrival.date} |
+                        {this.state.resultVia.data.detail.onwardFlight.flight[0].arrival.time}
                         {/* {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
                                         {this.state.selectDataDeparture.flight_schedule[0].departure_time} | */}
                     </Text>
@@ -2536,31 +3031,31 @@ export default class SummaryVia extends Component {
             >
                 <Text caption2 semibold primaryColor>
                     Departure
-                                </Text>
+                </Text>
             </View>
         </View>
 
 
 
-        if (this.state.selectDataReturn != null) {
+        if (this.state.resultVia.data.detail.returnFlight != null) {
             dataReturn = <View style={{ flexDirection: "row", marginTop: 10, justifyContent: "space-between" }}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Image
                         style={{ width: 32, height: 32, marginRight: 10, borderRadius: 16 }}
                         resizeMode="contain"
-                        source={{ uri: this.state.selectDataReturn.image }}
+                        source={{ uri: this.state.resultVia.data.detail.returnFlight.flight[0].image }}
                     />
                     <View>
                         <Text caption1>
-                            {this.state.selectDataReturn.name}
+                            {this.state.resultVia.data.detail.returnFlight.flight[0].name}
                         </Text>
                         <Text caption2>
-                            {this.state.selectDataReturn.detail.flight[0].departure.code} -
-                                        {this.state.selectDataReturn.detail.flight[0].arrival.code} |
-                                        {this.state.selectDataReturn.detail.flight[0].arrival.date} |
-                                        {this.state.selectDataReturn.detail.flight[0].arrival.time}
-                            {/* {this.convertDateText(this.state.selectDataReturn.flight_schedule[0].departure_date)} | 
-                                        {this.state.selectDataReturn.flight_schedule[0].departure_time} | */}
+                            {this.state.resultVia.data.detail.returnFlight.flight[0].departure.code} -
+                            {this.state.resultVia.data.detail.returnFlight.flight[0].arrival.code} |
+                            {this.state.resultVia.data.detail.returnFlight.flight[0].arrival.date} |
+                            {this.state.resultVia.data.detail.returnFlight.flight[0].arrival.time}
+                            {/* {this.convertDateText(this.state.selectDataDeparture.flight_schedule[0].departure_date)} | 
+                                            {this.state.selectDataDeparture.flight_schedule[0].departure_time} | */}
                         </Text>
                     </View>
                 </View>
@@ -2569,7 +3064,7 @@ export default class SummaryVia extends Component {
                 >
                     <Text caption2 semibold primaryColor>
                         Return
-                            </Text>
+                    </Text>
                 </View>
             </View>
         }
@@ -2596,115 +3091,7 @@ export default class SummaryVia extends Component {
         var contentCicil = <View></View>
         var contentDiscount = <View></View>
 
-        var contentTambahanBagasi = <View />
-        if (this.state.extra.baggage.length != 0) {
-            var contentTambahanBagasi = <View style={styles.contentProfile}>
-                <ProfileDetail
-                    textFirst={'Tambah bagasi penerbangan'}
-                    textSecond={this.state.tambahanBagasi.desc}
-                    icon={'create-outline'}
-                    onPress={() => {
-                        this.setState({ modalTambahanBagasi: true });
-                    }
-                    }
-                    viewImage={false}
-                    style={{ flex: 10, marginRight: 10 }}
-                />
-                <Modal
-                    isVisible={this.state.modalTambahanBagasi}
-                    onBackdropPress={() => {
-                        this.setState({ modalTambahanBagasi: false });
-                    }}
-                    onSwipeComplete={() => {
-                        this.setState({ modalTambahanBagasi: false });
-                    }}
-                    swipeDirection={["down"]}
-                    style={styles.bottomModal}
-                >
-                    <View style={styles.contentFilterBottom}>
 
-                        <View style={styles.contentSwipeDown}>
-                            <View style={styles.lineSwipeDown} />
-                        </View>
-                        {this.state.extra.baggage[0].data.map((item, index) => (
-                            <TouchableOpacity
-                                style={styles.contentActionModalBottom}
-                                key={item.desc}
-                                onPress={() => {
-                                    console.log('itemTambahanBagasi', JSON.stringify(item));
-                                    this.count();
-                                    this.setState({ tambahanBagasi: item });
-                                    this.setState({ modalTambahanBagasi: false });
-
-                                }}
-                            >
-
-                                <Text>{item.desc}</Text>
-                                <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
-                            </TouchableOpacity>
-                        ))}
-
-                    </View>
-                </Modal>
-
-            </View>
-
-        }
-
-        var contentTambahanMakanan = <View />
-        if (this.state.extra.meal.length != 0) {
-            var contentTambahanMakanan = <View style={styles.contentProfile}>
-                <ProfileDetail
-                    textFirst={'Tambah makanan'}
-                    textSecond={this.state.tambahanMakanan.desc}
-                    icon={'create-outline'}
-                    onPress={() => {
-                        this.setState({ modalTambahanMakanan: true });
-
-                    }
-                    }
-                    viewImage={false}
-                    style={{ flex: 10, marginRight: 10 }}
-                />
-                <Modal
-                    isVisible={this.state.modalTambahanMakanan}
-                    onBackdropPress={() => {
-                        this.setState({ modalTambahanMakanan: false });
-                    }}
-                    onSwipeComplete={() => {
-                        this.setState({ modalTambahanMakanan: false });
-                    }}
-                    swipeDirection={["down"]}
-                    style={styles.bottomModal}
-                >
-                    <View style={styles.contentFilterBottom}>
-
-                        <View style={styles.contentSwipeDown}>
-                            <View style={styles.lineSwipeDown} />
-                        </View>
-                        {this.state.extra.meal[0].data.map((item, index) => (
-                            <TouchableOpacity
-                                style={styles.contentActionModalBottom}
-                                key={item.desc}
-                                onPress={() => {
-                                    console.log('itemTambahanMakanan', JSON.stringify(item));
-                                    this.count();
-                                    this.setState({ tambahanMakanan: item });
-                                    this.setState({ modalTambahanMakanan: false });
-
-                                }}
-                            >
-
-                                <Text>{item.desc}</Text>
-                                <Text> {'IDR ' + priceSplitter(item.amount)}</Text>
-                            </TouchableOpacity>
-                        ))}
-
-                    </View>
-                </Modal>
-
-            </View>
-        }
 
 
 
@@ -2764,13 +3151,13 @@ export default class SummaryVia extends Component {
                         <View>
                             <Text caption2 grayColor numberOfLines={1}>
                                 Jumlah Pembayaran
-                                </Text>
+                            </Text>
                         </View>
                     </View>
                     <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
 
                         <Text caption1 semibold numberOfLines={1}>
-                            {'IDR ' + priceSplitter(this.state.dataPrice.subtotal_price)}
+                            {'IDR ' + priceSplitter(this.state.dataCount.subtotal)}
                         </Text>
                     </View>
                 </View>
@@ -2792,7 +3179,7 @@ export default class SummaryVia extends Component {
                         <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
 
                             <Text caption1 semibold numberOfLines={1}>
-                                {'IDR ' + priceSplitter(this.state.dataPrice.insurance_total)}
+                                {'IDR ' + priceSplitter(this.state.dataCount.insurance_total)}
                             </Text>
                         </View>
                     </View>
@@ -2815,21 +3202,21 @@ export default class SummaryVia extends Component {
                         <View>
                             <Text caption2 grayColor numberOfLines={1}>
                                 Pajak dan Lainnya
-                                </Text>
+                            </Text>
 
                         </View>
                     </View>
                     <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
 
                         <Text caption1 semibold numberOfLines={1}>
-                            {'IDR ' + priceSplitter(this.state.dataPrice.tax_fee)}
+                            {'IDR ' + priceSplitter(this.state.dataCount.tax)}
                         </Text>
                     </View>
                 </View>
             </View>
 
             {
-                this.state.dataPrice.addon != 0 ?
+                this.state.dataCount.addon != 0 ?
 
                     <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5 }} >
                         <View style={{ flexDirection: 'row', flex: 10, justifyContent: "flex-start", alignItems: "center" }}>
@@ -2837,14 +3224,14 @@ export default class SummaryVia extends Component {
                                 <View>
                                     <Text caption2 grayColor numberOfLines={1}>
                                         Tambahan
-                                </Text>
+                                    </Text>
 
                                 </View>
                             </View>
                             <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
 
                                 <Text caption1 semibold numberOfLines={1}>
-                                    {'IDR ' + priceSplitter(this.state.dataPrice.tax_fee)}
+                                    {'IDR ' + priceSplitter(this.state.dataCount.addon)}
                                 </Text>
                             </View>
                         </View>
@@ -2859,14 +3246,14 @@ export default class SummaryVia extends Component {
                         <View>
                             <Text caption2 grayColor numberOfLines={1}>
                                 Total
-                                </Text>
+                            </Text>
 
                         </View>
                     </View>
                     <View style={{ flex: 5, justifyContent: "center", alignItems: "flex-end" }}>
 
                         <Text caption1 semibold numberOfLines={1}>
-                            {'IDR ' + priceSplitter(this.state.dataPrice.total_price)}
+                            {'IDR ' + priceSplitter(this.state.dataCount.total)}
                         </Text>
                     </View>
                 </View>
@@ -2988,11 +3375,7 @@ export default class SummaryVia extends Component {
                     </View>
                     {contentformParticipant}
 
-                    <Text caption2 style={{ paddingVertical: 10, fontSize: 12 }}>
-                        Tambahan
-                    </Text>
-                    {contentTambahanBagasi}
-                    {contentTambahanMakanan}
+
 
                     {contentFormCoupon}
                     {
@@ -3011,7 +3394,7 @@ export default class SummaryVia extends Component {
                 {contentButton}
             </ScrollView>
         } else {
-            contents = <NotYetLogin redirect={'Summary'} navigation={navigation} param={this.props.navigation.state.params.param} />
+            contents = <NotYetLogin redirect={'SummaryVia'} navigation={navigation} param={this.props.navigation.state.params.param} />
 
         }
         return (

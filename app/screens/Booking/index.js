@@ -73,6 +73,8 @@ export default class Booking extends Component {
         AsyncStorage.getItem('userSession', (error, result) => {
             if (result) {
                 let userSession = JSON.parse(result);
+                console.log('getSession', JSON.stringify(userSession));
+
                 var id_user = userSession.id_user;
 
                 this.setState({ login: true });
@@ -104,14 +106,14 @@ export default class Booking extends Component {
 
     //         let config = this.state.configApi;
     //         let baseUrl = config.baseUrl;
-    //         let url = baseUrl + 'front/api/order/get_booking_history_num';
+    //         let url = baseUrl + 'front/api_new/order/get_booking_history_num';
     //         console.log('configApi', JSON.stringify(config));
     //         console.log('urlss', url);
 
     //         var id_user = userSession.id_user;
 
     //         // var url=config.baseUrl;
-    //         // var path='front/api/order/get_booking_history_num';
+    //         // var path='front/api_new/order/get_booking_history_num';
 
     //         var myHeaders = new Headers();
     //         myHeaders.append("Content-Type", "application/json");
@@ -176,12 +178,12 @@ export default class Booking extends Component {
 
     getData() {
         const { login, userSession } = this.state;
-
+        console.log('userSession', userSession);
         if (userSession != null) {
 
             let config = this.state.configApi;
             let baseUrl = config.baseUrl;
-            let url = baseUrl + "front/api/order/get_booking_history";
+            let url = baseUrl + "front/api_new/order/get_booking_history";
             console.log('configApi', JSON.stringify(config));
             console.log('urlss', url);
 

@@ -79,7 +79,7 @@ export default class Notification extends Component {
             console.log('userSession', JSON.stringify(userSession));
             let config = this.state.configApi;
             let baseUrl = config.baseUrl;
-            let url = baseUrl + "front/api/user/notif";
+            let url = baseUrl + "front/api_new/user/notif";
             console.log('configApi', JSON.stringify(config));
             console.log('urlss', url);
 
@@ -116,12 +116,12 @@ export default class Notification extends Component {
         const { idParam, id_user } = this.state;
         let config = this.state.configApi;
         let baseUrl = config.baseUrl;
-        let url = baseUrl + 'front/api/user/notif_update';
+        let url = baseUrl + 'front/api_new/user/notif_update';
         console.log('configApi', JSON.stringify(config));
         console.log('urlss', url);
 
         // var url=config.baseUrl;
-        // var path='front/api/user/notif_update';
+        // var path='front/api_new/user/notif_update';
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         var raw = JSON.stringify({ "param": { "id": id } });

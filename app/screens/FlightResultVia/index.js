@@ -28,6 +28,7 @@ import Modal from "react-native-modal";
 import AnimatedLoader from "react-native-animated-loader";
 import DataEmpty from "../../components/DataEmpty";
 import FlightItemVia from "../../components/FlightItemVia";
+import NotYetLogin from "../../components/NotYetLogin";
 
 import * as Utils from "@utils";
 
@@ -179,7 +180,8 @@ export default class FlightResultVia extends Component {
             modalVisible: false,
             loading_load_more: false,
             loading_spinner: false,
-            empty: false
+            empty: false,
+            login: true
         };
         this.filterProcess = this.filterProcess.bind(this);
         this.onClear = this.onClear.bind(this);
@@ -237,6 +239,7 @@ export default class FlightResultVia extends Component {
         const filtered = this.filterArray(products, filters);
         return filtered;
     }
+
     filter_origin(data) {
         var param = this.state.param;
         var filtersParam = {}
@@ -252,68 +255,41 @@ export default class FlightResultVia extends Component {
         var a = 1;
         listdata.map(item => {
             var obj = {};
+
+
+
             obj['num'] = a.toString();
             obj['nums'] = a;
             obj['data_type'] = "real";
+            obj['id'] = item.id;
+            obj['type'] = item.type;
+            obj['price'] = item.price;
+            obj['name'] = item.name;
+            obj['code'] = item.code;
+            obj['image'] = item.image;
+            obj['duration'] = item.duration;
+            obj['transit'] = item.transit;
+            obj['detail'] = item.detail;
+            obj['filter'] = item.filter;
+            obj['filter_price'] = item.filter.price;
+            obj['filter_airline_code'] = item.filter.airline_code;
+            obj['filter_transit'] = item.filter.transit;
+            obj['filter_entertainment'] = item.filter.entertainment == true ? 1 : 0;
+            obj['filter_baggage'] = item.filter.baggage == true ? 1 : 0;
+            obj['filter_meal'] = item.filter.meal == true ? 1 : 0;
+            obj['filter_duration'] = item.filter.duration;
 
-            obj['filter_price'] = item.price.total_price;
-            obj['filter_airline_code'] = item.airline_code;
-            obj['filter_transit'] = item.transit;
-            obj['filter_entertainment'] = item.flight_schedule[0].inflight_entertainment;
-            obj['filter_baggage'] = item.flight_schedule[0].baggage;
-            obj['filter_meal'] = item.flight_schedule[0].meal;
 
-            obj['filter_departure_time'] = Math.ceil(parseFloat(item.departure_time.substr(0, 2) + '.' + item.departure_time.substr(3, 2)));
-            obj['filter_departure_time_num'] = parseInt(item.departure_time.substr(0, 2) + item.departure_time.substr(3, 2));
 
-            obj['filter_arrival_time'] = Math.ceil(parseFloat(item.arrival_time.substr(0, 2) + '.' + item.arrival_time.substr(3, 2)));
-            obj['filter_arrival_time_num'] = parseInt(item.arrival_time.substr(0, 2) + item.arrival_time.substr(3, 2));
+            obj['filter_departure_time'] = Math.ceil(parseFloat(item.filter.departure_time.substr(0, 2) + '.' + item.filter.departure_time.substr(3, 2)));
+            obj['filter_departure_time_num'] = parseInt(item.filter.departure_time.substr(0, 2) + item.filter.departure_time.substr(3, 2));
 
-            obj['filter_seat_vailable'] = item.flight_schedule[0].seat_available;
-            obj['filter_origin'] = item.from;
-            obj['filter_destination'] = item.to;
-            obj['filter_duration'] = item.duration;
 
-            obj["price"] = item.price;
-            obj["international"] = item.international;
-            obj["combinable"] = item.combinable;
-            obj["match_id"] = item.match_id;
-            obj["supplier_id"] = item.supplier_id;
-            obj["airline_id"] = item.airline_id;
-            obj["validating_carrier"] = item.validating_carrier;
-            obj["from"] = item.from;
-            obj["to"] = item.to;
-            obj["adult"] = item.adult;
-            obj["child"] = item.child;
-            obj["infant"] = item.infant;
-            obj["currency"] = item.currency;
-            obj["price_type"] = item.price_type;
-            obj["flight_schedule"] = item.flight_schedule;
-            obj["supplier_code"] = item.supplier_code;
-            obj["airline_code"] = item.airline_code;
-            obj["reference"] = item.reference;
-            obj["subclasses"] = item.subclasses;
-            obj["airline_name"] = item.airline_name;
-            obj["airline_logo"] = item.airline_logo;
-            obj["departure_date"] = item.departure_date;
-            obj["departure_time"] = item.departure_time;
-            obj["departure_timezone"] = item.departure_timezone;
-            obj["gmt_departure"] = item.gmt_departure;
-            obj["arrival_date"] = item.arrival_date;
-            obj["arrival_time"] = item.arrival_time;
-            obj["arrival_timezone"] = item.arrival_timezone;
-            obj["gmt_arrival"] = item.gmt_arrival;
-            obj["duration"] = item.duration;
-            obj["transit"] = item.transit;
-            obj["from_name"] = item.from_name;
-            obj["from_city"] = item.from_city;
-            obj["from_country"] = item.from_country;
-            obj["from_country_code"] = item.from_country_code;
-            obj["to_name"] = item.to_name;
-            obj["to_city"] = item.to_city;
-            obj["to_country"] = item.to_country;
-            obj["to_country_code"] = item.to_country_code;
-            obj["price_custom"] = item.price.total_price;
+            obj['filter_arrival_time'] = Math.ceil(parseFloat(item.filter.arrival_time.substr(0, 2) + '.' + item.filter.arrival_time.substr(3, 2)));
+            obj['filter_arrival_time_num'] = parseInt(item.filter.arrival_time.substr(0, 2) + item.filter.arrival_time.substr(3, 2));
+
+
+
             listdata_new.push(obj);
             a++;
         });
@@ -321,75 +297,7 @@ export default class FlightResultVia extends Component {
         return listdata_new;
     }
 
-    rebuildRow(item, num) {
 
-        var row = {
-            "num": num.toString(),
-            "nums": num,
-            "data_type": "real",
-
-            "filter_price": item.price.total_price,
-            "filter_airline_code": item.airline_code,
-            "filter_transit": item.transit,
-            "filter_entertainment": item.flight_schedule[0].inflight_entertainment,
-            "filter_baggage": item.flight_schedule[0].baggage,
-            "filter_meal": item.flight_schedule[0].meal,
-            "filter_departure_time": Math.ceil(parseFloat(item.departure_time.substr(0, 2) + '.' + item.departure_time.substr(3, 2))),
-            "filter_departure_time_num": parseInt(item.departure_time.substr(0, 2) + item.departure_time.substr(3, 2)),
-
-            "filter_arrival_time": Math.ceil(parseFloat(item.arrival_time.substr(0, 2) + '.' + item.arrival_time.substr(3, 2))),
-            "filter_arrival_time_num": parseInt(item.arrival_time.substr(0, 2) + item.arrival_time.substr(3, 2)),
-
-            "filter_seat_vailable": item.flight_schedule[0].seat_available,
-            "filter_origin": item.from,
-            "filter_destination": item.to,
-            "filter_duration": item.duration,
-
-            "price": item.price,
-            "international": item.international,
-            "combinable": item.combinable,
-            "match_id": item.match_id,
-            "supplier_id": item.supplier_id,
-            "airline_id": item.airline_id,
-            "validating_carrier": item.validating_carrier,
-            "from": item.from,
-            "to": item.to,
-            "adult": item.adult,
-            "child": item.child,
-            "infant": item.infant,
-            "currency": item.currency,
-            "price_type": item.price_type,
-            "flight_schedule": item.flight_schedule,
-            "supplier_code": item.supplier_code,
-            "airline_code": item.airline_code,
-            "reference": item.reference,
-            "subclasses": item.subclasses,
-            "airline_name": item.airline_name,
-            "airline_logo": item.airline_logo,
-            "departure_date": item.departure_date,
-            "departure_time": item.departure_time,
-            "departure_timezone": item.departure_timezone,
-            "gmt_departure": item.gmt_departure,
-            "arrival_date": item.arrival_date,
-            "arrival_time": item.arrival_time,
-            "arrival_timezone": item.arrival_timezone,
-            "gmt_arrival": item.gmt_arrival,
-            "duration": item.duration,
-            "transit": item.transit,
-            "from_name": item.from_name,
-            "from_city": item.from_city,
-            "from_country": item.from_country,
-            "from_country_code": item.from_country_code,
-            "to_name": item.to_name,
-            "to_city": item.to_city,
-            "to_country": item.to_country,
-            "to_country_code": item.to_country_code,
-            "price_custom": item.price.total_price,
-
-        }
-        return row;
-
-    }
     convertDateDMY(date) {
         var today = new Date(date);
         var dd = String(today.getDate()).padStart(2, '0');
@@ -431,7 +339,7 @@ export default class FlightResultVia extends Component {
                 },
                 "filter": {
                     "airlines": [],
-                    "direct": false
+                    "direct": param.isDirectOnly
                 }
             });
             console.log('paramFlightVia', raw);
@@ -446,14 +354,22 @@ export default class FlightResultVia extends Component {
             fetch(url, requestOptions)
                 .then(response => response.json())
                 .then(result => {
-                    console.log('resultGetProduct', JSON.stringify(result));
+
+                    //console.log('resultGetProduct', JSON.stringify(result));
                     this.setState({ loading_data: false });
 
+                    optionsRebuild = this.rebuild(result.data.options);
+                    optionsRebuildRt = this.rebuild(result.data.optionsRt);
 
-                    this.setState({ listdata_departure: result.data.options });
-                    this.setState({ listdata_return: result.data.optionsRt });
-                    this.setState({ listdata_departure_original: result.data.options });
-                    this.setState({ listdata_return_original: result.data.optionsRt });
+
+                    this.setState({ listdata_departure: optionsRebuild });
+                    this.setState({ listdata_return: optionsRebuildRt });
+                    this.setState({ listdata_departure_original: optionsRebuild });
+                    this.setState({ listdata_return_original: optionsRebuildRt });
+                    setTimeout(() => {
+                        // console.log('listdata_departureNew', JSON.stringify(this.state.listdata_departure));
+                        // console.log('listdata_returneNew', JSON.stringify(this.state.listdata_return));
+                    }, 20);
                 })
                 .catch(error => {
                     console.log(JSON.stringify(error));
@@ -468,123 +384,12 @@ export default class FlightResultVia extends Component {
 
     }
 
-    // getProductNext(dataKey){
-    //         AsyncStorage.getItem('config', (error, result) => {
-    //             if (result) {    
 
-    //                         let config = JSON.parse(result);
-    //                         var token=config.token;
-    //                         var url=config.aeroUrl;
-
-
-    //                         var myHeaders = new Headers();
-    //                         myHeaders.append("Authorization", "Bearer "+token);
-
-    //                         var requestOptions = {
-    //                           method: 'POST',
-    //                           headers: myHeaders,
-    //                           redirect: 'follow'
-    //                         };
-
-    //                         fetch(url+"flight/search/"+dataKey, requestOptions)
-    //                           .then(response => response.json())
-    //                           .then(result => {
-    //                             //console.log('getProductNext',JSON.stringify(result.data.departure));
-
-    //                                 var length=result.data.departure.length;
-    //                                 //console.log('flight_result_next',length);   
-    //                                 var dataDeparture=[];
-    //                                 var dataReturn=[];
-
-
-    //                                 var listdata_departure_next=[];
-    //                                 var listdata_return_next=[];
-
-    //                                 if(length != 0){
-    //                                     this.setState({ loading_data: false });
-    //                                     console.log('flight_result_next',JSON.stringify(result.data.departure));                            
-    //                                     dataDeparture=result.data.departure;
-    //                                     dataReturn=result.data.return;
-
-
-    //                                     listdata_departure_next=this.state.listdata_departure;
-    //                                     listdata_return_next=this.state.listdata_return;
-
-
-    //                                     var a=listdata_departure_next.length;
-    //                                     dataDeparture.map((item, index) => {
-    //                                         a++;
-    //                                         var rebuidDeparture=this.rebuildRow(item,a);
-    //                                         listdata_departure_next.push(rebuidDeparture);
-
-    //                                     })
-
-    //                                     var b=listdata_return_next.length;
-    //                                     dataReturn.map((item, index) => {
-    //                                         b++;
-    //                                         var rebuidReturn=this.rebuildRow(item,b);
-    //                                         listdata_return_next.push(rebuidReturn);
-
-    //                                     })
-    //                                     //console.log('listdata_departure_next',JSON.stringify(listdata_departure_next));
-
-    //                                     // const index = listdata_departure_next.findIndex(x => x.data_type === "sample");
-    //                                     // if (index !== undefined) listdata_departure_next.splice(index, 1);
-
-    //                                     listdata_departure_next=this.filter_destination(listdata_departure_next);
-    //                                     //listdata_return_next=this.filter_origin(listdata_return_next);
-
-    //                                     this.setState({ listdata_departure: listdata_departure_next });
-    //                                     this.setState({ listdata_return: listdata_return_next });
-
-    //                                     this.setState({ listdata_departure_original: listdata_departure_next });
-    //                                     this.setState({ listdata_return_original: listdata_return_next });
-
-
-    //                                 }
-
-    //                                 // setTimeout(() => {
-    //                                 //     console.log('listdata_departure',JSON.stringify(this.state.listdata_departure.length));
-    //                                 //     console.log('listdata_departure_next',JSON.stringify(listdata_departure_next.length));
-
-    //                                 //     console.log('listdata_departure_original',JSON.stringify(this.state.listdata_departure_original.length));
-    //                                 //     console.log('listdata_return_original',JSON.stringify(this.state.listdata_return_original.length));
-    //                                 // }, 50);
-
-    //                                 var dataKey=result.data.key;
-    //                                 var datacontinue=result.data.continue;
-
-    //                                 if(datacontinue==true){
-    //                                     this.setState({loading_load_more:false});
-    //                                     this.getProductNext(dataKey);
-    //                                 }else{
-    //                                     setTimeout(() => {
-    //                                         if(this.state.listdata_departure.length == 0){
-    //                                             this.setState({empty:true});
-    //                                         }
-    //                                     }, 50);
-
-
-    //                                     this.setState({loading_load_more:false});
-    //                                 }
-
-
-    //                           })
-    //                           .catch(error => {
-    //                             //this.setState({loading_spinner:false});
-    //                             console.log(JSON.stringify(error));
-    //                             alert('Kegagalan respon server, coba ulangi pencarian lagi.');
-
-    //                             });
-    //             }
-    //         });
-
-
-    // }
 
 
 
     sortProcess(selected) {
+        console.log('sortProcessSelect', selected);
         this.setState({ listdata_departure: this.state.listdata_departure_original });
         setTimeout(() => {
             if (selected == 'low_price') {
@@ -594,6 +399,7 @@ export default class FlightResultVia extends Component {
                 this.sortHightestPrice();
 
             } else if (selected == 'early_departure_time') {
+
                 this.sortEarlyDepartureTime();
 
             } else if (selected == 'end_departure_time') {
@@ -746,6 +552,7 @@ export default class FlightResultVia extends Component {
     }
 
     filterArray(array, filters) {
+
         const filterKeys = Object.keys(filters);
         return array.filter(item => {
             // validates all filter criteria
@@ -760,12 +567,48 @@ export default class FlightResultVia extends Component {
 
 
 
-    filterProcess(filters) {
+    filterProcess(filter) {
+        console.log('filterProcess', JSON.stringify(filter));
+        var listdata = this.state.listdata_departure;
+        console.log('listdata', JSON.stringify(listdata));
+
+
+
         this.onClear();
+        var listdatafilter = {};
+        if (filter.filter_airline_code.length != 0) {
+            listdatafilter.filter_airline_code = filter_airline_code => filter.filter_airline_code.includes(filter_airline_code.toUpperCase());
+        }
+
+
+        if (filter.filter_transit.length != 0) {
+            listdatafilter.filter_transit = filter_transit => filter.filter_transit.includes(filter_transit);
+        }
+
+        if (filter.filter_entertainment == 1) {
+            listdatafilter.filter_entertainment = filter_entertainment => filter_entertainment === filter.filter_entertainment;
+        }
+
+        if (filter.filter_baggage == 1) {
+            listdatafilter.filter_baggage = filter_baggage => filter_baggage === filter.filter_baggage;
+
+        }
+
+
+        if (filter.filter_meal == 1) {
+            listdatafilter.filter_meal = filter_meal => filter_meal === filter.filter_meal;
+
+        }
+
+        listdatafilter.filter_departure_time = filter_departure_time => filter_departure_time <= filter.filter_departure_time[0].max && filter_departure_time >= filter.filter_departure_time[0].min;
+        listdatafilter.filter_arrival_time = filter_arrival_time => filter_arrival_time <= filter.filter_arrival_time[0].max && filter_arrival_time >= filter.filter_arrival_time[0].min;
+        listdatafilter.filter_price = filter_price => filter_price <= filter.filter_price[1] && filter_price >= filter.filter_price[0];
+
+
 
         setTimeout(() => {
-            var products = this.state.listdata_departure;
-            const filtered = this.filterArray(products, filters);
+            const filtered = this.filterArray(listdata, listdatafilter);
+            console.log('filterresult', JSON.stringify(filtered));
             this.setState({ listdata_departure: filtered });
         }, 50);
     }
@@ -849,140 +692,127 @@ export default class FlightResultVia extends Component {
 
 
     onSelect(select) {
-        const { param } = this.state;
-        console.log('param', JSON.stringify(param));
-        console.log('listdata_return', JSON.stringify(this.state.listdata_return));
-        console.log('listdata_return_original', JSON.stringify(this.state.listdata_return_original));
-        console.log('select', JSON.stringify(select));
-        if (param.ReturnDate != "") {
-            this.props.navigation.navigate("FlightResultArrivalVia",
-                {
-                    param: param,
-                    //paramOther:paramOther,
-                    listdata_return: this.state.listdata_return,
-                    listdata_return_original: this.state.listdata_return_original,
-                    selectDataDeparture: select
-                });
-        } else if (param.ReturnDate == "") {
+        AsyncStorage.getItem('userSession', (error, result) => {
+            if (result) {
+                const { param } = this.state;
+                console.log('param', JSON.stringify(param));
+                console.log('listdata_return', JSON.stringify(this.state.listdata_return));
+                console.log('listdata_return_original', JSON.stringify(this.state.listdata_return_original));
+                console.log('select', JSON.stringify(select));
 
-            var returnPost = null;
-            var departurePost = this.removePrice(select);
+                if (select.type == "combined" || param.ReturnDate == "") {
+                    this.setState({ loading_spinner: true }, () => {
 
-
-
-            var paramGetPrice = {
-                "Adults": param.Adults,
-                "Children": param.Children,
-                "Infants": param.Infants,
-                "CabinClass": param.CabinClass[0],
-                "CorporateCode": param.CorporateCode,
-                "ReturnDate": param.ReturnDate,
-                "DepartureDate": param.DepartureDate,
-                "Destination": param.Destination,
-                "Origin": param.Origin,
-                "departure": departurePost,
-                "return": returnPost
-            };
-            console.log('paramGetPrice', JSON.stringify(paramGetPrice));
-
-            this.setState({ loading_spinner: true }, () => {
-                // let config = JSON.parse(result);
-                // var access_token=config.token;
-                // var url=config.aeroUrl;
-                // var token=config.token;
-                // var baseUrl=config.apiBaseUrl;
-                // var path='booking/repricing';
-                // var url=baseUrl+path;
-
-                let config = this.state.configApi;
-                let baseUrl = config.apiBaseUrl;
-                let url = baseUrl + 'booking/repricing';
-                console.log('configApi', JSON.stringify(config));
-                console.log('urlss', url);
+                        let config = this.state.configApi;
+                        let baseUrl = config.apiBaseUrl;
+                        let url = baseUrl + 'booking/repricing';
+                        console.log('configApi', JSON.stringify(config));
+                        console.log('urlss', url);
 
 
 
 
-                var myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/json");
-                var paramPrice = {
-                    "product": "flight",
-                    "productOption": [
-                        select.id,
-                        ""
-                    ]
-                };
-                console.log('paramPrice', JSON.stringify(paramPrice));
-                var raw = JSON.stringify(paramPrice);
+                        var myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        var paramPrice = {
+                            "product": "flight",
+                            "productOption": [
+                                select.id,
+                                ""
+                            ]
+                        };
+                        console.log('paramPrice', JSON.stringify(paramPrice));
+                        var raw = JSON.stringify(paramPrice);
 
-                var requestOptions = {
-                    method: 'POST',
-                    headers: myHeaders,
-                    body: raw,
-                    redirect: 'follow'
-                };
+                        var requestOptions = {
+                            method: 'POST',
+                            headers: myHeaders,
+                            body: raw,
+                            redirect: 'follow'
+                        };
 
-                fetch(url, requestOptions)
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success == true) {
-                            this.setState({ loading_spinner: false });
-                            console.log('result', JSON.stringify(result));
+                        fetch(url, requestOptions)
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success == true) {
+                                    this.setState({ loading_spinner: false });
+                                    console.log('result', JSON.stringify(result));
 
-                            param.totalPrice = result.data.price.total;
-                            param.key = result.data.key;
-                            var dataPrice = {
-                                required_dob: false,
-                                required_passport: false,
-                                total_price: result.data.price.total,
-                                subtotal_price: result.data.price.subtotal,
-                                nett_price: result.data.price.subtotal,
-                                iwjr: result.data.price.iwjr,
-                                insurance_total: result.data.extra.insurance.price,
-                                transaction_fee: result.data.price.fee,
-                                tax_fee: result.data.price.tax,
-                                point_user: 0
-                            }
+                                    param.totalPrice = result.data.price.total;
+                                    param.key = result.data.key;
+                                    var dataPrice = {
+                                        required_dob: false,
+                                        required_passport: false,
+                                        total_price: result.data.price.total,
+                                        subtotal_price: result.data.price.subtotal,
+                                        nett_price: result.data.price.subtotal,
+                                        iwjr: result.data.price.iwjr,
+                                        insurance_total: result.data.extra.insurance.price,
+                                        transaction_fee: result.data.price.fee,
+                                        tax_fee: result.data.price.tax,
+                                        point_user: 0
+                                    }
 
-                            var paramAll = {
-                                param: param,
-                                selectDataDeparture: select,
-                                selectDataReturn: null,
-                                departurePost: [],
-                                returnPost: [],
-                                dataPrice: dataPrice,
-                                extra:result.data.extra
+                                    var paramAll = {
+                                        param: param,
+                                        selectDataDeparture: select,
+                                        selectDataReturn: null,
+                                        departurePost: [],
+                                        returnPost: [],
+                                        dataPrice: dataPrice,
+                                        extra: result.data.extra,
+                                        resultVia: result
 
-                            };
-                            console.log('paramAll', JSON.stringify(paramAll));
-                            this.props.navigation.navigate("SummaryVia",
-                                {
-                                    param: paramAll,
+                                    };
+                                    console.log('paramAll', JSON.stringify(paramAll));
+                                    this.props.navigation.navigate("SummaryVia",
+                                        {
+                                            param: paramAll,
 
-                                });
-                        } else {
-                            this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+                                        });
+                                } else {
+                                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
 
-                        }
+                                }
 
 
-                    })
-                    .catch(error => {
-                        this.setState({ loading_spinner: false });
-                        console.log(JSON.stringify(error));
-                        alert('Kegagalan respon server, coba ulangi pencarian lagi.');
+                            })
+                            .catch(error => {
+                                this.setState({ loading_spinner: false });
+                                console.log(JSON.stringify(error));
+                                alert('Kegagalan respon server, coba ulangi pencarian lagi.');
+
+                            });
+
+
+
+
+
 
                     });
+                } else {
+                    console.log('listdata_returnonSelect', JSON.stringify(this.state.listdata_return));
+                    this.props.navigation.navigate("FlightResultArrivalVia",
+                        {
+                            param: param,
+                            //paramOther:paramOther,
+                            listdata_return: this.state.listdata_return,
+                            listdata_return_original: this.state.listdata_return_original,
+                            selectDataDeparture: select
+                        });
+
+                }
+            } else {
+                this.setState({ login: false });
+
+            }
 
 
 
 
+        });
 
 
-            });
-
-
-        }
 
 
     }
@@ -1071,10 +901,8 @@ export default class FlightResultVia extends Component {
 
 
     componentDidMount() {
-        // this.setState({listdata_departure:[]});
-        // this.setState({listdata_return:[]});
         const { navigation } = this.props;
-        //this.setState({loading_data:false});
+        console.log('flightResultVia');
         setTimeout(() => {
             this.getProduct();
         }, 50);
@@ -1094,7 +922,7 @@ export default class FlightResultVia extends Component {
 
     render() {
         const { navigation } = this.props;
-        let { loading_data, loading_load_more, loading_spinner } = this.state;
+        let { loading_data, loading_load_more, loading_spinner, login } = this.state;
         var param = this.state.param;
         var title = param.Origin + " to " + param.Destination;
         var qty = parseInt(param.Adults) + parseInt(param.Children) + parseInt(param.Infants);
@@ -1117,118 +945,123 @@ export default class FlightResultVia extends Component {
             { title: "Duration", detail: 'asdsad' },
         ]
 
-
         return (
             <SafeAreaView
                 style={[BaseStyle.safeAreaView, { backgroundColor: BaseColor.bgColor }]}
                 forceInset={{ top: "always" }}
             >
+                {
+                    login == true ?
 
-                <View style={{ flex: 1, flexDirection: 'column' }}>
-                    <View style={{ flexDirection: 'row', flex: 0.05, backgroundColor: BaseColor.primaryColor, paddingVertical: 5 }}>
-                        <View style={{ flex: 2, justifyContent: 'center' }}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigation.goBack();
-                                }}
-                                style={{ marginLeft: 20 }}
-                            >
-                                <Icon
-                                    name="md-arrow-back"
-                                    size={20}
-                                    color={BaseColor.whiteColor}
-                                    style={{}}
-                                />
-                            </TouchableOpacity>
 
-                        </View>
-                        <View style={{ flex: 8 }}>
-                            <View style={{ paddingBottom: 5, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text caption1 style={{ color: BaseColor.whiteColor }}>{param.bandaraAsalCode} - {param.bandaraTujuanCode}, {param.jumlahPerson} penumpang</Text>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text caption1 style={{ color: BaseColor.whiteColor }}>{this.convertDateText(param.tglAwal)}</Text>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ flexDirection: 'row', flex: 0.05, backgroundColor: BaseColor.primaryColor, paddingVertical: 5 }}>
+                                <View style={{ flex: 2, justifyContent: 'center' }}>
                                     <TouchableOpacity
                                         onPress={() => {
-                                            navigation.navigate("FlightSearchAgain",
-                                                {
-                                                    param: this.state.param,
-                                                    searchAgain: this.searchAgain
-                                                }
-                                            );
+                                            navigation.goBack();
                                         }}
+                                        style={{ marginLeft: 20 }}
                                     >
                                         <Icon
-                                            name="md-pencil-sharp"
-                                            size={14}
-                                            color={BaseColor.secondColor}
-                                            style={{ marginLeft: 10 }}
+                                            name="md-arrow-back"
+                                            size={20}
+                                            color={BaseColor.whiteColor}
+                                            style={{}}
                                         />
                                     </TouchableOpacity>
+
                                 </View>
+                                <View style={{ flex: 8 }}>
+                                    <View style={{ paddingBottom: 5, justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text caption1 style={{ color: BaseColor.whiteColor }}>{param.bandaraAsalCode} - {param.bandaraTujuanCode}, {param.jumlahPerson} penumpang</Text>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text caption1 style={{ color: BaseColor.whiteColor }}>{this.convertDateText(param.tglAwal)}</Text>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    navigation.navigate("FlightSearchAgain",
+                                                        {
+                                                            param: this.state.param,
+                                                            searchAgain: this.searchAgain
+                                                        }
+                                                    );
+                                                }}
+                                            >
+                                                <Icon
+                                                    name="create-outline"
+                                                    size={14}
+                                                    color={BaseColor.secondColor}
+                                                    style={{ marginLeft: 10 }}
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+
+                                </View>
+                                <View style={{ flex: 2 }} />
+                            </View>
+                            <View style={{ flex: 0.9, marginTop: 20 }}>
+                                {
+                                    loading_spinner ?
+                                        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                                            <View
+                                                style={{
+                                                    position: "absolute",
+                                                    top: 220,
+                                                    left: 0,
+                                                    right: 0,
+                                                    bottom: 0,
+                                                    justifyContent: "center",
+                                                    alignItems: "center"
+                                                }}
+                                            >
+
+                                                <AnimatedLoader
+                                                    visible={true}
+                                                    overlayColor="rgba(255,255,255,0.1)"
+                                                    source={require("app/assets/loader_paperline.json")}
+                                                    animationStyle={{ width: 300, height: 300 }}
+                                                    speed={1}
+                                                />
+                                                <Text>
+                                                    Connecting.. to Flight
+                                        </Text>
+                                            </View>
+                                        </View>
+                                        :
+                                        this.renderContent()
+                                }
+
+
+
+                                {
+                                    loading_load_more ?
+                                        <ActivityIndicator size="large" color={BaseColor.primaryColor} />
+                                        :
+                                        <View></View>
+                                }
                             </View>
 
+                            {
+                                loading_data || loading_spinner ?
+                                    <View></View>
+
+                                    :
+                                    <FilterSort
+                                        onFilter={this.onFilter}
+                                        onClear={this.onClear}
+                                        sortProcess={this.sortProcess}
+                                        style={
+                                            [{ marginHorizontal: 15, flex: 0.05 }]
+                                        }
+                                    />
+                            }
+
+
                         </View>
-                        <View style={{ flex: 2 }} />
-                    </View>
-                    <View style={{ flex: 0.9, marginTop: 20 }}>
-                        {
-                            loading_spinner ?
-                                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                                    <View
-                                        style={{
-                                            position: "absolute",
-                                            top: 220,
-                                            left: 0,
-                                            right: 0,
-                                            bottom: 0,
-                                            justifyContent: "center",
-                                            alignItems: "center"
-                                        }}
-                                    >
-
-                                        <AnimatedLoader
-                                            visible={true}
-                                            overlayColor="rgba(255,255,255,0.1)"
-                                            source={require("app/assets/loader_paperline.json")}
-                                            animationStyle={{ width: 300, height: 300 }}
-                                            speed={1}
-                                        />
-                                        <Text>
-                                            Connecting.. to Flight
-                                        </Text>
-                                    </View>
-                                </View>
-                                :
-                                this.renderContent()
-                        }
-
-
-
-                        {
-                            loading_load_more ?
-                                <ActivityIndicator size="large" color={BaseColor.primaryColor} />
-                                :
-                                <View></View>
-                        }
-                    </View>
-
-                    {
-                        loading_data || loading_spinner ?
-                            <View></View>
-
-                            :
-                            <FilterSort
-                                onFilter={this.onFilter}
-                                onClear={this.onClear}
-                                sortProcess={this.sortProcess}
-                                style={
-                                    [{ marginHorizontal: 15, flex: 0.05 }]
-                                }
-                            />
-                    }
-
-
-                </View>
+                        :
+                        <NotYetLogin redirect={'FlightResultVia'} navigation={navigation} param={this.props.navigation.state.params.param} />
+                }
 
             </SafeAreaView>
         );

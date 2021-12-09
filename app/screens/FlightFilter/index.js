@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, FlatList, Switch, ScrollView,TouchableOpacity } from "react-native";
+import { View, FlatList, Switch, ScrollView, TouchableOpacity } from "react-native";
 import { BaseStyle, BaseColor } from "@config";
 import {
     Header,
@@ -16,7 +16,7 @@ import styles from "./styles";
 export default class FlightFilter extends Component {
     constructor(props) {
         super(props);
-        var listdata=this.props.navigation.state.params.listdata;
+        var listdata = this.props.navigation.state.params.listdata;
         console.log("----------------listdata asli baru ------------------------------------");
         console.log(JSON.stringify(listdata));
 
@@ -49,6 +49,7 @@ export default class FlightFilter extends Component {
                 { id: "ID", selected: false, title: "Batik Air" },
                 { id: "QZ", selected: false, title: "Air Asia" },
             ],
+
             transits: [
                 // { id: "ALL", selected: true, title: "All" },
                 { id: 0, selected: false, title: "Direct" },
@@ -59,38 +60,38 @@ export default class FlightFilter extends Component {
             facilitiess: [
                 // { id: "ALL", selected: true, title: "All" },
                 { id: "baggage", selected: false, title: "Bagasi" },
-                { id: "entertainment", selected: false, title: "Hiburan" },
+                // { id: "entertainment", selected: false, title: "Hiburan" },
                 { id: "meal", selected: false, title: "Makanan" },
             ],
 
             departureTime: [
                 // { id: "ALL", selected: true, title: "All" },
-                { id: 0, selected: false, title: "00:00 - 06:00",time:{min:0,max:6}},
-                { id: 1, selected: false, title: "06:00 - 12:00",time:{min:6,max:12}},
-                { id: 2, selected: false, title: "12:00 - 18:00",time:{min:12,max:18}},
-                { id: 3, selected: false, title: "18:00 - 24:00",time:{min:18,max:24}},
-                { id: 4, selected: true, title: "Semua Waktu",time:{min:0,max:24}},
+                { id: 0, selected: false, title: "00:00 - 06:00", time: { min: 0, max: 6 } },
+                { id: 1, selected: false, title: "06:00 - 12:00", time: { min: 6, max: 12 } },
+                { id: 2, selected: false, title: "12:00 - 18:00", time: { min: 12, max: 18 } },
+                { id: 3, selected: false, title: "18:00 - 24:00", time: { min: 18, max: 24 } },
+                { id: 4, selected: true, title: "Semua Waktu", time: { min: 0, max: 24 } },
             ],
 
             arrivalTime: [
                 // { id: "ALL", selected: true, title: "All" },
-                { id: 0, selected: false, title: "00:00 - 06:00",time:{min:0,max:6}},
-                { id: 1, selected: false, title: "06:00 - 12:00",time:{min:6,max:12}},
-                { id: 2, selected: false, title: "12:00 - 18:00",time:{min:12,max:18}},
-                { id: 3, selected: false, title: "18:00 - 24:00",time:{min:18,max:24}},
-                { id: 4, selected: true, title: "Semua Waktu",time:{min:0,max:24}},
+                { id: 0, selected: false, title: "00:00 - 06:00", time: { min: 0, max: 6 } },
+                { id: 1, selected: false, title: "06:00 - 12:00", time: { min: 6, max: 12 } },
+                { id: 2, selected: false, title: "12:00 - 18:00", time: { min: 12, max: 18 } },
+                { id: 3, selected: false, title: "18:00 - 24:00", time: { min: 18, max: 24 } },
+                { id: 4, selected: true, title: "Semua Waktu", time: { min: 0, max: 24 } },
             ],
 
             //listdata:listdata,
 
-            filtersParam:{},
-            filterAirline:[],
-            filterDepartureTime:[{min:0,max:24}],
-            filterArrivalTime:[{min:0,max:24}],
-            filterTransits:[],
-            filterBaggage:"0",
-            filterEntertainment:false,
-            filterMeal:"1"
+            filtersParam: {},
+            filterAirline: [],
+            filterDepartureTime: [{ min: 0, max: 24 }],
+            filterArrivalTime: [{ min: 0, max: 24 }],
+            filterTransits: [],
+            filterBaggage: 2,
+            filterEntertainment: 2,
+            filterMeal: 2
 
 
         };
@@ -110,15 +111,15 @@ export default class FlightFilter extends Component {
         });
 
         setTimeout(() => {
-            var filterTransits=[];
-            var transits=this.state.transits;
+            var filterTransits = [];
+            var transits = this.state.transits;
             for (const item of transits) {
-                if(item.selected==true){
+                if (item.selected == true) {
                     filterTransits.push(item.id);
                 }
             }
-            console.log('filterTransits',JSON.stringify(filterTransits));
-            this.setState({filterTransits:filterTransits});
+            console.log('filterTransits', JSON.stringify(filterTransits));
+            this.setState({ filterTransits: filterTransits });
         }, 50);
     }
 
@@ -132,16 +133,16 @@ export default class FlightFilter extends Component {
                 };
             })
         });
-        
+
         setTimeout(() => {
-            var filterAirline=[];
-            var airline=this.state.airline;
+            var filterAirline = [];
+            var airline = this.state.airline;
             for (const item of airline) {
-                if(item.selected==true){
+                if (item.selected == true) {
                     filterAirline.push(item.id);
                 }
             }
-            this.setState({filterAirline:filterAirline});
+            this.setState({ filterAirline: filterAirline });
         }, 50);
 
     }
@@ -165,17 +166,17 @@ export default class FlightFilter extends Component {
 
             })
         });
-        console.log('onSelectDepartureTime',JSON.stringify(selected));
-        
+        console.log('onSelectDepartureTime', JSON.stringify(selected));
+
         setTimeout(() => {
-            var filterDepartureTime=[];
-            var departureTime=this.state.departureTime;
+            var filterDepartureTime = [];
+            var departureTime = this.state.departureTime;
             for (const item of departureTime) {
-                if(item.selected==true){
+                if (item.selected == true) {
                     filterDepartureTime.push(item.time);
                 }
             }
-            this.setState({filterDepartureTime:filterDepartureTime});
+            this.setState({ filterDepartureTime: filterDepartureTime });
         }, 50);
 
     }
@@ -183,7 +184,7 @@ export default class FlightFilter extends Component {
     onSelectArrivalTime(selected) {
         this.setState({
             arrivalTime: this.state.arrivalTime.map(item => {
-    
+
                 if (item.id == selected.id) {
                     return {
                         ...item,
@@ -195,23 +196,23 @@ export default class FlightFilter extends Component {
                         selected: false
                     };
                 }
-    
-    
+
+
             })
         });
-        
+
         setTimeout(() => {
-            var filterArrivalTime=[];
-            var arrivalTime=this.state.arrivalTime;
+            var filterArrivalTime = [];
+            var arrivalTime = this.state.arrivalTime;
             for (const item of arrivalTime) {
-                if(item.selected==true){
+                if (item.selected == true) {
                     filterArrivalTime.push(item.time);
                 }
             }
-            this.setState({filterArrivalTime:filterArrivalTime});
-            console.log('filterArrivalTime',JSON.stringify(filterArrivalTime));
+            this.setState({ filterArrivalTime: filterArrivalTime });
+            console.log('filterArrivalTime', JSON.stringify(filterArrivalTime));
         }, 50);
-    
+
     }
 
     onSelectFacilitiess(selected) {
@@ -227,101 +228,101 @@ export default class FlightFilter extends Component {
 
         setTimeout(() => {
             //console.log('facilitiess',JSON.stringify(this.state.facilitiess));
-            var facilitiess=this.state.facilitiess;
+            var facilitiess = this.state.facilitiess;
 
-            if(facilitiess[0].selected==true){
-                this.setState({filterBaggage:"1"}); 
-            }else if(facilitiess[0].selected==false){
-                this.setState({filterBaggage:"2"}); 
+            if (facilitiess[0].selected == true) {
+                this.setState({ filterBaggage: 1 });
+            } else if (facilitiess[0].selected == false) {
+                this.setState({ filterBaggage: 2 });
             }
 
-            if(facilitiess[1].selected==true){
-                this.setState({filterEntertainment:true}); 
-            }else if(facilitiess[1].selected==false){
-                this.setState({filterEntertainment:false}); 
-            }    
+            // if (facilitiess[1].selected == true) {
+            //     this.setState({ filterEntertainment: 1 });
+            // } else if (facilitiess[1].selected == false) {
+            //     this.setState({ filterEntertainment: 2 });
+            // }
 
-            if(facilitiess[2].selected==true){
-                this.setState({filterMeal:"1"}); 
-            }else if(facilitiess[2].selected==false){
-                this.setState({filterMeal:"0"}); 
-            }    
-          
+            if (facilitiess[1].selected == true) {
+                this.setState({ filterMeal: 1 });
+            } else if (facilitiess[1].selected == false) {
+                this.setState({ filterMeal: 2 });
+            }
+
         }, 50);
     }
 
 
 
 
-    submitFilter(){
+    submitFilter() {
         const { navigation } = this.props;
-        const {filterAirline,filterTransits,filterEntertainment,filterMeal,filterBaggage,priceBegin,priceEnd,filterDepartureTime,filterArrivalTime}=this.state;
+        const { filterAirline, filterTransits, filterEntertainment, filterMeal, filterBaggage, priceBegin, priceEnd, filterDepartureTime, filterArrivalTime } = this.state;
 
         const filter = {
             //filter_airline_code: filter_airline_code => filterAirline.includes(filter_airline_code.toUpperCase()),
-            filter_airline_codes: filterAirline,
+            filter_airline_code: filterAirline,
 
             //filter_transit: filter_transit => filterTransits.includes(filter_transit),
-            filter_transits: filterTransits,
+            filter_transit: filterTransits,
 
             //filter_entertainment : filter_entertainment =>  filter_entertainment === filterEntertainment,
-            filter_entertainments : filterEntertainment,
-            
+            filter_entertainment: filterEntertainment,
+
             //filter_baggage : filter_baggage =>  filter_baggage != filterBaggage,
-            filter_baggages : filterBaggage,
-            
+            filter_baggage: filterBaggage,
+
             //filter_meal : filter_meal =>  filter_meal != filterMeal,
-            filter_meals : filterMeal,
-            
+            filter_meal: filterMeal,
+
             filter_departure_time: filterDepartureTime,
 
             filter_arrival_time: filterArrivalTime,
 
-            filter_prices: [priceBegin,priceEnd]
+            filter_price: [priceBegin, priceEnd]
 
-          };
-          console.log('filter',JSON.stringify(filter));
+        };
+        console.log('filter', JSON.stringify(filter));
 
-          var filtersParam={}
+        //var filtersParam = {}
 
-          //var filterAirline=[];
-          if(filterAirline.length != 0)
-          {
-          filtersParam.filter_airline_code=filter_airline_code => filterAirline.includes(filter_airline_code.toUpperCase());
-          }
-          
-          //var filterTransits=[];
-          if(filterTransits.length != 0)
-          {
-          filtersParam.filter_transit=filter_transit => filterTransits.includes(filter_transit);
-          }
-          
-          //var filterEntertainment=false;
-          if (filterEntertainment==true){
-          filtersParam.filter_entertainment=filter_entertainment => filter_entertainment === filterEntertainment;
-          }
-          
-          //var filterBaggage="0";
-          if(filterBaggage != "0"){
-          filtersParam.filter_baggage=filter_baggage => filter_baggage != filterBaggage;
-          
-          }
-          
-          //var filterMeal="1";
-          if(filterMeal == "0"){
-          filtersParam.filter_meal=filter_meal => filter_meal != filterMeal;
-          
-          }
+        //var filterAirline=[];
+        // if (filterAirline.length != 0) {
+        //     filtersParam.filter_airline_code = filter_airline_code => filterAirline.includes(filter_airline_code.toUpperCase());
+        // }
 
-          filtersParam.filter_departure_time=filter_departure_time => filter_departure_time <= filterDepartureTime[0].max && filter_departure_time >= filterDepartureTime[0].min;  
-          filtersParam.filter_arrival_time=filter_arrival_time => filter_arrival_time <= filterArrivalTime[0].max && filter_arrival_time >= filterArrivalTime[0].min;  
+        // //var filterTransits=[];
+        // if (filterTransits.length != 0) {
+        //     filtersParam.filter_transit = filter_transit => filterTransits.includes(filter_transit);
+        // }
+
+        // //var filterEntertainment=false;
+        // if (filterEntertainment == true) {
+        //     filtersParam.filter_entertainment = filter_entertainment => filter_entertainment === filterEntertainment;
+        // }
+
+        // //var filterBaggage="0";
+        // if (filterBaggage != "0") {
+        //     filtersParam.filter_baggage = filter_baggage => filter_baggage != filterBaggage;
+
+        // }
+
+        // //var filterMeal="1";
+        // if (filterMeal == "0") {
+        //     filtersParam.filter_meal = filter_meal => filter_meal != filterMeal;
+
+        // }
+
+        // filtersParam.filter_departure_time = filter_departure_time => filter_departure_time <= filterDepartureTime[0].max && filter_departure_time >= filterDepartureTime[0].min;
+        // filtersParam.filter_arrival_time = filter_arrival_time => filter_arrival_time <= filterArrivalTime[0].max && filter_arrival_time >= filterArrivalTime[0].min;
 
 
-          filtersParam.filter_price=filter_price => filter_price <= priceEnd && filter_price >= priceBegin;       
-          const filters = filtersParam;
-          console.log('filters',JSON.stringify(filters));
-        this.props.navigation.state.params.filterProcess(filters);
-        //navigation.goBack();
+        // filtersParam.filter_price = filter_price => filter_price <= priceEnd && filter_price >= priceBegin;
+        //const filters = filtersParam;
+        // console.log('filters', JSON.stringify(filters));
+
+
+        this.props.navigation.state.params.filterProcess(filter);
+        navigation.goBack();
 
     }
 
@@ -364,7 +365,7 @@ export default class FlightFilter extends Component {
                             <Text caption1 whiteColor numberOfLines={1}>
                                 Apply
                             </Text>
-                            
+
                         );
                     }}
                     onPressLeft={() => navigation.goBack()}
@@ -382,158 +383,158 @@ export default class FlightFilter extends Component {
                     }
                 >
                     <View style={styles.contain}>
-                        
+
                         <View style={styles.roundLine}>
                             <Text caption1 semibold>
                                 Maskapai
                             </Text>
                         </View>
                         <View style={{ marginLeft: 20, marginTop: 20 }}>
-                        {airline.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    key={index.toString()}
-                                    style={styles.lineCategory}
-                                    onPress={() => this.onSelectAirline(item)}
-                                >
-                                    <Icon
-                                        name={
-                                            item.selected
-                                                ? "checkmark-circle-outline"
-                                                : "ellipse-outline"
-                                        }
-                                        size={24}
-                                        color={BaseColor.primaryColor}
-                                    />
-                                    <Text caption1 style={{ marginLeft: 10 }}>
-                                        {item.title} ({item.id})
+                            {airline.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index.toString()}
+                                        style={styles.lineCategory}
+                                        onPress={() => this.onSelectAirline(item)}
+                                    >
+                                        <Icon
+                                            name={
+                                                item.selected
+                                                    ? "checkmark-circle-outline"
+                                                    : "ellipse-outline"
+                                            }
+                                            size={24}
+                                            color={BaseColor.primaryColor}
+                                        />
+                                        <Text caption1 style={{ marginLeft: 10 }}>
+                                            {item.title} ({item.id})
                                     </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
 
 
                         <View style={styles.roundLine}>
                             <Text caption1 semibold>
-                            Transit
+                                Transit
                             </Text>
                         </View>
                         <View style={{ marginLeft: 20, marginTop: 20 }}>
-                        {transits.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    key={index.toString()}
-                                    style={styles.lineCategory}
-                                    onPress={() => this.onSelectTransits(item)}
-                                >
-                                    <Icon
-                                        name={
-                                            item.selected
-                                                ? "checkmark-circle-outline"
-                                                : "ellipse-outline"
-                                        }
-                                        size={24}
-                                        color={BaseColor.primaryColor}
-                                    />
-                                    <Text caption1 style={{ marginLeft: 10 }}>
-                                        {item.title}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
+                            {transits.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index.toString()}
+                                        style={styles.lineCategory}
+                                        onPress={() => this.onSelectTransits(item)}
+                                    >
+                                        <Icon
+                                            name={
+                                                item.selected
+                                                    ? "checkmark-circle-outline"
+                                                    : "ellipse-outline"
+                                            }
+                                            size={24}
+                                            color={BaseColor.primaryColor}
+                                        />
+                                        <Text caption1 style={{ marginLeft: 10 }}>
+                                            {item.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
 
                         <View style={styles.roundLine}>
                             <Text caption1 semibold>
-                            Fasilitas
+                                Fasilitas
                             </Text>
                         </View>
                         <View style={{ marginLeft: 20, marginTop: 20 }}>
-                        {facilitiess.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    key={index.toString()}
-                                    style={styles.lineCategory}
-                                    onPress={() => this.onSelectFacilitiess(item)}
-                                >
-                                    <Icon
-                                        name={
-                                            item.selected
-                                                ? "checkmark-circle-outline"
-                                                : "ellipse-outline"
-                                        }
-                                        size={24}
-                                        color={BaseColor.primaryColor}
-                                    />
-                                    <Text caption1 style={{ marginLeft: 10 }}>
-                                        {item.title}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                        </View>
-
-
-                        <View style={styles.roundLine}>
-                            <Text caption1 semibold>
-                            Jam Berangkat
-                            </Text>
-                        </View>
-                        <View style={{ marginLeft: 20, marginTop: 20 }}>
-                        {departureTime.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    key={index.toString()}
-                                    style={styles.lineCategory}
-                                    onPress={() => this.onSelectDepartureTime(item)}
-                                >
-                                    <Icon
-                                        name={
-                                            item.selected
-                                                ? "checkmark-circle-outline"
-                                                : "ellipse-outline"
-                                        }
-                                        size={24}
-                                        color={BaseColor.primaryColor}
-                                    />
-                                    <Text caption1 style={{ marginLeft: 10 }}>
-                                        {item.title}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
+                            {facilitiess.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index.toString()}
+                                        style={styles.lineCategory}
+                                        onPress={() => this.onSelectFacilitiess(item)}
+                                    >
+                                        <Icon
+                                            name={
+                                                item.selected
+                                                    ? "checkmark-circle-outline"
+                                                    : "ellipse-outline"
+                                            }
+                                            size={24}
+                                            color={BaseColor.primaryColor}
+                                        />
+                                        <Text caption1 style={{ marginLeft: 10 }}>
+                                            {item.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
 
 
                         <View style={styles.roundLine}>
                             <Text caption1 semibold>
-                            Jam Kedatangan
+                                Jam Berangkat
                             </Text>
                         </View>
                         <View style={{ marginLeft: 20, marginTop: 20 }}>
-                        {arrivalTime.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    key={index.toString()}
-                                    style={styles.lineCategory}
-                                    onPress={() => this.onSelectArrivalTime(item)}
-                                >
-                                    <Icon
-                                        name={
-                                            item.selected
-                                                ? "checkmark-circle-outline"
-                                                : "ellipse-outline"
-                                        }
-                                        size={24}
-                                        color={BaseColor.primaryColor}
-                                    />
-                                    <Text caption1 style={{ marginLeft: 10 }}>
-                                        {item.title}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
+                            {departureTime.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index.toString()}
+                                        style={styles.lineCategory}
+                                        onPress={() => this.onSelectDepartureTime(item)}
+                                    >
+                                        <Icon
+                                            name={
+                                                item.selected
+                                                    ? "checkmark-circle-outline"
+                                                    : "ellipse-outline"
+                                            }
+                                            size={24}
+                                            color={BaseColor.primaryColor}
+                                        />
+                                        <Text caption1 style={{ marginLeft: 10 }}>
+                                            {item.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+
+
+                        <View style={styles.roundLine}>
+                            <Text caption1 semibold>
+                                Jam Kedatangan
+                            </Text>
+                        </View>
+                        <View style={{ marginLeft: 20, marginTop: 20 }}>
+                            {arrivalTime.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index.toString()}
+                                        style={styles.lineCategory}
+                                        onPress={() => this.onSelectArrivalTime(item)}
+                                    >
+                                        <Icon
+                                            name={
+                                                item.selected
+                                                    ? "checkmark-circle-outline"
+                                                    : "ellipse-outline"
+                                            }
+                                            size={24}
+                                            color={BaseColor.primaryColor}
+                                        />
+                                        <Text caption1 style={{ marginLeft: 10 }}>
+                                            {item.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
 
 

@@ -53,6 +53,10 @@ async function onSignOut() {
 class SignIn extends Component {
     constructor(props) {
         super(props);
+        //alert('asd');
+        var param = this.props.navigation.state.params.param;
+        var redirect = this.props.navigation.state.params.redirect;
+        console.log('param', JSON.stringify(param));
         this.state = {
             email: "",
             password: "",
@@ -68,6 +72,8 @@ class SignIn extends Component {
             colorButtonText: BaseColor.whiteColor,
             disabledButton: true,
             DataMasterDiskon: DataMasterDiskon[0],
+            param: param,
+            redirect: redirect
 
 
         }
@@ -75,6 +81,7 @@ class SignIn extends Component {
         this.getConfig();
         this.getSession();
     }
+
 
 
     //memanggil config
@@ -133,6 +140,8 @@ class SignIn extends Component {
 
 
 
+
+
     cekLoginForm() {
 
         const { email, password, success, redirect } = this.state;
@@ -140,7 +149,7 @@ class SignIn extends Component {
         this.setState({ loading: true });
         let config = this.state.configApi;
         let baseUrl = config.baseUrl;
-        let url = baseUrl + "front/api/AuthLogin/login_proses_app";
+        let url = baseUrl + "front/api_new/AuthLogin/login_proses_app";
         console.log('configApi', JSON.stringify(config));
         console.log('urlss', url);
 
@@ -181,17 +190,19 @@ class SignIn extends Component {
                 } else if (result.success == true) {
                     var userSession = result.userSession;
                     userSession.loginVia = "form";
-                    userSession.password = password;
+                    //userSession.password = password;
                     this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
 
                     AsyncStorage.setItem('userSession', JSON.stringify(userSession));
+                    AsyncStorage.setItem('password', JSON.stringify(password));
                     AsyncStorage.setItem('id_user', JSON.stringify(userSession.id_user));
+                    this.setState({ password: password });
                     setTimeout(() => {
                         this.setConfig();
                     }, 20);
 
 
-                    //navigation.navigate("Loading",{redirect:this.props.navigation.state.params.redirect,param:this.props.navigation.state.params.param});
+                    //navigation.navigate("Loading", { redirect: this.props.navigation.state.params.redirect, param: this.props.navigation.state.params.param });
 
 
                 }
@@ -215,7 +226,7 @@ class SignIn extends Component {
         AsyncStorage.getItem('userSession', (error, result) => {
             if (result) {
                 let userSession = JSON.parse(result);
-                var params = { "param": { "username": userSession.email, "password": userSession.password } };
+                var params = { "param": { "username": userSession.email, "password": this.state.password } };
             } else {
                 var params = { "param": { "username": DataMasterDiskon.username, "password": DataMasterDiskon.password } };
             }
@@ -232,6 +243,7 @@ class SignIn extends Component {
             fetch(url, param)
                 .then(response => response.json())
                 .then(result => {
+                    console.log('resultLogin', JSON.stringify(result));
                     this.setState({ loading: false });
                     var config = result;
                     var configApi = this.generateConfigApi(config);
@@ -241,9 +253,9 @@ class SignIn extends Component {
                     this.setState({ loading_spinner: false });
                     AsyncStorage.setItem('config', JSON.stringify(config));
                     AsyncStorage.setItem('configApi', JSON.stringify(configApi));
-                    navigation.navigate("Loading", { redirect: this.props.navigation.state.params.redirect, param: this.props.navigation.state.params.param });
-                    //console.log("Loading", { redirect: this.props.navigation.state.params.redirect, param: this.props.navigation.state.params.param });
-                    //navigation.navigate('Home');
+                    console.log("Loading", { redirect: this.state.redirect, param: this.state.param });
+                    navigation.navigate("Loading", { redirect: this.state.redirect, param: this.state.param });
+
                 })
                 .catch(error => {
                     this.setState({ error: true });
@@ -290,36 +302,41 @@ class SignIn extends Component {
     // }
 
     componentDidMount() {
-        this._revokeApple();
-        //alert(JSON.stringify(Platform.OS));
-        SplashScreen.hide();
-        let { navigation, auth } = this.props;
-        let status = auth.login.success;
-        setTimeout(() => {
-            this.checkSession();
 
-        }, 20);
+        const { navigation } = this.props;
+        navigation.addListener('didFocus', () => {
+
+            this._revokeApple();
+            SplashScreen.hide();
+            let { navigation, auth } = this.props;
+            let status = auth.login.success;
+            setTimeout(() => {
+                this.checkSession();
+            }, 20);
 
 
 
-        GoogleSignin.configure({
-            scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-            webClientId: '399787116352-dn2atq6g9rilkq8img7f3qu22mr27a2t.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-            hostedDomain: '', // specifies a hosted domain restriction
-            loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
-            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-            accountName: '', // [Android] specifies an account name on the device that should be used
-            iosClientId: '399787116352-0djq47u48nrknq7mqquln95dngbspqgv.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-            //iosClientId: '280725445152-tpro37vo520dhhc4ncbiplh4l8qc9ien.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+            GoogleSignin.configure({
+                scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+                webClientId: '399787116352-dn2atq6g9rilkq8img7f3qu22mr27a2t.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+                offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+                hostedDomain: '', // specifies a hosted domain restriction
+                loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
+                forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+                accountName: '', // [Android] specifies an account name on the device that should be used
+                iosClientId: '399787116352-0djq47u48nrknq7mqquln95dngbspqgv.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+                //iosClientId: '280725445152-tpro37vo520dhhc4ncbiplh4l8qc9ien.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 
+            });
+
+
+
+
+
+            this.getCurrentUserInfo();
         });
 
 
-
-
-
-        this.getCurrentUserInfo();
     }
 
     getCurrentUserInfo = async () => {
@@ -433,7 +450,7 @@ class SignIn extends Component {
 
         let config = this.state.configApi;
         let baseUrl = config.baseUrl;
-        let url = baseUrl + "front/api/AuthLogin/login_app_google";
+        let url = baseUrl + "front/api_new/AuthLogin/login_app_google";
         console.log('configApi', JSON.stringify(config));
         console.log('urlss', url);
         AsyncStorage.removeItem('userSession');
@@ -472,8 +489,11 @@ class SignIn extends Component {
                         this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
                         AsyncStorage.setItem('userSession', JSON.stringify(userSession));
                         AsyncStorage.setItem('id_user', JSON.stringify(userSession.id_user));
-                        navigation.navigate("Loading", { redirect: this.props.navigation.state.params.redirect, param: this.props.navigation.state.params.param });
+                        //navigation.navigate("Loading", { redirect: this.props.navigation.state.params.redirect, param: this.props.navigation.state.params.param });
 
+                        setTimeout(() => {
+                            this.setConfig();
+                        }, 20);
                         // this.props.actions.authentication(true, response => {
                         //     if (
                         //         response.success &&
@@ -506,11 +526,11 @@ class SignIn extends Component {
         AsyncStorage.removeItem('id_user');
         //this._signOutApple();
 
-        //var url=config.baseUrl+"front/api/AuthLogin/login_app_apple";
+        //var url=config.baseUrl+"front/api_new/AuthLogin/login_app_apple";
 
         let config = this.state.configApi;
         let baseUrl = config.baseUrl;
-        let url = baseUrl + "front/api/AuthLogin/login_app_apple";
+        let url = baseUrl + "front/api_new/AuthLogin/login_app_apple";
         console.log('configApi', JSON.stringify(config));
         console.log('urlss', url);
 
@@ -676,7 +696,7 @@ class SignIn extends Component {
             >
                 <Text caption2 style={{ marginTop: -15 }}>
                     Email
-                                            </Text>
+                </Text>
                 <View style={styles.contentProfile}>
                     <View style={{ flex: 6 }}>
                         <TextValidator
@@ -716,7 +736,7 @@ class SignIn extends Component {
             >
                 <Text caption2 style={{ marginTop: -15 }}>
                     Password
-                                            </Text>
+                </Text>
                 <View style={styles.contentProfile}>
                     <View style={{ flex: 6 }}>
                         <TextValidator
@@ -831,7 +851,7 @@ class SignIn extends Component {
                                         >
                                             <Text caption1 grayColor>
                                                 Lupa kata sandi?
-                                     </Text>
+                                            </Text>
                                         </TouchableOpacity>
                                     </View>
 
@@ -852,14 +872,14 @@ class SignIn extends Component {
                                 {/* {
                                 (Platform.OS != 'ios') ?  */}
 
-                                <View style={{ width: "100%" }}>
+                                {/* <View style={{ width: "100%" }}>
                                     <GoogleSigninButton
                                         style={{ width: "100%", height: 48 }}
                                         size={GoogleSigninButton.Size.Wide}
                                         color={GoogleSigninButton.Color.Dark}
                                         onPress={this._signIn}
                                         disabled={this.state.isSigninInProgress} />
-                                </View>
+                                </View> */}
                                 {/* :
                             <View />
                             } */}
@@ -907,7 +927,7 @@ class SignIn extends Component {
                                     >
                                         <Text caption1 grayColor>
                                             Haven’t registered yet?
-                                     </Text>
+                                        </Text>
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
@@ -920,7 +940,7 @@ class SignIn extends Component {
                                     >
                                         <Text caption1 primaryColor>
                                             Join Now
-                                     </Text>
+                                        </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

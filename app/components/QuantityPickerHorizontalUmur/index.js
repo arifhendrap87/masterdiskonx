@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity,StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import PropTypes, { func } from "prop-types";
 import { Text, Icon } from "@components";
 //import styles from "./styles";
@@ -54,99 +54,99 @@ export default class QuantityPickerHorizontalUmur extends Component {
         super(props);
         this.state = {
             value: props.value,
-            minPerson:props.minPerson,
+            minPerson: props.minPerson,
 
         };
     }
-    
+
 
     onChange(type) {
-        const{setMinPerson,id,idUmur}=this.props;
+        const { setMinPerson, id, idUmur } = this.props;
 
-        var value=0;
-        var minPerson=0;
-        var valueMin=1;
-        var valueMax=12;
+        var value = 0;
+        var minPerson = 0;
+        var valueMin = 1;
+        var valueMax = 12;
         if (type == "up") {
-            if(this.state.value < 12){
+            if (this.state.value < 12) {
 
-            
+
                 this.setState({
                     value: parseInt(this.state.value) + 1
                 });
-                value=parseInt(this.state.value) + 1;
+                value = parseInt(this.state.value) + 1;
 
-                if(idUmur==1){
-                    this.props.setUmur1(value,id,idUmur);
-                }else{
-                    this.props.setUmur2(value,id,idUmur);
+                if (idUmur == 1) {
+                    this.props.setUmur1(value, id, idUmur);
+                } else {
+                    this.props.setUmur2(value, id, idUmur);
                 }
 
             }
 
 
         } else {
-            if(this.state.value != valueMin){
+            if (this.state.value != valueMin) {
                 this.setState({
                     value: this.state.value - 1 > 0 ? parseInt(this.state.value) - 1 : 0
                 });
-                value=this.state.value - 1;
+                value = this.state.value - 1;
 
-                if(idUmur==1){
-                    this.props.setUmur1(value,id,idUmur);
-                }else{
-                    this.props.setUmur2(value,id,idUmur);
+                if (idUmur == 1) {
+                    this.props.setUmur1(value, id, idUmur);
+                } else {
+                    this.props.setUmur2(value, id, idUmur);
                 }
             }
 
-           
-         
+
+
         }
 
-        
 
-        
-        
+
+
+
     }
 
     render() {
-        const { style, label, detail,id } = this.props;
+        const { style, label, detail, id } = this.props;
         const { value } = this.state;
         return (
-            
+
             <View style={{ paddingVertical: 5 }}>
-                        <View style={styles.contentQuest}>
-                            <View style={styles.lineRow}>
-                                <View>
-                                    <Text caption1>{label}</Text>
-                                    <Text caption1 grayColor>
-                                    {detail}
-                                    </Text>
-                                </View>
-                                <View style={styles.iconRight}>
-                                    <TouchableOpacity
-                                        onPress={() => this.onChange("down")}
-                                    >
-                                        <Icon
-                                            name="minus-circle"
-                                            size={24}
-                                            color={BaseColor.grayColor}
-                                        />
-                                    </TouchableOpacity>
-                                    <Text title1>{value}</Text>
-                                    <TouchableOpacity
-                                        
-                                        onPress={() => this.onChange("up")}
-                                    >
-                                        <Icon
-                                            name="plus-circle"
-                                            size={24}
-                                            color={BaseColor.primaryColor}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                <View style={styles.contentQuest}>
+                    <View style={styles.lineRow}>
+                        <View>
+                            <Text caption1>{label}</Text>
+                            <Text caption1 grayColor>
+                                {detail}
+                            </Text>
                         </View>
+                        <View style={styles.iconRight}>
+                            <TouchableOpacity
+                                onPress={() => this.onChange("down")}
+                            >
+                                <Icon
+                                    name="remove-circle-outline"
+                                    size={24}
+                                    color={BaseColor.grayColor}
+                                />
+                            </TouchableOpacity>
+                            <Text title1>{value}</Text>
+                            <TouchableOpacity
+
+                                onPress={() => this.onChange("up")}
+                            >
+                                <Icon
+                                    name="add-circle-outline"
+                                    size={24}
+                                    color={BaseColor.primaryColor}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
             </View>
         );
     }
@@ -158,11 +158,11 @@ QuantityPickerHorizontalUmur.propTypes = {
     detail: PropTypes.string,
     value: PropTypes.number,
     onChange: PropTypes.func,
-    setMinPerson:PropTypes.func,
-    minPerson:PropTypes.number,
+    setMinPerson: PropTypes.func,
+    minPerson: PropTypes.number,
     id: PropTypes.number,
-    idUmur:PropTypes.number,
-    valueMax:PropTypes.bool
+    idUmur: PropTypes.number,
+    valueMax: PropTypes.bool
 };
 
 QuantityPickerHorizontalUmur.defaultProps = {
@@ -170,10 +170,10 @@ QuantityPickerHorizontalUmur.defaultProps = {
     label: "Adults",
     detail: ">= 12 years",
     value: 1,
-    onChange: () => {},
-    setMinPerson: () => {},
-    minPerson:2,
-    id:0,
-    idUmur:0,
-    valueMax:false
+    onChange: () => { },
+    setMinPerson: () => { },
+    minPerson: 2,
+    id: 0,
+    idUmur: 0,
+    valueMax: false
 };

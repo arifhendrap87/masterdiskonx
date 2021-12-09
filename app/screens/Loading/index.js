@@ -17,9 +17,20 @@ class Loading extends Component {
             DataMasterDiskon: DataMasterDiskon[0],
             error: false,
         }
+        this.getPassword();
     }
 
-    setConfig() {
+    getPassword() {
+        AsyncStorage.getItem('password', (error, result) => {
+            if (result) {
+                let password = JSON.parse(result);
+                console.log('getPassword', JSON.stringify(password));
+                this.setState({ password: password });
+            }
+        });
+    }
+
+    setConfig(redirect, parameter) {
         let { navigation, auth } = this.props;
         const { DataMasterDiskon } = this.state;
         var url = DataMasterDiskon.baseUrl + DataMasterDiskon.dir;
@@ -28,7 +39,8 @@ class Loading extends Component {
             AsyncStorage.getItem('userSession', (error, result) => {
                 if (result) {
                     let userSession = JSON.parse(result);
-                    var params = { "param": { "username": userSession.email, "password": userSession.password } };
+                    console.log('userSession', JSON.stringify(userSession));
+                    var params = { "param": { "username": userSession.email, "password": this.state.password } };
                 } else {
                     var params = { "param": { "username": DataMasterDiskon.username, "password": DataMasterDiskon.password } };
                 }
@@ -47,13 +59,22 @@ class Loading extends Component {
                     .then(result => {
                         var config = result;
                         var configApi = this.generateConfigApi(config);
-                        console.log('config', JSON.stringify(config));
-                        console.log('configApi', JSON.stringify(configApi));
+                        console.log('configsetConfig', JSON.stringify(config));
+                        console.log('configApisetConfig', JSON.stringify(configApi));
                         this.setState({ config: config });
                         this.setState({ loading_spinner: false });
                         AsyncStorage.setItem('config', JSON.stringify(config));
                         AsyncStorage.setItem('configApi', JSON.stringify(configApi));
-                        navigation.navigate('Home');
+
+                        if (redirect != '') {
+                            navigation.navigate(redirect, { param: parameter });
+                        } else {
+                            //this.setConfig();
+                            navigation.navigate('Home');
+                        }
+
+
+
                     })
                     .catch(error => {
                         this.setState({ error: true });
@@ -113,11 +134,14 @@ class Loading extends Component {
             var param = '';
         }
 
-        if (redirect != '') {
-            navigation.navigate(redirect, { param: param });
-        } else {
-            this.setConfig();
-        }
+        console.log('redirect', redirect);
+        // if (redirect != '') {
+        //     navigation.navigate(redirect, { param: param });
+        // } else {
+        //     this.setConfig();
+        // }
+
+        this.setConfig(redirect, param);
     }
 
 

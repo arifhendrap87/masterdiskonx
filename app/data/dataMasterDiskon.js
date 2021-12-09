@@ -6,12 +6,12 @@ const DataMasterDiskon = [
         baseUrl: "https://sandbox.masterdiskon.com/",
         username: "digidawdigidaw",
         password: "123456",
-        status: "staging",
-        dir: "front/api/common/config",
-        versionInPlayStore: 125,
-        versionInAppStore: 125,
-        versionInPlayStoreName: 'V.1.2.5',
-        versionInAppStoreName: 'V.1.2.5',
+        dir: "front/api_new/common/config",
+        versionInPlayStore: 126,
+        versionInAppStore: 126,
+        versionInPlayStoreName: 'V.1.2.6',
+        versionInAppStoreName: 'V.1.2.6',
+        //status: "production",
         status: "sandbox",
 
 

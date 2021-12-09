@@ -10,13 +10,13 @@ import { Header, SafeAreaView, Icon, Text, Image } from "@components";
 import styles from "./styles";
 
 // Load sample flight data list
-import {AsyncStorage} from 'react-native';
+import { AsyncStorage } from 'react-native';
 import {
     Placeholder,
     PlaceholderMedia,
     PlaceholderLine,
     Fade
-  } from "rn-placeholder";
+} from "rn-placeholder";
 export default class SelectFlight extends Component {
     constructor(props) {
         super(props);
@@ -33,78 +33,78 @@ export default class SelectFlight extends Component {
     }
 
     //memanggil config
-    getConfigApi(){
+    getConfigApi() {
         AsyncStorage.getItem('configApi', (error, result) => {
-            if (result) {    
+            if (result) {
                 let config = JSON.parse(result);
-                this.setState({configApi:config});
+                this.setState({ configApi: config });
             }
         });
     }
 
-    getConfig(){
-            AsyncStorage.getItem('config', (error, result) => {
-                if (result) {    
-                    let config = JSON.parse(result);
-                    this.setState({config:config});
-                }
-            });
+    getConfig() {
+        AsyncStorage.getItem('config', (error, result) => {
+            if (result) {
+                let config = JSON.parse(result);
+                this.setState({ config: config });
+            }
+        });
     }
 
     //memanggil session
-    getSession(){    
+    getSession() {
         AsyncStorage.getItem('userSession', (error, result) => {
-            if (result) {    
+            if (result) {
                 let userSession = JSON.parse(result);
-                console.log('userSessions',JSON.stringify(userSession));
+                console.log('userSessions', JSON.stringify(userSession));
 
-                var id_user=userSession.id_user;
-                this.setState({id_user:id_user});
-                this.setState({userSession:userSession});
-                this.setState({login:true});
+                var id_user = userSession.id_user;
+                this.setState({ id_user: id_user });
+                this.setState({ userSession: userSession });
+                this.setState({ login: true });
             }
         });
     }
 
-    getData(){
+    getData() {
         this.setState({ loading_spinner: true }, () => {
 
 
-            let config=this.state.configApi;
-            let baseUrl=config.baseUrl;
-            let url=baseUrl+"front/api/common/airport_default";
-            console.log('configApi',JSON.stringify(config));
-            console.log('urlss',url);
+            let config = this.state.configApi;
+            let baseUrl = config.baseUrl;
+            let url = baseUrl + "front/api_new/common/airport_default";
+            console.log('configApi', JSON.stringify(config));
+            console.log('urlss', url);
 
 
-            
-            console.log(url,{"param":""});
-            fetch(url,{"param":""})
-            .then(response => response.json())
-            .then(result => {
-                this.setState({ loading_spinner: false });
-                this.setState({flight:result});
-                const { navigation } = this.props;
-                const selected = navigation.getParam("selected");
-    
-                if (selected) {
-                    this.setState({
-                        flight: this.state.flight.map(item => {
-                            return {
-                                ...item,
-                                checked: item.id == selected
-                            };
-                        })
-                    });
-                }
 
-            })
-            .catch(error => {
+            console.log(url, { "param": "" });
+            fetch(url, { "param": "" })
+                .then(response => response.json())
+                .then(result => {
+                    this.setState({ loading_spinner: false });
+                    this.setState({ flight: result });
+                    const { navigation } = this.props;
+                    const selected = navigation.getParam("selected");
 
-                alert('Kegagalan Respon Server')
-            });
+                    if (selected) {
+                        this.setState({
+                            flight: this.state.flight.map(item => {
+                                return {
+                                    ...item,
+                                    checked: item.id == selected
+                                };
+                            })
+                        });
+                    }
 
-});
+                })
+                .catch(error => {
+
+                    alert('Kegagalan Respon Server')
+                });
+
+        });
 
     }
 
@@ -129,97 +129,97 @@ export default class SelectFlight extends Component {
                         checked: false
                     };
                 }
-               
+
             })
         });
 
         const { navigation } = this.props;
         var type = navigation.getParam("type");
-            if(type=='from'){
-                            this.props.navigation.state.params.setBandaraAsal(
-                                select.id,select.label
-                                )
-                            navigation.goBack();
-            }else if(type=='to'){
-           
-                            this.props.navigation.state.params.setBandaraTujuan(
-                                select.id,select.label
-                                )
-                            navigation.goBack();
-            }
+        if (type == 'from') {
+            this.props.navigation.state.params.setBandaraAsal(
+                select.id, select.label
+            )
+            navigation.goBack();
+        } else if (type == 'to') {
+
+            this.props.navigation.state.params.setBandaraTujuan(
+                select.id, select.label
+            )
+            navigation.goBack();
+        }
     }
 
-    search(value){
+    search(value) {
         // let config=this.state.configApi;
         //     let baseUrl=config.baseUrl;
-        //     let url=baseUrl+"front/api/common/airport_default";
+        //     let url=baseUrl+"front/api_new/common/airport_default";
         //     console.log('configApi',JSON.stringify(config));
         //     console.log('urlss',url);
 
 
-        let config=this.state.configApi;
-        let baseUrl=config.baseUrl;
-        let url=baseUrl+"front/api/common/airport";
-        console.log('configApi',JSON.stringify(config));
-        console.log('urlss',url);
-            
+        let config = this.state.configApi;
+        let baseUrl = config.baseUrl;
+        let url = baseUrl + "front/api_new/common/airport";
+        console.log('configApi', JSON.stringify(config));
+        console.log('urlss', url);
+
         this.setState({ loading_spinner: true }, () => {
-            
-            
-                    // let config = JSON.parse(result);
-                    // var access_token=config.token;
-                    // var path=config.common_airport.dir;
-                    // var url=config.baseUrl;
 
 
-                 
+            // let config = JSON.parse(result);
+            // var access_token=config.token;
+            // var path=config.common_airport.dir;
+            // var url=config.baseUrl;
 
 
-                    var myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    // myHeaders.append("Cookie", "ci_session=htllmlmq1kc1inaabihi3lqeqv8jjm91");
-                    
-                    var raw = JSON.stringify({"param":value});
-                    
-                    var requestOptions = {
-                      method: 'POST',
-                      headers: myHeaders,
-                      body: raw,
-                      redirect: 'follow'
-                    };
-                    
-                    fetch(url, requestOptions)
-                      .then(response => response.json())
-                      .then(result => {
-                          console.log('searchairport',JSON.stringify(result));
-                          
-                        this.setState({ loading_spinner: false });
-                            this.setState({flight:result});
-                            const { navigation } = this.props;
-                            const selected = navigation.getParam("selected");
-                
-                            if (selected) {
-                                this.setState({
-                                    flight: this.state.flight.map(item => {
-                                        return {
-                                            ...item,
-                                            checked: item.id == selected
-                                        };
-                                    })
-                                });
-                            }
-                    
-                    })
-                    .catch(error => {
-
-                        alert('Kegagalan Respon Server')
-                    }); 
 
 
-                
+
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            // myHeaders.append("Cookie", "ci_session=htllmlmq1kc1inaabihi3lqeqv8jjm91");
+
+            var raw = JSON.stringify({ "param": value });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch(url, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    console.log('searchairport', JSON.stringify(result));
+
+                    this.setState({ loading_spinner: false });
+                    this.setState({ flight: result });
+                    const { navigation } = this.props;
+                    const selected = navigation.getParam("selected");
+
+                    if (selected) {
+                        this.setState({
+                            flight: this.state.flight.map(item => {
+                                return {
+                                    ...item,
+                                    checked: item.id == selected
+                                };
+                            })
+                        });
+                    }
+
+                })
+                .catch(error => {
+
+                    alert('Kegagalan Respon Server')
+                });
+
+
+
         });
 
-     }
+    }
 
     onSave() {
         const { navigation } = this.props;
@@ -228,7 +228,7 @@ export default class SelectFlight extends Component {
         const selected = this.state.flight.filter(item => item.checked);
 
         if (selected.length > 0) {
-            if(type=='from'){
+            if (type == 'from') {
                 this.setState(
                     {
                         loading: true
@@ -236,15 +236,15 @@ export default class SelectFlight extends Component {
                     () => {
                         setTimeout(() => {
                             this.props.navigation.state.params.setBandaraAsal(
-                                selected[0].id,selected[0].label
-                                )
+                                selected[0].id, selected[0].label
+                            )
                             navigation.goBack();
                         }, 50);
                     }
                 );
 
-            }else if(type=='to'){
-              
+            } else if (type == 'to') {
+
                 this.setState(
                     {
                         loading: true
@@ -252,8 +252,8 @@ export default class SelectFlight extends Component {
                     () => {
                         setTimeout(() => {
                             this.props.navigation.state.params.setBandaraTujuan(
-                                selected[0].id,selected[0].label
-                                )
+                                selected[0].id, selected[0].label
+                            )
                             navigation.goBack();
                         }, 50);
                     }
@@ -262,20 +262,20 @@ export default class SelectFlight extends Component {
         }
     }
 
-    
-    onClick(id,label) {
-        var type=this.props.navigation.state.params.type;
-        if(type=='asal'){
-            this.props.navigation.state.params.setBandaraAsal(id,label);
-        }else if(type=='tujuan'){
-            this.props.navigation.state.params.setBandaraTujuan(id,label);
+
+    onClick(id, label) {
+        var type = this.props.navigation.state.params.type;
+        if (type == 'asal') {
+            this.props.navigation.state.params.setBandaraAsal(id, label);
+        } else if (type == 'tujuan') {
+            this.props.navigation.state.params.setBandaraTujuan(id, label);
         }
         this.props.navigation.navigate('PageSearchFlight');
     }
 
     render() {
         const { navigation } = this.props;
-        let { flight, loading, airplane,loading_spinner } = this.state;
+        let { flight, loading, airplane, loading_spinner } = this.state;
         return (
             <SafeAreaView
                 style={BaseStyle.safeAreaView}
@@ -311,7 +311,7 @@ export default class SelectFlight extends Component {
                     onPressLeft={() => {
                         navigation.goBack();
                     }}
-                    //onPressRight={() => this.onSave()}
+                //onPressRight={() => this.onSave()}
                 />
                 <View style={styles.contain}>
                     <TextInput
@@ -324,89 +324,93 @@ export default class SelectFlight extends Component {
                     />
                     <View style={{ width: "100%", height: "100%" }}>
                         {
-                            loading_spinner ? 
-                            <Placeholder
-                                Animation={Fade}
-                                
-                            >
-                                <View style={{ 
-                                            paddingTop: 15,
-                                            paddingBottom: 15,
-                                            borderBottomWidth: 1,
-                                            borderBottomColor: BaseColor.fieldColor}}>
-                                    <PlaceholderLine width={100} height={30} style={{marginBottom:0}} />
-                                    <PlaceholderLine width={100} height={15} style={{marginTop: 5,marginBottom:0}} />
-                                </View>
+                            loading_spinner ?
+                                <Placeholder
+                                    Animation={Fade}
 
-                                <View style={{ 
-                                            paddingTop: 15,
-                                            paddingBottom: 15,
-                                            borderBottomWidth: 1,
-                                            borderBottomColor: BaseColor.fieldColor}}>
-                                    <PlaceholderLine width={100} height={30} style={{marginBottom:0}} />
-                                    <PlaceholderLine width={100} height={15} style={{marginTop: 5,marginBottom:0}} />
-                                </View>
-
-                                <View style={{ 
-                                            paddingTop: 15,
-                                            paddingBottom: 15,
-                                            borderBottomWidth: 1,
-                                            borderBottomColor: BaseColor.fieldColor}}>
-                                    <PlaceholderLine width={100} height={30} style={{marginBottom:0}} />
-                                    <PlaceholderLine width={100} height={15} style={{marginTop: 5,marginBottom:0}} />
-                                </View>
-
-                                <View style={{ 
-                                            paddingTop: 15,
-                                            paddingBottom: 15,
-                                            borderBottomWidth: 1,
-                                            borderBottomColor: BaseColor.fieldColor}}>
-                                    <PlaceholderLine width={100} height={30} style={{marginBottom:0}} />
-                                    <PlaceholderLine width={100} height={15} style={{marginTop: 5,marginBottom:0}} />
-                                </View>
-                            </Placeholder>
-                            :
-                            <FlatList
-                            data={flight}
-                            keyExtractor={(item, index) => item.id}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    style={styles.item}
-                                    onPress={() => this.onChange(item)}
                                 >
-                                    <View
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center"
-                                        }}
-                                    >
-                                        <View style={styles.left}>
-                                            <Text caption1 semibold>
-                                            {item.label} ({item.id})
-                                            </Text>
-                                            <Text
-                                                note
-                                                numberOfLines={1}
-                                                footnote
-                                                grayColor
+                                    <View style={{
+                                        paddingTop: 15,
+                                        paddingBottom: 15,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: BaseColor.fieldColor
+                                    }}>
+                                        <PlaceholderLine width={100} height={30} style={{ marginBottom: 0 }} />
+                                        <PlaceholderLine width={100} height={15} style={{ marginTop: 5, marginBottom: 0 }} />
+                                    </View>
+
+                                    <View style={{
+                                        paddingTop: 15,
+                                        paddingBottom: 15,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: BaseColor.fieldColor
+                                    }}>
+                                        <PlaceholderLine width={100} height={30} style={{ marginBottom: 0 }} />
+                                        <PlaceholderLine width={100} height={15} style={{ marginTop: 5, marginBottom: 0 }} />
+                                    </View>
+
+                                    <View style={{
+                                        paddingTop: 15,
+                                        paddingBottom: 15,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: BaseColor.fieldColor
+                                    }}>
+                                        <PlaceholderLine width={100} height={30} style={{ marginBottom: 0 }} />
+                                        <PlaceholderLine width={100} height={15} style={{ marginTop: 5, marginBottom: 0 }} />
+                                    </View>
+
+                                    <View style={{
+                                        paddingTop: 15,
+                                        paddingBottom: 15,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: BaseColor.fieldColor
+                                    }}>
+                                        <PlaceholderLine width={100} height={30} style={{ marginBottom: 0 }} />
+                                        <PlaceholderLine width={100} height={15} style={{ marginTop: 5, marginBottom: 0 }} />
+                                    </View>
+                                </Placeholder>
+                                :
+                                <FlatList
+                                    data={flight}
+                                    keyExtractor={(item, index) => item.id}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            style={styles.item}
+                                            onPress={() => this.onChange(item)}
+                                        >
+                                            <View
                                                 style={{
-                                                    paddingTop: 5
+                                                    flexDirection: "row",
+                                                    alignItems: "center"
                                                 }}
                                             >
-                                                {item.city}, {item.country_name}
+                                                <View style={styles.left}>
+                                                    <Text caption1 semibold>
+                                                        {item.label} ({item.id})
                                             </Text>
-                                        </View>
-                                    </View>
-                                    {item.checked && (
-                                        <Icon
-                                            name="check"
-                                            size={14}
-                                            color={BaseColor.primaryColor}
-                                        />
+                                                    <Text
+                                                        note
+                                                        numberOfLines={1}
+                                                        footnote
+                                                        grayColor
+                                                        style={{
+                                                            paddingTop: 5
+                                                        }}
+                                                    >
+                                                        {item.city}, {item.country_name}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            {item.checked && (
+                                                <Icon
+                                                    name="check"
+                                                    size={14}
+                                                    color={BaseColor.primaryColor}
+                                                />
+                                            )}
+                                        </TouchableOpacity>
                                     )}
-                                </TouchableOpacity>
-                            )}
-                            />
+                                />
                         }
                     </View>
                 </View>

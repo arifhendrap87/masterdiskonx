@@ -132,13 +132,13 @@ export default class Profile1 extends Component {
         });
     }
 
-    getCoupon() {
+    getCoupon2() {
         const { login, userSession } = this.state;
 
         if (userSession != null) {
             let config = this.state.configApi;
             let baseUrl = config.baseUrl;
-            let url = baseUrl + "front/api/product/coupon";
+            let url = baseUrl + "front/api_new/product/coupon";
             console.log('configApi', JSON.stringify(config));
             console.log('urlss', url);
 
@@ -174,6 +174,47 @@ export default class Profile1 extends Component {
                     console.log(JSON.stringify(error));
                     alert('Kegagalan Respon Server getCoupon');
                 });
+        }
+
+
+
+    }
+
+
+    getCoupon() {
+        const { login, userSession } = this.state;
+
+        if (userSession != null) {
+
+            let config = this.state.configApi;
+            let baseUrl = config.apiBaseUrl;
+            let url = baseUrl + "promotion/coupon/active?id_user=" + userSession.id_user;
+            console.log('configApi', JSON.stringify(config));
+            console.log('urlss', url);
+
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Cookie", "access_token=" + config.apiToken);
+
+
+            var raw = "";
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch(url, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    this.setState({ loadingSpinner: false });
+                    console.log('resultCoupon', JSON.stringify(result));
+                    this.setState({ coupons: result.data });
+
+                })
+                .catch(error => console.log('error', error));
         }
 
 
@@ -401,7 +442,7 @@ export default class Profile1 extends Component {
 
     }
 
-    claimCoupon(id) {
+    claimCoupon2(id) {
         //const {login,userSession}=this.state;
         const { login, userSession } = this.state;
         var myHeaders = new Headers();
@@ -422,7 +463,7 @@ export default class Profile1 extends Component {
 
         }
 
-        var url = "https://masterdiskon.com/front/api/product/claim_coupon";
+        var url = "https://masterdiskon.com/front/api_new/product/claim_coupon";
         console.log('urlCoupon', url, JSON.stringify(param));
 
         var requestOptions = {
@@ -450,6 +491,60 @@ export default class Profile1 extends Component {
                 console.log(JSON.stringify(error));
                 alert('Kegagalan Respon Server claimCoupon');
             });
+    }
+
+    claimCoupon(id) {
+        const { login, userSession } = this.state;
+
+
+        var raw = "";
+        if (login == true) {
+            var param = {
+                "id": id,
+                "id_user": userSession.id_user,
+                "platform": "app"
+            };
+            var raw = JSON.stringify(param);
+            console.log('claimCoupon', raw);
+
+        }
+
+        let config = this.state.configApi;
+        let baseUrl = config.apiBaseUrl;
+        let url = baseUrl + "promotion/coupon/claim";
+        console.log('configApi', JSON.stringify(config));
+        console.log('urlss', url);
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Cookie", "access_token=" + config.apiToken);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success == false) {
+                    this.dropdown.alertWithType('error', 'Error', JSON.stringify(result.message));
+
+                } else {
+
+                    this.dropdown.alertWithType('success', 'Success', JSON.stringify(result.message));
+                    this.updateClainPromo(id);
+                }
+
+
+            })
+            .catch(error => {
+                console.log(JSON.stringify(error));
+                alert('Kegagalan Respon Server claimCoupon');
+            });
+
     }
 
 
@@ -643,7 +738,7 @@ export default class Profile1 extends Component {
 
                 let config = this.state.configApi;
                 let baseUrl = config.baseUrl;
-                let url = baseUrl + 'front/api/user/user_update';
+                let url = baseUrl + 'front/api_new/user/user_update';
                 console.log('configApi', JSON.stringify(config));
                 console.log('urlss', url);
 
@@ -756,7 +851,7 @@ export default class Profile1 extends Component {
             redirect: 'follow'
         };
 
-        fetch("https://masterdiskon.com/front/api/user/user_avatar_update", requestOptions)
+        fetch("https://masterdiskon.com/front/api_new/user/user_avatar_update", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(JSON.stringify(result));
@@ -806,7 +901,7 @@ export default class Profile1 extends Component {
         } else {
             if (login == true) {
 
-                contents = <ScrollView style={{ marginBottom: 20 }}>
+                contents = <ScrollView style={{ marginBottom: 100 }}>
                     <View style={{}}>
                         <View style={{ width: "100%" }}>
                             <View>
@@ -871,7 +966,7 @@ export default class Profile1 extends Component {
                                         <CardCustomProfile
                                             title={'Ubah Kata Sandi'}
                                             subtitle={'Pesenan lebih cepat, isi data penumpang, dengan satu klik'}
-                                            icon={'lock'}
+                                            icon={'lock-closed-outline'}
                                             onPress={() => {
                                                 this.props.navigation.navigate("ProfileEditPassword", {
                                                     updateParticipantPassword: this.updateParticipantPassword,
@@ -1022,7 +1117,7 @@ export default class Profile1 extends Component {
 
                             </View>
                         </View>
-                        <ProductListCommon navigation={navigation} slug={'hotels'} title={'Tempat yang pernah dikunjungi'} />
+                        {/* <ProductListCommon navigation={navigation} slug={'hotels'} title={'Tempat yang pernah dikunjungi'} /> */}
 
 
                         {
