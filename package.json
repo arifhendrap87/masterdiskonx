@@ -26,7 +26,7 @@
         "@react-native-firebase/messaging": "^11.1.0",
         "@types/react-native-snap-carousel": "^3.8.2",
         "@zwdvidal/react-native-dropdownalert": "^3.11.0",
-        "apple-signin-auth": "^1.4.1",
+        "apple-signin-auth": "^1.7.5",
         "axios": "^0.24.0",
         "basic-auth-token": "^0.4.2",
         "basic-authorization-header": "^0.2.7",
